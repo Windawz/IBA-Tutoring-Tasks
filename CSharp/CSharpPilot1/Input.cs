@@ -2,22 +2,13 @@
 
 namespace CSharpPilot1 {
     static class Input {
-        private static string GetInput() {
-            return Console.ReadLine().Trim();
-        }
-        private static bool IsValidWord(string word) {
-            return 
-                !string.IsNullOrEmpty(word) && 
-                !word.Contains(' ') &&
-                (word.Length >= 8 && word.Length <= 30);
-        }
-        public static string? GetWord() {
-            string word = GetInput();
-            if (IsValidWord(word)) {
-                return word;
-            } else {
-                return null;
-            }
-        }
+        public static string? GetWord() => ExtractWord(GetInput(), IsValidWord);
+        private static string GetInput() => Console.ReadLine().Trim();
+        private static bool IsValidWord(string word) =>
+            !string.IsNullOrEmpty(word) &&
+            !word.Contains(' ') &&
+            (word.Length >= 8 && word.Length <= 30);
+        private static string? ExtractWord(string source, Func<string, bool> validator) =>
+            validator(source) ? source : null;
     }
 }
