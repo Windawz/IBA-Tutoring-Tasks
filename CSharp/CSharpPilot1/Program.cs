@@ -4,11 +4,9 @@ using System.Collections.Generic;
 namespace CSharpPilot1 {
     class Program {
         static void Main(string[] args) {
-            
+
         }
-    }
-    static class Game {
-        public static string RequestPlayerInput(string message, string errorMessage) {
+        static string RequestPlayerInput(string message, string errorMessage) {
             while (true) {
                 Println("{0}", message);
                 Print(">");
@@ -20,20 +18,20 @@ namespace CSharpPilot1 {
                 }
             }
         }
-        public static Dictionary<char, int> GetLetters(string word) {
+        static Dictionary<char, int> GetLetters(string word) {
             var d = new Dictionary<char, int>();
             foreach (char c in word) {
                 d[c] = d.ContainsKey(c) ? d[c] + 1 : 1;
             }
             return d;
         }
-        public static void Print(string format, params object[] arg) =>
-            Console.Write(format, arg);
-        public static void Println(string format, params object[] arg) {
+        static void Println(string format, params object[] arg) {
             Print(format, arg);
             Console.WriteLine();
         }
-        private static string? GetWord() {
+        static void Print(string format, params object[] arg) =>
+            Console.Write(format, arg);
+        static string? GetWord() {
             string word = GetInput();
             if (IsValidWord(word)) {
                 return word;
@@ -41,7 +39,7 @@ namespace CSharpPilot1 {
                 return null;
             }
         }
-        private static string GetInput() =>
+        static string GetInput() =>
             Console.ReadLine().Trim();
         private static bool IsValidWord(string word) =>
             !string.IsNullOrEmpty(word) &&
