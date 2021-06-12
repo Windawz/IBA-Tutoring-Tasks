@@ -79,7 +79,6 @@ namespace CSharpPilot1 {
         static IEnumerable<KeyValuePair<char, int>> GetLetterCounts(string word) =>
             word.Select(x => new KeyValuePair<char, int>(x, word.Count(y => y == x)));
 
-        // Wrap because the inner function is impure.
         static Input GetInput() {
             double seconds = 0.0;
 
