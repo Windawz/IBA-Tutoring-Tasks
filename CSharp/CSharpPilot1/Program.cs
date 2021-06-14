@@ -1,8 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Timers;
 using System.Text;
+using System.Timers;
+using System.Linq;
 
 namespace CSharpPilot1 {
     class Program {
@@ -11,17 +11,6 @@ namespace CSharpPilot1 {
         const int MaxPlayers = 2;
         const double MaxSeconds = 10.0;
 
-        class GameState {
-            public GameState(int player, Input input) {
-                Player = player;
-                Input = input;
-            }
-            public GameState(GameState other) : this(other.Player, other.Input) { }
-
-
-            public int Player { get; }
-            public Input Input { get; }
-        }
         class Input {
             public Input(string word, double seconds) {
                 Word = word;
@@ -31,59 +20,110 @@ namespace CSharpPilot1 {
             public string Word { get; }
             public double Seconds { get; }
         }
-        class Output {
-            public Output() {
-                sb = new StringBuilder();
-            }
-            public Output(string format, params object[] arg) : this() {
-                sb.Append(string.Format(format, arg));
-            }
-            public Output(string str) : this() {
-                sb.Append(str);
-            }
-
-            private StringBuilder sb;
-
-            public static void Print(Output output) =>
-                Console.Write(output.ToString());
-            public Output Add(string format, params object[] arg) =>
-                new Output(this + string.Format(format, arg));
-            public Output AddLine() =>
-                new Output(this + Environment.NewLine);
-            public Output AddLine(string format, params object[] arg) =>
-                Add(format, arg).AddLine();
-            public override string ToString() => sb.ToString();
+        enum InputError {
+            None,
+            WordNullOrEmpty,
+            WordTooLong,
+            WordTooShort,
+            NotWord,
         }
-
         static void Main(string[] args) {
-            GameState endState = Play(null);
-        }
-        static GameState Play(GameState? lastState) {
-            Func<GameState, bool> isPlayerDefeated =
-                state => (state.Input.Seconds > MaxSeconds) || !HasSameLetters(GetInput().Word, state.Input.Word);
-            Func<Input, bool> isInputValid =
-                input => !string.IsNullOrEmpty(input.Word) &&
-                    !input.Word.Contains(' ') &&
-                    (input.Word.Length >= MinWordLength && input.Word.Length <= MaxWordLength);
+            bool isOver = false;
+            int player = 0;
+            Input? lastInput = null;
 
-            return lastState switch {
-                null => Play(new GameState(0, GetInput())),
-                _ when !isInputValid(lastState.Input) => Play(new GameState(lastState)),
-                _ when isPlayerDefeated(lastState) => new GameState(lastState),
-                _ => Play(new GameState((lastState.Player + 1) % MaxPlayers, GetInput())),
+            while (!isOver) {
+                Console.WriteLine($"Игрок {player + 1}, введите слово:");
+
+                double timeElapsed = 0.0;
+                Input input;
+                InputError inputError;
+                do {
+                    input = GetInput(timeElapsed);
+                    inputError = GetInputError(input);
+
+                    if (inputError != InputError.None) {
+                        Console.WriteLine($"{GetInputErrorString(inputError)}. Попробуйте ещё раз (осталось {MaxSeconds - input.Seconds} секунд):");
+                        timeElapsed = input.Seconds;
+                    }
+                } while (inputError != InputError.None);
+
+                if (lastInput is null) {
+                    player = GetNextPlayer(player);
+                } else {
+                    if (InputMeetsWinConditions(input, lastInput)) {
+                        player = GetNextPlayer(player);
+                    } else {
+                        isOver = true;
+                    }
+                }
+
+                lastInput = input;
+            }
+
+            Console.WriteLine($"Игрок {player + 1} проиграл! Слово: {lastInput!.Word}; Времени затрачено: {lastInput!.Seconds}с.");
+        }
+        static int GetNextPlayer(int currentPlayer) {
+            return (currentPlayer + 1) % MaxPlayers;
+        }
+        static string? GetInputErrorString(InputError inputError) {
+            if (inputError == InputError.None) {
+                return null;
+            }
+            return inputError switch {
+                _ when inputError.HasFlag(InputError.WordTooShort) => $"Длина слова ниже {MinWordLength} символов",
+                _ when inputError.HasFlag(InputError.WordTooLong) => $"Длина слова ниже {MaxWordLength} символов",
+                _ when inputError.HasFlag(InputError.WordNullOrEmpty) => $"Ничего не введено",
+                _ when inputError.HasFlag(InputError.NotWord) => $"Нужно ввести СЛОВО",
+                _ => throw new ArgumentException("Unknown input error"),
             };
         }
+        static InputError GetInputError(Input input) {
+            if (string.IsNullOrEmpty(input.Word)) {
+                return InputError.WordNullOrEmpty;
+            } else {
+                if (input.Word.Contains(' ')) {
+                    return InputError.NotWord;
+                }
+                if (input.Word.Length > MaxWordLength) {
+                    return InputError.WordTooLong;
+                }
+                if (input.Word.Length < MinWordLength) {
+                    return InputError.WordTooShort;
+                }
+            }
 
-        static bool HasSameLetters(string word, string lastWord) =>
-            word.Length == lastWord.Length && GetLetterCounts(word).Intersect(GetLetterCounts(lastWord)).Any();
-        static IEnumerable<KeyValuePair<char, int>> GetLetterCounts(string word) =>
-            word.Select(x => new KeyValuePair<char, int>(x, word.Count(y => y == x)));
-
-        static Input GetInput() {
+            return InputError.None;
+        }
+        static bool InputMeetsWinConditions(Input input, Input lastInput) =>
+            (input.Seconds < MaxSeconds) && HasSameLetters(input.Word, lastInput.Word);
+        static bool HasSameLetters(string word, string lastWord) {
+            if (word.Length != lastWord.Length) {
+                return false;
+            }
+            var letters = GetLetterCounts(word);
+            var lastLetters = GetLetterCounts(lastWord);
+            return lastLetters.All(
+                kv => letters.ContainsKey(kv.Key) && kv.Value == letters[kv.Key]
+            );
+        }
+        static Dictionary<char, int> GetLetterCounts(string word) {
+            var d = new Dictionary<char, int>();
+            foreach (char c in word) {
+                if (d.ContainsKey(c)) {
+                    d[c] += 1;
+                } else {
+                    d[c] = 1;
+                }
+            }
+            return d;
+        }
+        static Input GetInput(double initialTime) {
             double seconds = 0.0;
 
             var timer = new Timer(100);
             timer.Elapsed += (sender, e) => seconds += 0.1;
+            Console.Write('>');
 
             timer.Start();
             string word = Console.ReadLine();
@@ -91,6 +131,5 @@ namespace CSharpPilot1 {
 
             return new Input(word, seconds);
         }
-
     }
 }
