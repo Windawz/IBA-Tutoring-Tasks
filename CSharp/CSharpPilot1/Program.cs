@@ -28,40 +28,66 @@ namespace CSharpPilot1 {
             NotWord,
         }
         static void Main(string[] args) {
+            RunIntroduction();
+
             bool isOver = false;
             int player = 0;
             Input? lastInput = null;
+            Input? input = null;
 
             while (!isOver) {
-                Console.WriteLine($"Игрок {player + 1}, введите слово:");
-
                 double timeElapsed = 0.0;
-                Input input;
                 InputError inputError;
+
+                Console.WriteLine($"Игрок {player + 1}, введите слово {GetTimeRemainingString(timeElapsed)}:");
                 do {
                     input = GetInput(timeElapsed);
                     inputError = GetInputError(input);
+                    timeElapsed = input.Seconds;
 
                     if (inputError != InputError.None) {
-                        Console.WriteLine($"{GetInputErrorString(inputError)}. Попробуйте ещё раз (осталось {MaxSeconds - input.Seconds} секунд):");
-                        timeElapsed = input.Seconds;
+                        Console.WriteLine($"{GetInputErrorString(inputError)}. Попробуйте ещё раз {GetTimeRemainingString(timeElapsed)}:");
                     }
-                } while (inputError != InputError.None);
+                } while (inputError != InputError.None && timeElapsed < MaxSeconds);
 
-                if (lastInput is null) {
-                    player = GetNextPlayer(player);
+                if (timeElapsed >= MaxSeconds || lastInput != null && (input.Word == lastInput.Word || !HasSameLetters(input.Word, lastInput.Word))) {
+                    isOver = true;
                 } else {
-                    if (InputMeetsWinConditions(input, lastInput)) {
-                        player = GetNextPlayer(player);
-                    } else {
-                        isOver = true;
-                    }
+                    player = GetNextPlayer(player);
+                    lastInput = input;
                 }
-
-                lastInput = input;
             }
 
-            Console.WriteLine($"Игрок {player + 1} проиграл! Слово: {lastInput!.Word}; Времени затрачено: {lastInput!.Seconds}с.");
+            Console.WriteLine(
+$@"
+Игрок {player + 1} проиграл!
+Слово: ""{input!.Word}"";
+Предыдущее слово: ""{lastInput?.Word ?? string.Empty}"";
+Времени затрачено: {input!.Seconds:f}с."
+            );
+        }
+        static void RunIntroduction() {
+            Console.WriteLine(
+$@" Добро пожаловать в ""Игру в ""Слова"". Правила игры таковы:
+
+- {MaxPlayers} игрока(ов) поочерёдно вводят слова, состоящие из букв предыдущего.
+- Введённое слово должно отличаться от первоначального.
+- Первый игрок получает карт-бланш.
+- Если слово длиной меньше {MinWordLength} или больше {MaxWordLength} символов, придётся повторить ввод.
+- На ввод даётся {MaxSeconds} секунд.
+- При повторном вводе время не восстанавливается.
+
+Нажмите любую клавишу, чтобы начать...
+"
+            );
+            Console.ReadKey(true);
+        }
+        static string GetTimeRemainingString(double timeElapsed) {
+            if (timeElapsed >= MaxSeconds) {
+                return "(время вышло)";
+            } else {
+                return $"(осталось {MaxSeconds - timeElapsed:f}с)";
+            }
         }
         static int GetNextPlayer(int currentPlayer) {
             return (currentPlayer + 1) % MaxPlayers;
@@ -95,8 +121,7 @@ namespace CSharpPilot1 {
 
             return InputError.None;
         }
-        static bool InputMeetsWinConditions(Input input, Input lastInput) =>
-            (input.Seconds < MaxSeconds) && HasSameLetters(input.Word, lastInput.Word);
+
         static bool HasSameLetters(string word, string lastWord) {
             if (word.Length != lastWord.Length) {
                 return false;
@@ -119,7 +144,7 @@ namespace CSharpPilot1 {
             return d;
         }
         static Input GetInput(double initialTime) {
-            double seconds = 0.0;
+            double seconds = initialTime;
 
             var timer = new Timer(100);
             timer.Elapsed += (sender, e) => seconds += 0.1;

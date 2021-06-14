@@ -4,23 +4,39 @@ using System.Linq;
 using System.Timers;
 using System.Text;
 
+/*
+ *      Warning
+ * 
+ *  This code is in a broken state and should not be taken seriously.
+ *  
+ *  You've been warned.
+ */
+
+/*
 namespace CSharpPilot1 {
     class ProgramFunctional {
         const int MinWordLength = 8;
         const int MaxWordLength = 30;
         const int MaxPlayers = 2;
+        const double TimerInterval = 0.1;
         const double MaxSeconds = 10.0;
+        const string InputPromptFormatString = "Игрок {0}, введите слово:";
+        const string InvalidInputFormatString = "Ошибка ввода: {0}. Повторите ввод:";
 
         class GameState {
-            public GameState(int player, Input input, GameState? lastState) {
+            public GameState(int player, Input input, Output output, GameState? lastState) {
                 Player = player;
                 Input = input;
+                Output = output;
                 LastState = lastState;
             }
 
             public int Player { get; }
             public Input Input { get; }
+            public Output Output { get; }
             public GameState? LastState { get; }
+
+            public GameState Copy() => new GameState(Player, Input, Output, LastState);
         }
         class Input {
             public Input(string word, double seconds) {
@@ -30,29 +46,28 @@ namespace CSharpPilot1 {
 
             public string Word { get; }
             public double Seconds { get; }
+
+            public Input Copy() => new Input(Word, Seconds);
         }
         class Output {
-            public Output() {
-                sb = new StringBuilder();
-            }
-            public Output(string format, params object[] arg) : this() {
-                sb.Append(string.Format(format, arg));
-            }
-            public Output(string str) : this() {
-                sb.Append(str);
+            public Output(string? str = null) {
+                contents = new StringBuilder(str);
             }
 
-            private StringBuilder sb;
+            private StringBuilder contents;
 
-            public static void Print(Output output) =>
-                Console.Write(output.ToString());
             public Output Add(string format, params object[] arg) =>
-                new Output(this + string.Format(format, arg));
+                new Output(string.Format(format, arg));
             public Output AddLine() =>
-                new Output(this + Environment.NewLine);
+                Add(Environment.NewLine);
             public Output AddLine(string format, params object[] arg) =>
                 Add(format, arg).AddLine();
-            public override string ToString() => sb.ToString();
+            public Output Print() {
+                string str = contents.ToString();
+                Console.Write(str);
+                return new Output(str);
+            }
+            public Output Copy() => new Output(contents.ToString());
         }
 
         static GameState Play(GameState? state) {
@@ -68,13 +83,15 @@ namespace CSharpPilot1 {
                     new GameState(
                         0,
                         GetInput(),
+                        new Output(string.Format(InputPromptFormatString, 1)).AddLine().Print(),
                         null
                     )
                 ),
                 _ when state.LastState is null => Play(
                     new GameState(
-                        IncrementPlayerIndex(state.Player),
+                        GetNextPlayer(state.Player),
                         GetInput(),
+                        state.Output.AddLine(string.Format(InputPromptFormatString, GetNextPlayer(state.Player) + 1)).Print(),
                         state
                     )
                 ),
@@ -82,24 +99,21 @@ namespace CSharpPilot1 {
                     new GameState(
                         state.Player,
                         GetInput(),
+                        new Output().Print(),
                         state
                     )
                 ),
-                _ when !isInputCompetent(state.Input, state.LastState.Input) => new GameState(
-                    state.Player, 
-                    state.Input, 
-                    state.LastState
-                ),
+                _ when !isInputCompetent(state.Input, state.LastState.Input) => state.Copy(),
                 _ => Play(
                     new GameState(
-                        IncrementPlayerIndex(state.Player),
+                        GetNextPlayer(state.Player),
                         GetInput(),
                         state
                     )
                 ),
             };
         }
-        static int IncrementPlayerIndex(int playerIndex) =>
+        static int GetNextPlayer(int playerIndex) =>
             (playerIndex + 1) % MaxPlayers;
 
         static bool HasSameLetters(string word, string lastWord) =>
@@ -112,6 +126,7 @@ namespace CSharpPilot1 {
 
             var timer = new Timer(100);
             timer.Elapsed += (sender, e) => seconds += 0.1;
+            Console.Write('>');
 
             timer.Start();
             string word = Console.ReadLine();
@@ -122,3 +137,4 @@ namespace CSharpPilot1 {
 
     }
 }
+*/
