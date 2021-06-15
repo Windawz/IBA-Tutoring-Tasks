@@ -4,7 +4,7 @@ using System.Text;
 using System.Timers;
 using System.Linq;
 
-namespace CSharpPilot1 {
+namespace CSharpPilot1.Procedural {
     class Program {
         const int MinWordLength = 8;
         const int MaxWordLength = 30;

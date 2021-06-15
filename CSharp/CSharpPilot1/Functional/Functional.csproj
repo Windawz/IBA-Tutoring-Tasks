@@ -4,6 +4,8 @@
     <OutputType>Exe</OutputType>
     <TargetFramework>net5.0</TargetFramework>
     <Nullable>enable</Nullable>
+    <RootNamespace>CSharpPilot1.Functional</RootNamespace>
+    <AssemblyName>CSharpPilot1.Functional</AssemblyName>
   </PropertyGroup>
 
 </Project>
