@@ -143,7 +143,7 @@ namespace CSharpPilot1 {
             Console.Write('>');
 
             timer.Start();
-            string word = Console.ReadLine();
+            string word = Console.ReadLine() ?? string.Empty;
             timer.Stop();
 
             return new Input(word, seconds);
