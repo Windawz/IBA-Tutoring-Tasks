@@ -9,7 +9,9 @@ namespace CSharpPilot1 {
         const int MinWordLength = 8;
         const int MaxWordLength = 30;
         const int MaxPlayers = 2;
-        const double MaxSeconds = 10.0;
+        const double MaxSeconds = 25.0;
+
+        static readonly string NL = Environment.NewLine;
 
         class Input {
             public Input(string word, double seconds) {
@@ -28,7 +30,8 @@ namespace CSharpPilot1 {
             NotWord,
         }
         static void Main(string[] args) {
-            RunIntroduction();
+            Console.WriteLine(GetIntroductionString());
+            Console.ReadKey(true);
 
             bool isOver = false;
             int player = 0;
@@ -48,6 +51,7 @@ namespace CSharpPilot1 {
                     if (inputError != InputError.None) {
                         Console.WriteLine($"{GetInputErrorString(inputError)}. Попробуйте ещё раз {GetTimeRemainingString(timeElapsed)}:");
                     }
+
                 } while (inputError != InputError.None && timeElapsed < MaxSeconds);
 
                 if (timeElapsed >= MaxSeconds || lastInput != null && (input.Word == lastInput.Word || !HasSameLetters(input.Word, lastInput.Word))) {
@@ -58,29 +62,23 @@ namespace CSharpPilot1 {
                 }
             }
 
-            Console.WriteLine(
-$@"
-Игрок {player + 1} проиграл!
-Слово: ""{input!.Word}"";
-Предыдущее слово: ""{lastInput?.Word ?? string.Empty}"";
-Времени затрачено: {input!.Seconds:f}с."
-            );
+            Console.WriteLine(GetEndgameString(player, input!, lastInput));
         }
-        static void RunIntroduction() {
-            Console.WriteLine(
-$@" Добро пожаловать в ""Игру в ""Слова"". Правила игры таковы:
-
-- {MaxPlayers} игрока(ов) поочерёдно вводят слова, состоящие из букв предыдущего.
-- Введённое слово должно отличаться от первоначального.
-- Первый игрок получает карт-бланш.
-- Если слово длиной меньше {MinWordLength} или больше {MaxWordLength} символов, придётся повторить ввод.
-- На ввод даётся {MaxSeconds} секунд.
-- При повторном вводе время не восстанавливается.
-
-Нажмите любую клавишу, чтобы начать...
-"
-            );
-            Console.ReadKey(true);
+        static string GetIntroductionString() {
+            return $"Добро пожаловать в \"Игру в \"Слова\". Правила игры таковы:{NL}{NL}" +
+                $"- {MaxPlayers} игрока(ов) поочерёдно вводят слова, состоящие из букв предыдущего.{NL}" +
+                $"- Введённое слово должно отличаться от первоначального.{NL}" +
+                $"- Первый игрок получает карт-бланш.{NL}" +
+                $"- Если слово длиной меньше {MinWordLength} или больше {MaxWordLength} символов, придётся повторить ввод.{NL}" +
+                $"- На ввод даётся {MaxSeconds} секунд.{NL}" +
+                $"- При повторном вводе время не восстанавливается.{NL}{NL}" +
+                $"Нажмите любую клавишу, чтобы начать...{NL}";
+        }
+        static string GetEndgameString(int loser, Input input, Input? lastInput) {
+            return $"\nИгрок {loser + 1} проиграл!{NL}" +
+                $"Слово: \"{input!.Word}\";{NL}" +
+                $"Предыдущее слово: \"{lastInput?.Word ?? string.Empty}\";{NL}" +
+                $"Времени затрачено: {input!.Seconds:f}с.";
         }
         static string GetTimeRemainingString(double timeElapsed) {
             if (timeElapsed >= MaxSeconds) {
@@ -89,21 +87,15 @@ $@" Добро пожаловать в ""Игру в ""Слова"". Прави�
                 return $"(осталось {MaxSeconds - timeElapsed:f}с)";
             }
         }
-        static int GetNextPlayer(int currentPlayer) {
-            return (currentPlayer + 1) % MaxPlayers;
-        }
-        static string? GetInputErrorString(InputError inputError) {
-            if (inputError == InputError.None) {
-                return null;
-            }
-            return inputError switch {
-                _ when inputError.HasFlag(InputError.WordTooShort) => $"Длина слова ниже {MinWordLength} символов",
-                _ when inputError.HasFlag(InputError.WordTooLong) => $"Длина слова ниже {MaxWordLength} символов",
-                _ when inputError.HasFlag(InputError.WordNullOrEmpty) => $"Ничего не введено",
-                _ when inputError.HasFlag(InputError.NotWord) => $"Нужно ввести СЛОВО",
-                _ => throw new ArgumentException("Unknown input error"),
-            };
-        }
+        static int GetNextPlayer(int currentPlayer) => (currentPlayer + 1) % MaxPlayers;
+        static string? GetInputErrorString(InputError inputError) => inputError switch {
+            InputError.None => null,
+            _ when inputError.HasFlag(InputError.WordTooShort) => $"Длина слова ниже {MinWordLength} символов",
+            _ when inputError.HasFlag(InputError.WordTooLong) => $"Длина слова ниже {MaxWordLength} символов",
+            _ when inputError.HasFlag(InputError.WordNullOrEmpty) => $"Ничего не введено",
+            _ when inputError.HasFlag(InputError.NotWord) => $"Нужно ввести СЛОВО",
+            _ => throw new ArgumentException("Unknown input error"),
+        };
         static InputError GetInputError(Input input) {
             if (string.IsNullOrEmpty(input.Word)) {
                 return InputError.WordNullOrEmpty;

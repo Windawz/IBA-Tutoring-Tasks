@@ -3,7 +3,9 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 16
 VisualStudioVersion = 16.0.31105.61
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CSharpPilot1", "CSharpPilot1.csproj", "{F3255D8A-FD28-4B6E-809B-D706155A41CF}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Procedural", "Procedural\Procedural.csproj", "{7D58CA14-8C6C-4D9B-B052-943C6E1DE0C1}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Functional", "Functional\Functional.csproj", "{93A8B1A4-2269-432D-AFDF-16DD95DB8551}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -11,10 +13,14 @@ Global
 		Release|Any CPU = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{F3255D8A-FD28-4B6E-809B-D706155A41CF}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{F3255D8A-FD28-4B6E-809B-D706155A41CF}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{F3255D8A-FD28-4B6E-809B-D706155A41CF}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{F3255D8A-FD28-4B6E-809B-D706155A41CF}.Release|Any CPU.Build.0 = Release|Any CPU
+		{7D58CA14-8C6C-4D9B-B052-943C6E1DE0C1}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{7D58CA14-8C6C-4D9B-B052-943C6E1DE0C1}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{7D58CA14-8C6C-4D9B-B052-943C6E1DE0C1}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{7D58CA14-8C6C-4D9B-B052-943C6E1DE0C1}.Release|Any CPU.Build.0 = Release|Any CPU
+		{93A8B1A4-2269-432D-AFDF-16DD95DB8551}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{93A8B1A4-2269-432D-AFDF-16DD95DB8551}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{93A8B1A4-2269-432D-AFDF-16DD95DB8551}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{93A8B1A4-2269-432D-AFDF-16DD95DB8551}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
