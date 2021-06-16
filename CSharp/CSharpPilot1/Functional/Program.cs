@@ -93,27 +93,26 @@ namespace CSharpPilot1.Functional {
                 !IsInputCompetent(input, LastStep!.InputInfo),
                 input),
         });
+        public override string ToString() =>
+            $"Steps: {Steps};\nLastStep: {LastStep?.ToString() ?? "null"};\nOver: {Over};\n";
     }
 
     class Program {
         static void Main(string[] args) {
-            IO<State> result = Loop(new State().AsIO()).Bind(
-                st => st switch {
-                    _ when st.Over => st.AsIO(),
-                    _ => Loop(st.AsIO()),
-                }
-            );
+            IO<State> result = Loop(new State().AsIO());
+            _ = result.Bind(st => { Console.WriteLine(st.ToString()); return st.AsIO(); });
         }
         static bool IsInputTextValid(string text) {
             return !string.IsNullOrWhiteSpace(text) && !text.Contains(' ') && text.Length >= 8 && text.Length <= 30;
         }
         static IO<State> Loop(IO<State> prevState) =>
-            ReadUntilValidTimed(IsInputTextValid)
-            .Bind(
-                info => prevState.Bind(
-                    state => state.Advance(info).AsIO()
-                )
-            );
+            prevState.Bind(st => st switch {
+                _ when st.Over => st.AsIO(),
+                _ => Loop(ReadUntilValidTimed(IsInputTextValid)
+                    .Bind(
+                        info => prevState.Bind(
+                            state => state.Advance(info).AsIO()))),
+            });
         // Impure input functions
         static IO<InputInfo> ReadUntilValidTimed(Func<string, bool> textValidator) {
             double time = 0.0;
