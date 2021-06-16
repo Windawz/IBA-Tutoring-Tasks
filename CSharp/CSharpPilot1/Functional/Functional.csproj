@@ -6,6 +6,7 @@
     <Nullable>enable</Nullable>
     <RootNamespace>CSharpPilot1.Functional</RootNamespace>
     <AssemblyName>CSharpPilot1.Functional</AssemblyName>
+    <StartupObject>CSharpPilot1.Functional.Program</StartupObject>
   </PropertyGroup>
 
 </Project>
