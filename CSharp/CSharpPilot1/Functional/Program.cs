@@ -132,11 +132,13 @@ namespace CSharpPilot1.Functional {
         public static bool IsInputCompetentText(InputInfo inputInfo, InputInfo prevInfo) =>
         inputInfo
         .Text
+        .ToLowerInvariant()
         .CharacterCounts()
         .SequenceEqual(
             prevInfo
             .Text
-            .CharacterCounts()) && inputInfo.Text != prevInfo.Text;
+            .ToLowerInvariant()
+            .CharacterCounts()) && !string.Equals(inputInfo.Text, prevInfo.Text, StringComparison.InvariantCultureIgnoreCase);
         public static bool IsInputCompetentTime(InputInfo inputInfo) =>
             inputInfo.Time <= MaxSeconds;
     }
