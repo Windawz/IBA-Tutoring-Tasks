@@ -42,7 +42,7 @@ namespace CSharpPilot1.Functional {
 
     #region IO Functions
     partial class IO {
-        public static IO<InputInfo> ReadLineValidatedTimed(Func<string, bool> textValidator, double startTime) {
+        public static IO<InputInfo> ReadLineValidatedTimed(Func<string, bool> textValidator) {
             double time = 0.0;
 
             var timer = new Timer(100);
@@ -91,28 +91,36 @@ namespace CSharpPilot1.Functional {
     class Player {
         public const int MaxPlayers = 2;
 
-        public Player(int index, bool defeated, InputInfo inputInfo) => (Index, Defeated, InputInfo) = (index, defeated, inputInfo);
-        public Player(Player player) : this(player.Index, player.Defeated, player.InputInfo) { }
+        public Player(int index, bool defeated) => (Index, Defeated) = (index, defeated);
+        public Player(Player player) : this(player.Index, player.Defeated) { }
 
         public int Index { get; }
         public bool Defeated { get; }
+    }
+    class Step {
+        public Step(Player player, InputInfo inputInfo) =>
+            (Player, InputInfo) = (player, inputInfo);
+        public Step(Step step) : this(step.Player, step.InputInfo) { }
+
+        public Player Player { get; }
         public InputInfo InputInfo { get; }
     }
-
     class State {
-        public State(ImmutableList<Player> history) => History = history;
-        public State() : this(ImmutableList.Create<Player>()) { }
+        public State(ImmutableList<Step> history) => History = history;
+        public State() : this(ImmutableList.Create<Step>()) { }
         public State(State state) : this(state.History) { }
 
 
-        public ImmutableList<Player> History { get; }
-        public Player? Last => History.LastOrDefault();
-        public bool Over => Last?.Defeated ?? false;
+        public ImmutableList<Step> History { get; }
+        public Step? Last => History.LastOrDefault();
+        public bool Over => Last?.Player.Defeated ?? false;
 
+        public State AddStep(Step step) =>
+            new State(History.Add(step));
         public override string ToString() =>
             $"Steps: {History};\nLastStep: {Last?.ToString() ?? "null"};\nOver: {Over};\n";
     }
-    static class Logic {
+    static class Rules {
         public const int MaxPlayers = 2;
         public const double MaxSeconds = 10.0;
         public const int MinTextLength = 8;
@@ -121,67 +129,61 @@ namespace CSharpPilot1.Functional {
         public static int NextPlayer(int index) => (index + 1) % MaxPlayers;
         public static bool IsInputTextValid(string text) =>
             !string.IsNullOrWhiteSpace(text) && !text.Contains(' ') && text.Length >= MinTextLength && text.Length <= MaxTextLength;
-        public static Player AdvancePlayer(Player? last, InputInfo inputInfo) =>
-            last switch {
-                null => new Player(0, false, inputInfo),
-                _ when !last.InputInfo.Valid => new Player(last.Index, last.Defeated, inputInfo),
-                _ when last.Defeated => new Player(last),
-                _ => new Player(
-                    NextPlayer(last.Index),
-                    !IsInputCompetentText(inputInfo, last.InputInfo) || !IsInputCompetentTime(inputInfo),
-                    inputInfo),
-            };
-        public static State AdvanceState(State last, Player player) =>
-            new State(last.History.Add(player));
-        private static bool IsInputCompetentText(InputInfo inputInfo, InputInfo prevInfo) =>
-            inputInfo
+        public static bool IsInputCompetentText(InputInfo inputInfo, InputInfo prevInfo) =>
+        inputInfo
+        .Text
+        .CharacterCounts()
+        .SequenceEqual(
+            prevInfo
             .Text
-            .CharacterCounts()
-            .SequenceEqual(
-                prevInfo
-                .Text
-                .CharacterCounts());
-        private static bool IsInputCompetentTime(InputInfo inputInfo) =>
+            .CharacterCounts());
+        public static bool IsInputCompetentTime(InputInfo inputInfo) =>
             inputInfo.Time <= MaxSeconds;
-
     }
 
     class Program {
         static void Main(string[] args) {
-            IO<State> result = Loop(new State().AsIO());
+            IO<State> result = Loop(new State());
             _ = result.Bind(st => { Console.WriteLine(st.ToString()); return st.AsIO(); });
         }
         // This is currently bugged and doesn't work right.
-        static IO<State> Loop(IO<State> state) => state.Bind(
-                st => st switch {
-                    _ when st.Over => st.AsIO(),
-                    _ => Loop(
-                            IO.WriteLine(
-                                GetInputRequestString(st.Last is null ? 0 : Logic.NextPlayer(st.Last.Index))
-                            ).Bind(_ =>
-                            (st.Last is null ? Unit.Instance.AsIO() : IO.WriteLine(
-                                " " + GetTimeLeftString(GetTimeLeft(st)))
-                            ).Bind(_ =>
-                            IO.ReadLineValidatedTimed(
-                                Logic.IsInputTextValid,
-                                st.Last is null || st.Last.InputInfo.Valid ? 0.0 : Logic.MaxSeconds - st.Last.InputInfo.Time
-                            ).Bind(inputInfo =>
-                            (inputInfo.Valid ? Unit.Instance.AsIO() : IO.WriteLine(
-                                GetInputRetryString() + " " + GetTimeLeftString(GetTimeLeft(st)))
-                            ).Bind(_ =>
-                            Logic.AdvancePlayer(st.Last, inputInfo).AsIO().Bind(p =>
-                            Logic.AdvanceState(st, p).AsIO()
-                        )))))),
-                }
-            );
-        static double GetTimeLeft(State state) =>
-            state.Last is null ? Logic.MaxSeconds : Logic.MaxSeconds - state.Last.InputInfo.Time;
+        static IO<State> Loop(State state) => state switch {
+                _ when state.Over => state.AsIO(),
+                _ when state.Last is null =>
+                    new Player(0, false).AsIO().Bind(p =>
+                    GetInputInfo(p.Index, 0.0, GetInputRequestString(p.Index)).Bind(inputInfo =>
+                    Loop(state.AddStep(new Step(p, inputInfo)))
+                    )),
+                _ =>
+                    new Step(state.Last).AsIO().Bind(last =>
+                    GetInputInfo(
+                        Rules.NextPlayer(last.Player.Index),
+                        0.0,
+                        GetInputRequestString(
+                            Rules.NextPlayer(last.Player.Index)
+                        )
+                    ).Bind(inputInfo =>
+                    new Player(
+                        Rules.NextPlayer(last.Player.Index),
+                        !Rules.IsInputCompetentText(inputInfo, last.InputInfo) || !Rules.IsInputCompetentTime(inputInfo)
+                    ).AsIO().Bind(p =>
+                    Loop(state.AddStep(new Step(p, inputInfo)))
+                    ))),
+            };
+        static IO<InputInfo> GetInputInfo(int playerIndex, double startTime, string requestString) =>
+            IO.WriteLine($"{requestString} {GetTimeLeftString(Rules.MaxSeconds - startTime)}").Bind(_ =>
+            IO.ReadLineValidatedTimed(Rules.IsInputTextValid).Bind(inputInfo =>
+            inputInfo switch {
+                _ when !inputInfo.Valid => GetInputInfo(playerIndex, inputInfo.Time + startTime, GetInputRetryString()),
+                _ => new InputInfo(inputInfo.Text, inputInfo.Time + startTime, inputInfo.Valid).AsIO(),
+            }
+            ));
         static string GetInputRequestString(int playerIndex) =>
             $"Игрок {playerIndex + 1}, введите слово:";
         static string GetInputRetryString() =>
             $"Неверный ввод. Попробуйте ещё раз:";
         static string GetTimeLeftString(double timeLeft) =>
-            $"(осталось {timeLeft:F}с)";
+            timeLeft <= 0.0 ? $"(время вышло)" : $"(осталось {timeLeft:F}с)";
         static string GetDefeatedString(State state) =>
             $"";
     }
