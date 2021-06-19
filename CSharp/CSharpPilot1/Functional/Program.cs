@@ -136,7 +136,7 @@ namespace CSharpPilot1.Functional {
         .SequenceEqual(
             prevInfo
             .Text
-            .CharacterCounts());
+            .CharacterCounts()) && inputInfo.Text != prevInfo.Text;
         public static bool IsInputCompetentTime(InputInfo inputInfo) =>
             inputInfo.Time <= MaxSeconds;
     }
@@ -144,31 +144,31 @@ namespace CSharpPilot1.Functional {
     class Program {
         static void Main(string[] args) {
             IO<State> result = Loop(new State());
-            _ = result.Bind(st => { Console.WriteLine(st.ToString()); return st.AsIO(); });
         }
         static IO<State> Loop(State state) => state switch {
-                _ when state.Over => state.AsIO(),
-                _ when state.Last is null =>
-                    new Player(0, false).AsIO().Bind(p =>
-                    GetInputInfo(p.Index, 0.0, GetInputRequestString(p.Index)).Bind(inputInfo =>
-                    Loop(state.AddStep(new Step(p, inputInfo)))
-                    )),
-                _ =>
-                    new Step(state.Last).AsIO().Bind(last =>
-                    GetInputInfo(
-                        Rules.NextPlayer(last.Player.Index),
-                        0.0,
-                        GetInputRequestString(
-                            Rules.NextPlayer(last.Player.Index)
-                        )
-                    ).Bind(inputInfo =>
-                    new Player(
-                        Rules.NextPlayer(last.Player.Index),
-                        !Rules.IsInputCompetentText(inputInfo, last.InputInfo) || !Rules.IsInputCompetentTime(inputInfo)
-                    ).AsIO().Bind(p =>
-                    Loop(state.AddStep(new Step(p, inputInfo)))
-                    ))),
-            };
+            _ when state.Over => IO.WriteLine(GetDefeatedString(state)).Bind(_ =>
+                state.AsIO()),
+            _ when state.Last is null =>
+                new Player(0, false).AsIO().Bind(p =>
+                GetInputInfo(p.Index, 0.0, GetInputRequestString(p.Index)).Bind(inputInfo =>
+                Loop(state.AddStep(new Step(p, inputInfo)))
+                )),
+            _ =>
+                new Step(state.Last).AsIO().Bind(last =>
+                GetInputInfo(
+                    Rules.NextPlayer(last.Player.Index),
+                    0.0,
+                    GetInputRequestString(
+                        Rules.NextPlayer(last.Player.Index)
+                    )
+                ).Bind(inputInfo =>
+                new Player(
+                    Rules.NextPlayer(last.Player.Index),
+                    !Rules.IsInputCompetentText(inputInfo, last.InputInfo) || !Rules.IsInputCompetentTime(inputInfo)
+                ).AsIO().Bind(p =>
+                Loop(state.AddStep(new Step(p, inputInfo)))
+                ))),
+        };
         static IO<InputInfo> GetInputInfo(int playerIndex, double startTime, string requestString) =>
             IO.WriteLine($"{requestString} {GetTimeLeftString(Rules.MaxSeconds - startTime)}").Bind(_ =>
             IO.ReadLineValidatedTimed(Rules.IsInputTextValid).Bind(inputInfo =>
@@ -183,7 +183,16 @@ namespace CSharpPilot1.Functional {
             $"Неверный ввод. Попробуйте ещё раз:";
         static string GetTimeLeftString(double timeLeft) =>
             timeLeft <= 0.0 ? $"(время вышло)" : $"(осталось {timeLeft:F}с)";
-        static string GetDefeatedString(State state) =>
-            $"";
+        static string GetDefeatedString(State state) {
+            string nl = Environment.NewLine;
+            Step? lastStep = state.Last;
+            Step? prevStep = state.History.SkipLast(1).LastOrDefault();
+
+            return $"{nl}Игрок {state.Last!.Player.Index + 1} проиграл!{nl}{nl}" +
+            $"Пред. слово: \"{prevStep?.InputInfo.Text ?? ""}\"{nl}" +
+            $"Пред. время: {prevStep?.InputInfo.Time.ToString("F") ?? ""}с{nl}" +
+            $"Слово: \"{lastStep?.InputInfo.Text ?? ""}\"{nl}" +
+            $"Время: {lastStep?.InputInfo.Time.ToString("F") ?? ""}с";
+        }
     }
 }
