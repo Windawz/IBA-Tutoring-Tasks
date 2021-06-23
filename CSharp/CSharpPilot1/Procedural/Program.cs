@@ -6,11 +6,14 @@ using System.Linq;
 
 namespace CSharpPilot1.Procedural {
     class Program {
+        // Amount of players involved.
+        const int MaxPlayers = 2;
+        // Max amount of seconds to enter a word before player loses.
+        const double MaxSeconds = 10.0;
         const int MinWordLength = 8;
         const int MaxWordLength = 30;
-        const int MaxPlayers = 2;
-        const double MaxSeconds = 25.0;
 
+        // For easier formatting.
         static readonly string NL = Environment.NewLine;
 
         class Input {
@@ -124,6 +127,7 @@ namespace CSharpPilot1.Procedural {
                 kv => letters.ContainsKey(kv.Key) && kv.Value == letters[kv.Key]
             );
         }
+        // The dictionary returned represents all characters in the word and amounts of their occurences in it.
         static Dictionary<char, int> GetLetterCounts(string word) {
             var d = new Dictionary<char, int>();
             foreach (char c in word) {
