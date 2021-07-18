@@ -4,7 +4,7 @@ using System.Timers;
 using System.Collections.Generic;
 using System.Collections.Immutable;
 
-namespace CSharpPilot1.Functional {
+namespace Game {
     // Convenience extension methods for implementing word comparison logic.
     static class StringExtensions {
         public static int CharacterCount(this string str, char c) =>
