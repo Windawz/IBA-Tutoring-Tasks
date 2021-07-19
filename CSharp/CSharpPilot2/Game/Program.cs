@@ -14,7 +14,7 @@ namespace Game {
         // Recursive.
         // Returns the final state of the game once it has played out to the end.
         static State Play(State state) {
-            if (state.Over) {
+            if (state.IsOver) {
                 Console.WriteLine(GetDefeatedString(state));
                 return state;
             } else if (state.Last is null) {
@@ -26,10 +26,10 @@ namespace Game {
             } else {
                 int newPlayerIndex = Rules.NextPlayerIndex(state.Last.Player.Index);
                 var inputInfo = GetInputInfo(newPlayerIndex, 0.0, GetInputRequestString(newPlayerIndex));
-                bool defeated =
+                bool isDefeated =
                     !Rules.IsInputCompetentText(inputInfo, state.Last.InputInfo) ||
                     !Rules.IsInputCompetentTime(inputInfo);
-                var newPlayer = new Player(newPlayerIndex, defeated);
+                var newPlayer = new Player(newPlayerIndex, isDefeated);
                 var newStep = new Step(newPlayer, inputInfo);
                 var newState = state.AddStep(newStep);
                 return Play(newState);
@@ -45,10 +45,10 @@ namespace Game {
             Console.WriteLine($"{requestString} {GetTimeLeftString(Rules.MaxSeconds - startSeconds)}");
             var inputInfo = ReadLineValidated(Rules.IsInputTextValid);
             double accumulated = inputInfo.Seconds + startSeconds;
-            if (!inputInfo.Valid) {
+            if (!inputInfo.IsValid) {
                 return GetInputInfo(playerIndex, inputInfo.Seconds + startSeconds, GetInputRetryString());
             } else {
-                return new InputInfo(inputInfo.Text, inputInfo.Seconds + startSeconds, inputInfo.Valid);
+                return new InputInfo(inputInfo.Text, inputInfo.Seconds + startSeconds, inputInfo.IsValid);
             }
         }
         // Reads user input, just like Console.ReadLine().

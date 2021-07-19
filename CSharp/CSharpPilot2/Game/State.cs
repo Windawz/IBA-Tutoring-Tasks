@@ -10,7 +10,7 @@ namespace Game {
 
         public ImmutableList<Step> History { get; }
         public Step? Last => History.LastOrDefault();
-        public bool Over => Last?.Player.Defeated ?? false;
+        public bool IsOver => Last?.Player.IsDefeated ?? false;
 
         public State AddStep(Step step) =>
             new State(History.Add(step));
