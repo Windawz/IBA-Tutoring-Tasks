@@ -28,6 +28,6 @@ namespace Game {
 
         // Checks if the input is competent (won't lose) compared to the previous input in terms of time taken.
         public static bool IsInputCompetentTime(InputInfo inputInfo) =>
-            inputInfo.Time <= MaxSeconds;
+            inputInfo.Seconds <= MaxSeconds;
     }
 }

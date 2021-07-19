@@ -41,14 +41,14 @@ namespace Game {
         // Each attempt the time spent on input will carry over until the input passes.
         // 'startTime': how much time has been already taken by the player to enter input.
         // 'requestString': message to display to the player before requesting input.
-        static InputInfo GetInputInfo(int playerIndex, double startTime, string requestString) {
-            Console.WriteLine($"{requestString} {GetTimeLeftString(Rules.MaxSeconds - startTime)}");
+        static InputInfo GetInputInfo(int playerIndex, double startSeconds, string requestString) {
+            Console.WriteLine($"{requestString} {GetTimeLeftString(Rules.MaxSeconds - startSeconds)}");
             var inputInfo = ReadLineValidated(Rules.IsInputTextValid);
-            double accumulatedTime = inputInfo.Time + startTime;
+            double accumulated = inputInfo.Seconds + startSeconds;
             if (!inputInfo.Valid) {
-                return GetInputInfo(playerIndex, inputInfo.Time + startTime, GetInputRetryString());
+                return GetInputInfo(playerIndex, inputInfo.Seconds + startSeconds, GetInputRetryString());
             } else {
-                return new InputInfo(inputInfo.Text, inputInfo.Time + startTime, inputInfo.Valid);
+                return new InputInfo(inputInfo.Text, inputInfo.Seconds + startSeconds, inputInfo.Valid);
             }
         }
         // Reads user input, just like Console.ReadLine().
@@ -79,9 +79,9 @@ namespace Game {
 
             return $"{nl}Игрок {state.Last!.Player.Index + 1} проиграл!{nl}{nl}" +
             $"Пред. слово: \"{prevStep?.InputInfo.Text ?? ""}\"{nl}" +
-            $"Пред. время: {prevStep?.InputInfo.Time.ToString("F") ?? ""}с{nl}" +
+            $"Пред. время: {prevStep?.InputInfo.Seconds.ToString("F") ?? ""}с{nl}" +
             $"Слово: \"{lastStep?.InputInfo.Text ?? ""}\"{nl}" +
-            $"Время: {lastStep?.InputInfo.Time.ToString("F") ?? ""}с";
+            $"Время: {lastStep?.InputInfo.Seconds.ToString("F") ?? ""}с";
         }
         static string GetIntroductionString() {
             string nl = Environment.NewLine;

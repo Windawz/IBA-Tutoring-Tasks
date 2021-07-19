@@ -1,11 +1,10 @@
 ﻿namespace Game {
     class InputInfo {
-        public InputInfo(string text, double time, bool valid) =>
-            (Text, Time, Valid) = (text, time, valid);
+        public InputInfo(string text, double seconds, bool valid) =>
+            (Text, Seconds, Valid) = (text, seconds, valid);
 
         public string Text { get; }
-        // In seconds.
-        public double Time { get; }
+        public double Seconds { get; }
         public bool Valid { get; }
     }
 }
