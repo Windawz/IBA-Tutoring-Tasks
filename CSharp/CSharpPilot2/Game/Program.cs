@@ -18,7 +18,7 @@ namespace Game {
                 Console.WriteLine(GetDefeatedString(state));
 
                 return state;
-            } else if (state.Last is null) {
+            } else if (state.LastStep is null) {
                 var player = new Player(0, false);
                 var inputInfo = GetInputInfo(player.Index, 0.0, GetInputRequestString(player.Index));
                 var step = new Step(player, inputInfo);
@@ -26,10 +26,10 @@ namespace Game {
 
                 return Play(newState);
             } else {
-                int playerIndex = Rules.NextPlayerIndex(state.Last.Player.Index);
+                int playerIndex = Rules.NextPlayerIndex(state.LastStep.Player.Index);
                 var inputInfo = GetInputInfo(playerIndex, 0.0, GetInputRequestString(playerIndex));
                 bool isDefeated =
-                    !Rules.IsInputCompetentText(inputInfo, state.Last.InputInfo) ||
+                    !Rules.IsInputCompetentText(inputInfo, state.LastStep.InputInfo) ||
                     !Rules.IsInputCompetentTime(inputInfo);
                 var player = new Player(playerIndex, isDefeated);
                 var step = new Step(player, inputInfo);
@@ -79,10 +79,10 @@ namespace Game {
             timeLeft <= 0.0 ? $"(время вышло)" : $"(осталось {timeLeft:F}с)";
         static string GetDefeatedString(State state) {
             string nl = Environment.NewLine;
-            Step? lastStep = state.Last;
+            Step? lastStep = state.LastStep;
             Step? prevStep = state.History.SkipLast(1).LastOrDefault();
 
-            return $"{nl}Игрок {state.Last!.Player.Index + 1} проиграл!{nl}{nl}" +
+            return $"{nl}Игрок {state.LastStep!.Player.Index + 1} проиграл!{nl}{nl}" +
             $"Пред. слово: \"{prevStep?.InputInfo.Text ?? ""}\"{nl}" +
             $"Пред. время: {prevStep?.InputInfo.Seconds.ToString("F") ?? ""}с{nl}" +
             $"Слово: \"{lastStep?.InputInfo.Text ?? ""}\"{nl}" +
