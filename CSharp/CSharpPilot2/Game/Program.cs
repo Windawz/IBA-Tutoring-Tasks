@@ -24,7 +24,7 @@ namespace Game {
                 var newState = state.AddStep(newStep);
                 return Play(newState);
             } else {
-                int newPlayerIndex = Rules.NextPlayer(state.Last.Player.Index);
+                int newPlayerIndex = Rules.NextPlayerIndex(state.Last.Player.Index);
                 var inputInfo = GetInputInfo(newPlayerIndex, 0.0, GetInputRequestString(newPlayerIndex));
                 bool defeated =
                     !Rules.IsInputCompetentText(inputInfo, state.Last.InputInfo) ||

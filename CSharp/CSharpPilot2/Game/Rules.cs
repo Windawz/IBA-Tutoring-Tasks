@@ -10,7 +10,7 @@ namespace Game {
         public const int MinTextLength = 8;
         public const int MaxTextLength = 30;
 
-        public static int NextPlayer(int index) => (index + 1) % MaxPlayers;
+        public static int NextPlayerIndex(int index) => (index + 1) % MaxPlayers;
         public static bool IsInputTextValid(string text) =>
             !string.IsNullOrWhiteSpace(text) && !text.Contains(' ') && text.Length >= MinTextLength && text.Length <= MaxTextLength;
 
