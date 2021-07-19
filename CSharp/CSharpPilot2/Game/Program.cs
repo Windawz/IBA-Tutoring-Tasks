@@ -47,7 +47,7 @@ namespace Game {
         static InputInfo GetInputInfo(int playerIndex, double startSeconds, string requestString) {
             Console.WriteLine($"{requestString} {GetTimeLeftString(Rules.MaxSeconds - startSeconds)}");
 
-            var inputInfo = ReadLineValidated(Rules.IsInputTextValid);
+            var inputInfo = Dialogue.ReadLineValidated(Rules.IsInputTextValid);
             double accumulated = inputInfo.Seconds + startSeconds;
 
             if (!inputInfo.IsValid) {
@@ -55,21 +55,6 @@ namespace Game {
             } else {
                 return inputInfo with { Seconds = accumulated };
             }
-        }
-        // Reads user input, just like Console.ReadLine().
-        // The input is validated using the passed function.
-        // The validation result will be returned along with the rest of the input.
-        static InputInfo ReadLineValidated(Func<string, bool> textValidator) {
-            double time = 0.0;
-
-            var timer = new Timer(100);
-            timer.Elapsed += (sender, e) => time += 0.1;
-
-            timer.Start();
-            string text = Console.ReadLine() ?? "";
-            timer.Stop();
-
-            return new InputInfo(text, time, textValidator(text));
         }
         static string GetInputRequestString(int playerIndex) =>
             $"Игрок {playerIndex + 1}, введите слово:";
