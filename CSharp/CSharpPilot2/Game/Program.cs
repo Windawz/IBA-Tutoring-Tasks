@@ -16,22 +16,25 @@ namespace Game {
         static State Play(State state) {
             if (state.IsOver) {
                 Console.WriteLine(GetDefeatedString(state));
+
                 return state;
             } else if (state.Last is null) {
-                var newPlayer = new Player(0, false);
-                var inputInfo = GetInputInfo(newPlayer.Index, 0.0, GetInputRequestString(newPlayer.Index));
-                var newStep = new Step(newPlayer, inputInfo);
-                var newState = state.AddStep(newStep);
+                var player = new Player(0, false);
+                var inputInfo = GetInputInfo(player.Index, 0.0, GetInputRequestString(player.Index));
+                var step = new Step(player, inputInfo);
+                var newState = state.AddStep(step);
+
                 return Play(newState);
             } else {
-                int newPlayerIndex = Rules.NextPlayerIndex(state.Last.Player.Index);
-                var inputInfo = GetInputInfo(newPlayerIndex, 0.0, GetInputRequestString(newPlayerIndex));
+                int playerIndex = Rules.NextPlayerIndex(state.Last.Player.Index);
+                var inputInfo = GetInputInfo(playerIndex, 0.0, GetInputRequestString(playerIndex));
                 bool isDefeated =
                     !Rules.IsInputCompetentText(inputInfo, state.Last.InputInfo) ||
                     !Rules.IsInputCompetentTime(inputInfo);
-                var newPlayer = new Player(newPlayerIndex, isDefeated);
-                var newStep = new Step(newPlayer, inputInfo);
-                var newState = state.AddStep(newStep);
+                var player = new Player(playerIndex, isDefeated);
+                var step = new Step(player, inputInfo);
+                var newState = state.AddStep(step);
+
                 return Play(newState);
             }
         }
@@ -43,12 +46,14 @@ namespace Game {
         // 'requestString': message to display to the player before requesting input.
         static InputInfo GetInputInfo(int playerIndex, double startSeconds, string requestString) {
             Console.WriteLine($"{requestString} {GetTimeLeftString(Rules.MaxSeconds - startSeconds)}");
+
             var inputInfo = ReadLineValidated(Rules.IsInputTextValid);
             double accumulated = inputInfo.Seconds + startSeconds;
+
             if (!inputInfo.IsValid) {
-                return GetInputInfo(playerIndex, inputInfo.Seconds + startSeconds, GetInputRetryString());
+                return GetInputInfo(playerIndex, accumulated, GetInputRetryString());
             } else {
-                return new InputInfo(inputInfo.Text, inputInfo.Seconds + startSeconds, inputInfo.IsValid);
+                return inputInfo with { Seconds = accumulated };
             }
         }
         // Reads user input, just like Console.ReadLine().
