@@ -1,3 +1,3 @@
 ﻿namespace CSharpPilot2.Game {
-    record Player(int Index, bool IsDefeated);
+    record Player(int Index, string Name);
 }
