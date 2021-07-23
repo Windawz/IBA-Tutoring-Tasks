@@ -1,7 +1,9 @@
 ﻿using System;
 using System.Linq;
 
-namespace Game {
+using Game.Input;
+
+namespace Game.Game {
     static class Rules {
         // Amount of players involved.
         public const int MaxPlayers = 2;

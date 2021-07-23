@@ -1,7 +1,7 @@
 ﻿using System.Linq;
 using System.Collections.Generic;
 
-namespace Game {
+namespace Game.Game {
     class State {
         public State() { }
 
