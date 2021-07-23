@@ -1,0 +1,37 @@
+﻿namespace Game {
+    partial class Program {
+        static void Main(string[] args) {
+            Console.WriteLine(GetIntroductionString());
+            Console.ReadKey(intercept: true);
+        }
+
+        // Main game logic.
+        // Recursive.
+        // Returns the final state of the game once it has played out to the end.
+        static State Play(State state) {
+            if (state.IsOver) {
+                Console.WriteLine(GetDefeatedString(state));
+
+                return state;
+            } else if (state.LastStep is null) {
+                var player = new Player(0, false);
+                var inputInfo = GetInputInfo(player.Index, 0.0, GetInputRequestString(player.Index));
+                var step = new Step(player, inputInfo);
+                var newState = state.AddStep(step);
+
+                return Play(newState);
+            } else {
+                int playerIndex = Rules.NextPlayerIndex(state.LastStep.Player.Index);
+                var inputInfo = GetInputInfo(playerIndex, 0.0, GetInputRequestString(playerIndex));
+                bool isDefeated =
+                    !Rules.IsInputCompetentText(inputInfo, state.LastStep.InputInfo) ||
+                    !Rules.IsInputCompetentTime(inputInfo);
+                var player = new Player(playerIndex, isDefeated);
+                var step = new Step(player, inputInfo);
+                var newState = state.AddStep(step);
+
+                return Play(newState);
+            }
+        }
+    }
+}
