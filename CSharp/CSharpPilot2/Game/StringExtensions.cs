@@ -1,7 +1,7 @@
 ﻿using System.Linq;
 using System.Collections.Generic;
 
-namespace Game {
+namespace CSharpPilot2 {
     // Convenience extension methods for implementing word comparison logic.
     static class StringExtensions {
         public static int CharacterCount(this string str, char c) =>
