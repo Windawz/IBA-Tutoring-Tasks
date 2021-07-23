@@ -4,6 +4,8 @@
     <OutputType>Exe</OutputType>
     <TargetFramework>net5.0</TargetFramework>
     <Nullable>enable</Nullable>
+    <AssemblyName>CSharpPilot2</AssemblyName>
+    <RootNamespace>CSharpPilot2</RootNamespace>
   </PropertyGroup>
 
 </Project>

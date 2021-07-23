@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Game.Input {
+namespace CSharpPilot2.Input {
     class TimedInputRequest : ValidatedInputRequest {
         public TimedInputRequest(InputSource source, InputValidator validator) : base(source, validator) =>
             InputInfoReceived += (sender, e) => SecondsPassed += e.Seconds;

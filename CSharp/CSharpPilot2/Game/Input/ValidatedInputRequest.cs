@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Game.Input {
+namespace CSharpPilot2.Input {
     class ValidatedInputRequest : InputRequest {
         public ValidatedInputRequest(InputSource source, InputValidator validator) : base(source) =>
             Validator = validator;

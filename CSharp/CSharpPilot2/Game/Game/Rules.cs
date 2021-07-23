@@ -1,9 +1,9 @@
 ﻿using System;
 using System.Linq;
 
-using Game.Input;
+using CSharpPilot2.Input;
 
-namespace Game.Game {
+namespace CSharpPilot2.Game {
     static class Rules {
         // Amount of players involved.
         public const int MaxPlayers = 2;

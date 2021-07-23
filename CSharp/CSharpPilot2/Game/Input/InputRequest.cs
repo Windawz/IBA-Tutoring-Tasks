@@ -34,7 +34,7 @@ using System.Timers;
  *     This will allow to respond, for example, to commands starting with '/'.
  */
 
-namespace Game.Input {
+namespace CSharpPilot2.Input {
     /// <summary>
     /// Represents an input request from the specified source. The input info will
     /// belong to the specified player.

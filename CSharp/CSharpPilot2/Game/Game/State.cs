@@ -1,7 +1,7 @@
 ﻿using System.Linq;
 using System.Collections.Generic;
 
-namespace Game.Game {
+namespace CSharpPilot2.Game {
     class State {
         public State() { }
 

@@ -1,3 +1,3 @@
-﻿namespace Game.Input {
+﻿namespace CSharpPilot2.Input {
     record InputInfo(string Text, double Seconds);
 }

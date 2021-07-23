@@ -4,6 +4,6 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Game.Input {
+namespace CSharpPilot2.Input {
     delegate InputInfo InputSource();
 }
