@@ -7,18 +7,18 @@ namespace CSharpPilot2.Gameplay
 {
     internal class Rules
     {
-        public Rules(RulesProperties properties, WordValidator wordValidator, InputValidator inputValidator, InputExceptor inputExceptor)
+        public Rules(RulesProperties properties, WordValidator wordValidator, InputValidator inputValidator, InputForgiver inputForgiver)
         {
             Properties      = properties;
             WordValidator   = wordValidator;
             InputValidator  = inputValidator;
-            InputExceptor   = inputExceptor;
+            InputForgiver   = inputForgiver;
         }
 
         public RulesProperties  Properties { get; }
         public WordValidator    WordValidator { get; }
         public InputValidator   InputValidator { get; }
-        public InputExceptor    InputExceptor { get; }
+        public InputForgiver    InputForgiver { get; }
 
         public static WordValidator GetDefaultWordValidator(RulesProperties properties) =>
             (cur, prev) =>

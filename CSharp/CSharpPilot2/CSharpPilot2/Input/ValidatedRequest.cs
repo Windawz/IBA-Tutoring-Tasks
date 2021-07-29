@@ -4,11 +4,11 @@ namespace CSharpPilot2.Input
 {
     internal class ValidatedRequest : Request
     {
-        public ValidatedRequest(InputValidator validator, InputExceptor exceptor) : base() =>
-            (Validator, Exceptor) = (validator, exceptor);
+        public ValidatedRequest(InputValidator validator, InputForgiver forgiver) : base() =>
+            (Validator, Forgiver) = (validator, forgiver);
 
         protected InputValidator Validator { get; }
-        protected InputExceptor Exceptor { get; }
+        protected InputForgiver Forgiver { get; }
 
         public event EventHandler<InputInfo>? InputInfoValid;
         public event EventHandler<InputInfo>? InputInfoInvalid;
@@ -23,7 +23,7 @@ namespace CSharpPilot2.Input
             {
                 InputInfo? inputInfo = base.PerformImpl(source);
                 bool isValid = Validator(inputInfo);
-                bool isExcepted = Exceptor(inputInfo);
+                bool isForgiven = Forgiver(inputInfo);
 
                 if (isValid)
                 {
@@ -32,7 +32,7 @@ namespace CSharpPilot2.Input
                 }
                 else
                 {
-                    if (!isExcepted)
+                    if (!isForgiven)
                     {
                         OnInputInfoInvalid(inputInfo);
                     }

@@ -6,5 +6,5 @@ using System.Threading.Tasks;
 
 namespace CSharpPilot2.Input
 {
-    internal delegate bool InputExceptor(InputInfo inputInfo);
+    internal delegate bool InputForgiver(InputInfo inputInfo);
 }

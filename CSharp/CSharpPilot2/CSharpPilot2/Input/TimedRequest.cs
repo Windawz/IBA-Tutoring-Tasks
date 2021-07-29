@@ -2,7 +2,7 @@
 {
     internal class TimedRequest : ValidatedRequest
     {
-        public TimedRequest(InputValidator validator, InputExceptor exceptor) : base(validator, exceptor) =>
+        public TimedRequest(InputValidator validator, InputForgiver forgiver) : base(validator, forgiver) =>
             RequestEnded += (sender, e) => SecondsPassed += e.Seconds;
 
         public double SecondsPassed { get; private set; } = 0.0;
