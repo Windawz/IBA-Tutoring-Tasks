@@ -1,0 +1,16 @@
+﻿A better way to implement the input pipeline would be the following:
+
+The InputInfo type. Holds all necessary information about input.
+
+
+
+The Source type. Represents a source of input from which the
+information required by InputInfo can be obtained.
+
+The Request type. It takes a Source and provides a means
+of requesting input from it.
+It will have several derived types that customize the
+way the input is requested.
+
+The Requester type. It takes a Source and a Request.
+The point is, to get input, the game code refers only to it.

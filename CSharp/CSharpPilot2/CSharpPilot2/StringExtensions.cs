@@ -1,9 +1,11 @@
-﻿using System.Linq;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
+using System.Linq;
 
-namespace CSharpPilot2 {
+namespace CSharpPilot2
+{
     // Convenience extension methods for implementing word comparison logic.
-    static class StringExtensions {
+    internal static class StringExtensions
+    {
         public static int CharacterCount(this string str, char c) =>
             str.Where(x => x == c).Count();
 
