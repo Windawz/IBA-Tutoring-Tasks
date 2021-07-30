@@ -44,10 +44,11 @@ namespace CSharpPilot2.Gameplay
 
             while (isPlaying)
             {
+                Word? prevWord = _state.Steps.LastOrDefault()?.Word;
+
                 Word word = RequestWord(currentPlayer);
                 _state.Steps.Add(new Step(currentPlayer, word));
 
-                Word? prevWord = _state.Steps.LastOrDefault()?.Word;
                 if (prevWord is not null && !_rules.WordValidator(word, prevWord))
                 {
                     loser = currentPlayer;

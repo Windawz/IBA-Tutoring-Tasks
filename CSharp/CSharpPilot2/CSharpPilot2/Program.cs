@@ -15,6 +15,14 @@ namespace CSharpPilot2
                 rules:          GetRules(),
                 locale:         new RussianLocale()
             );
+
+            game.Start();
+
+            Console.WriteLine();
+            foreach (Step step in game.Steps)
+            {
+                Console.WriteLine("{0}", step);
+            }
         }
 
         private static InputInfo ReadInputInfo()
@@ -38,7 +46,7 @@ namespace CSharpPilot2
 
             return new Rules(
                 properties,
-                Rules.GetDefaultWordValidator(properties), 
+                Rules.GetDefaultWordValidator(properties),
                 Rules.GetDefaultInputValidator(properties),
                 inputInfo => Command.IsValidCommandName(inputInfo.Text)
             );
