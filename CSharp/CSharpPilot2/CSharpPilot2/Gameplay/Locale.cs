@@ -9,8 +9,10 @@ namespace CSharpPilot2.Gameplay
         public abstract string GetInvalidWordString(Word word);
         public abstract string GetInvalidInputString(InputInfo inputInfo, Player player);
         public abstract string GetTimeLeftSuffixString(double timeLeft);
+        public abstract string GetGameOverLoserString(string loserName);
         public abstract string GetGameOverPreviousWordString(Word prevWord);
         public abstract string GetGameOverCurrentWordString(Word currentWord);
+        public abstract string GetGameOverPressAnyKeyString();
 
         protected abstract string FormatTime(double seconds);
     }

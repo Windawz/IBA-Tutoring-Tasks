@@ -15,10 +15,14 @@ namespace CSharpPilot2.Gameplay
             $"Неверный ввод, попробуйте ещё раз:";
         public override string GetTimeLeftSuffixString(double timeLeft) =>
             $"(осталось {FormatTime(timeLeft)})";
+        public override string GetGameOverLoserString(string loserName) =>
+            $"Игрок \"{loserName}\" проиграл!";
         public override string GetGameOverPreviousWordString(Word word) =>
             $"Предыдущее слово: \"{word.Text}\" ({FormatTime(word.Seconds)})";
         public override string GetGameOverCurrentWordString(Word word) =>
             $"Текущее слово: \"{word.Text}\" ({FormatTime(word.Seconds)})";
+        public override string GetGameOverPressAnyKeyString() =>
+            $"Нажмите любую клавишу...";
 
         protected override string FormatTime(double seconds) =>
             $"{seconds:F}с";
