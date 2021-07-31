@@ -1,5 +1,7 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
+using System.Text;
 
 using CSharpPilot2.Input;
 
@@ -56,6 +58,10 @@ namespace CSharpPilot2.Gameplay
                 }
                 currentPlayer = GetNextPlayer(currentPlayer);
             }
+
+            Console.WriteLine(GetEndGameStatsString());
+            Console.WriteLine(_locale.GetGameOverPressAnyKeyString());
+            Console.ReadKey(intercept: true);
         }
 
         private void CreatePlayers()
@@ -77,5 +83,20 @@ namespace CSharpPilot2.Gameplay
         }
         private Player GetNextPlayer(Player current) => 
             _players[(current.Index + 1) % _players.Length];
+        private string GetEndGameStatsString()
+        {
+            var twoLastSteps = _state.Steps.TakeLast(2);
+            Step curStep = twoLastSteps.Last();
+            Step prevStep = twoLastSteps.SkipLast(1).Last();
+
+            StringBuilder sb = new();
+            sb.AppendLine()
+                .AppendLine($"{_locale.GetGameOverLoserString(curStep.Player.Name)}")
+                .AppendLine()
+                .AppendLine($"{_locale.GetGameOverPreviousWordString(prevStep.Word.Text, prevStep.Word.Seconds)}")
+                .AppendLine($"{_locale.GetGameOverCurrentWordString(curStep.Word.Text, prevStep.Word.Seconds)}");
+
+            return sb.ToString();
+        }
     }
 }

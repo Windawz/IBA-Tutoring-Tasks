@@ -17,12 +17,6 @@ namespace CSharpPilot2
             );
 
             game.Start();
-
-            Console.WriteLine();
-            foreach (Step step in game.Steps)
-            {
-                Console.WriteLine("{0}", step);
-            }
         }
 
         private static InputInfo ReadInputInfo()
