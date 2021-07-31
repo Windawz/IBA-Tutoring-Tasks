@@ -50,7 +50,9 @@ namespace CSharpPilot2.Gameplay
             {
                 Word? prevWord = _state.Steps.LastOrDefault()?.Word;
 
-                Word word = RequestWord(currentPlayer);
+                Word word = prevWord is null ?
+                    RequestWordUntimed(currentPlayer) : RequestWordTimed(currentPlayer);
+
                 _state.Steps.Add(new Step(currentPlayer, word));
 
                 if (prevWord is not null && !_rules.WordValidator(word, prevWord))
@@ -64,7 +66,6 @@ namespace CSharpPilot2.Gameplay
             Console.WriteLine(GetEndGameStatsString());
             RequestAnyKey();
         }
-
         private void CreatePlayers()
         {
             for (int i = 0; i < _rules.Properties.PlayerCount; i++) {
@@ -76,9 +77,15 @@ namespace CSharpPilot2.Gameplay
                 _players[i] = new Player(Index: i, Name: name);
             }
         }
-        private Word RequestWord(Player requestingPlayer)
+        private Word RequestWordTimed(Player requestingPlayer)
         {
-            Request request = _requestProvider.GetWordRequest(requestingPlayer);
+            Request request = _requestProvider.GetWordRequestTimed(requestingPlayer);
+            InputInfo inputInfo = request.Perform(_inputSource);
+            return new Word(inputInfo.Text, inputInfo.Seconds);
+        }
+        private Word RequestWordUntimed(Player requestingPlayer)
+        {
+            Request request = _requestProvider.GetWordRequestUntimed(requestingPlayer);
             InputInfo inputInfo = request.Perform(_inputSource);
             return new Word(inputInfo.Text, inputInfo.Seconds);
         }
