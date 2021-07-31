@@ -51,7 +51,7 @@ namespace CSharpPilot2.Gameplay
                 Word? prevWord = _state.Steps.LastOrDefault()?.Word;
 
                 Word word = prevWord is null ?
-                    RequestWordUntimed(currentPlayer) : RequestWordTimed(currentPlayer);
+                    RequestWord(currentPlayer) : RequestWordTimed(currentPlayer);
 
                 _state.Steps.Add(new Step(currentPlayer, word));
 
@@ -79,13 +79,13 @@ namespace CSharpPilot2.Gameplay
         }
         private Word RequestWordTimed(Player requestingPlayer)
         {
-            Request request = _requestProvider.GetWordRequestTimed(requestingPlayer);
+            TimedRequest request = _requestProvider.GetWordRequestTimed(requestingPlayer);
             InputInfo inputInfo = request.Perform(_inputSource);
             return new Word(inputInfo.Text, inputInfo.Seconds);
         }
-        private Word RequestWordUntimed(Player requestingPlayer)
+        private Word RequestWord(Player requestingPlayer)
         {
-            Request request = _requestProvider.GetWordRequestUntimed(requestingPlayer);
+            ValidatedRequest request = _requestProvider.GetWordRequest(requestingPlayer);
             InputInfo inputInfo = request.Perform(_inputSource);
             return new Word(inputInfo.Text, inputInfo.Seconds);
         }

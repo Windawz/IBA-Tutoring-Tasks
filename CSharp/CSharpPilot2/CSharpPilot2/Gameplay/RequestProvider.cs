@@ -12,7 +12,7 @@ namespace CSharpPilot2.Gameplay
         protected Rules Rules { get; }
         protected Locale Locale { get; }
 
-        public Request GetWordRequestTimed(Player player)
+        public TimedRequest GetWordRequestTimed(Player player)
         {
             var request = new TimedRequest(Rules.InputValidator, Rules.InputForgiver);
 
@@ -33,7 +33,7 @@ namespace CSharpPilot2.Gameplay
 
             return request;
         }
-        public Request GetWordRequestUntimed(Player player)
+        public ValidatedRequest GetWordRequest(Player player)
         {
             var request = new ValidatedRequest(Rules.InputValidator, Rules.InputForgiver);
 
