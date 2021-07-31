@@ -22,7 +22,7 @@ namespace CSharpPilot2.Gameplay
         public override string GetGameOverCurrentWordString(string word, double seconds) =>
             $"Текущее слово: \"{word}\" ({FormatTime(seconds)})";
         public override string GetPressAnyKeyToContinueString() =>
-            $"Нажмите любую клавишу...";
+            $"Нажмите любую клавишу, чтобы продолжить...";
         public override string GetIntroTitleString() =>
             $"Добро пожаловть в \"Игру в \'Слова\"!";
         public override string GetIntroRulesTitleString() =>
