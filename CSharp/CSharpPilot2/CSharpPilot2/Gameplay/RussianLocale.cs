@@ -21,8 +21,24 @@ namespace CSharpPilot2.Gameplay
             $"Предыдущее слово: \"{word}\" ({FormatTime(seconds)})";
         public override string GetGameOverCurrentWordString(string word, double seconds) =>
             $"Текущее слово: \"{word}\" ({FormatTime(seconds)})";
-        public override string GetGameOverPressAnyKeyString() =>
+        public override string GetPressAnyKeyToContinueString() =>
             $"Нажмите любую клавишу...";
+        public override string GetIntroTitleString() =>
+            $"Добро пожаловть в \"Игру в \'Слова\"!";
+        public override string GetIntroRulesTitleString() =>
+            $"Правила таковы:";
+        public override string GetIntroRuleFirstString(int playerCount) =>
+            $"{playerCount} игрока(ов) поочерёдно вводят слова, состоящие из букв предыдущего.";
+        public override string GetIntroRuleSecondString() =>
+            $"Введённое слово должно отличаться от первоначального.";
+        public override string GetIntroRuleThirdString() =>
+            $"Первый игрок получает карт-бланш.";
+        public override string GetIntroRuleFourthString(int minWordTextLength, int maxWordTextLength) =>
+            $"Если слово длиной меньше {minWordTextLength} или больше {maxWordTextLength} символов, придётся повторить ввод.";
+        public override string GetIntroRuleFifthString(double maxSeconds) =>
+            $"На ввод даётся {FormatTime(maxSeconds)}.";
+        public override string GetIntroRuleSixthString() =>
+            $"При неправильном вводе время не восстанавливается, а идёт дальше.";
 
         protected override string FormatTime(double seconds) =>
             $"{seconds:F}с";

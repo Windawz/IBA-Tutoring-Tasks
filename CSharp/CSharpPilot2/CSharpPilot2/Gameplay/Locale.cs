@@ -12,7 +12,15 @@ namespace CSharpPilot2.Gameplay
         public abstract string GetGameOverLoserString(string loserName);
         public abstract string GetGameOverPreviousWordString(string word, double seconds);
         public abstract string GetGameOverCurrentWordString(string word, double seconds);
-        public abstract string GetGameOverPressAnyKeyString();
+        public abstract string GetPressAnyKeyToContinueString();
+        public abstract string GetIntroTitleString();
+        public abstract string GetIntroRulesTitleString();
+        public abstract string GetIntroRuleFirstString(int playerCount);
+        public abstract string GetIntroRuleSecondString();
+        public abstract string GetIntroRuleThirdString();
+        public abstract string GetIntroRuleFourthString(int minWordTextLength, int maxWordTextLength);
+        public abstract string GetIntroRuleFifthString(double maxSeconds);
+        public abstract string GetIntroRuleSixthString();
 
         protected abstract string FormatTime(double seconds);
     }
