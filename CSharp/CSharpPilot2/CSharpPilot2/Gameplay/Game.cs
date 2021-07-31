@@ -36,6 +36,8 @@ namespace CSharpPilot2.Gameplay
 
         private void Initialize()
         {
+            Console.WriteLine(GetIntroString());
+            RequestAnyKey();
             CreatePlayers();
         }
         private void Play()
@@ -60,8 +62,7 @@ namespace CSharpPilot2.Gameplay
             }
 
             Console.WriteLine(GetEndGameStatsString());
-            Console.WriteLine(_locale.GetPressAnyKeyToContinueString());
-            Console.ReadKey(intercept: true);
+            RequestAnyKey();
         }
 
         private void CreatePlayers()
@@ -81,6 +82,11 @@ namespace CSharpPilot2.Gameplay
             InputInfo inputInfo = request.Perform(_inputSource);
             return new Word(inputInfo.Text, inputInfo.Seconds);
         }
+        private void RequestAnyKey()
+        {
+            Console.WriteLine(_locale.GetPressAnyKeyToContinueString());
+            Console.ReadKey(intercept: true);
+        }
         private Player GetNextPlayer(Player current) => 
             _players[(current.Index + 1) % _players.Length];
         private string GetEndGameStatsString()
@@ -95,6 +101,31 @@ namespace CSharpPilot2.Gameplay
                 .AppendLine()
                 .AppendLine($"{_locale.GetGameOverPreviousWordString(prevStep.Word.Text, prevStep.Word.Seconds)}")
                 .AppendLine($"{_locale.GetGameOverCurrentWordString(curStep.Word.Text, prevStep.Word.Seconds)}");
+
+            return sb.ToString();
+        }
+        private string GetIntroString()
+        {
+            string bullet = "- ";
+            var ruleStrings = new string[6]
+            {
+                _locale.GetIntroRuleFirstString(_rules.Properties.PlayerCount),
+                _locale.GetIntroRuleSecondString(),
+                _locale.GetIntroRuleThirdString(),
+                _locale.GetIntroRuleFourthString(_rules.Properties.MinWordTextLength, _rules.Properties.MaxWordTextLength),
+                _locale.GetIntroRuleFifthString(_rules.Properties.MaxWordSeconds),
+                _locale.GetIntroRuleSixthString()
+            };
+
+            StringBuilder sb = new();
+            sb.Append(_locale.GetIntroTitleString())
+                .Append(' ')
+                .AppendLine(_locale.GetIntroRulesTitleString());
+
+            foreach (var str in ruleStrings)
+            {
+                sb.Append(bullet).AppendLine(str);
+            }
 
             return sb.ToString();
         }
