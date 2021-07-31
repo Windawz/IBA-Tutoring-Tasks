@@ -60,7 +60,7 @@ namespace CSharpPilot2.Gameplay
             }
 
             Console.WriteLine(GetEndGameStatsString());
-            Console.WriteLine(_locale.GetGameOverPressAnyKeyString());
+            Console.WriteLine(_locale.GetPressAnyKeyToContinueString());
             Console.ReadKey(intercept: true);
         }
 
