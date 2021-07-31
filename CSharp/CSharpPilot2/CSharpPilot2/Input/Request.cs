@@ -12,7 +12,7 @@ namespace CSharpPilot2.Input
 
         public event EventHandler?              RequestStarted;
         public event EventHandler<InputInfo>?   RequestEnded;
-        public event EventHandler<InputInfo>?   InputReceived;
+        public event EventHandler<InputInfo>?   InputInfoReceived;
 
         public InputInfo Perform(InputSource source)
         {
@@ -22,7 +22,7 @@ namespace CSharpPilot2.Input
             InputInfo? inputInfo = PerformImpl(source: () =>
             {
                 InputInfo? inputInfo = source();
-                OnInputReceived(inputInfo);
+                OnInputInfoReceived(inputInfo);
                 return inputInfo;
             });
 
@@ -38,7 +38,7 @@ namespace CSharpPilot2.Input
             RequestStarted?.Invoke(this, EventArgs.Empty);
         protected virtual void OnRequestEnded(InputInfo inputInfo) =>
             RequestEnded?.Invoke(this, inputInfo);
-        protected virtual void OnInputReceived(InputInfo inputInfo) =>
-            InputReceived?.Invoke(this, inputInfo);
+        protected virtual void OnInputInfoReceived(InputInfo inputInfo) =>
+            InputInfoReceived?.Invoke(this, inputInfo);
     }
 }
