@@ -21,13 +21,13 @@ namespace CSharpPilot2.Gameplay
 
             request.RequestStarted += (sender, e) =>
             {
-                string msg = $"{Locale.GetWordRequestString(player.Name)} {Locale.GetTimeLeftSuffixString(GetTimeLeft(request))}";
+                string msg = $"{Locale.GetWordRequestString(player.Name)} ({Locale.GetTimeLeftSuffixString(GetTimeLeft(request))})";
                 Console.WriteLine(msg);
             };
 
             request.InputInfoInvalid += (sender, e) =>
             {
-                string msg = $"{Locale.GetInvalidInputString()} {Locale.GetTimeLeftSuffixString(GetTimeLeft(request))}";
+                string msg = $"{Locale.GetInvalidInputString()} ({Locale.GetTimeLeftSuffixString(GetTimeLeft(request))})";
                 Console.WriteLine(msg);
             };
 

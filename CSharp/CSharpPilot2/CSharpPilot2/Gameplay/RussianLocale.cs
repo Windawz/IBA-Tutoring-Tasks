@@ -14,7 +14,7 @@ namespace CSharpPilot2.Gameplay
         public override string GetInvalidInputString() =>
             $"Неверный ввод, попробуйте ещё раз:";
         public override string GetTimeLeftSuffixString(double timeLeft) =>
-            $"(осталось {FormatTime(timeLeft)})";
+            $"Осталось {FormatTime(timeLeft)}";
         public override string GetGameOverLoserString(string loserName) =>
             $"Игрок \"{loserName}\" проиграл!";
         public override string GetGameOverPreviousWordString(string word, double seconds) =>
