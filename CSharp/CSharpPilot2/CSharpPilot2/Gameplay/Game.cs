@@ -93,8 +93,8 @@ namespace CSharpPilot2.Gameplay
             sb.AppendLine()
                 .AppendLine($"{_locale.GetGameOverLoserString(curStep.Player.Name)}")
                 .AppendLine()
-                .AppendLine($"{_locale.GetGameOverPreviousWordString(prevStep.Word)}")
-                .AppendLine($"{_locale.GetGameOverCurrentWordString(curStep.Word)}");
+                .AppendLine($"{_locale.GetGameOverPreviousWordString(prevStep.Word.Text, prevStep.Word.Seconds)}")
+                .AppendLine($"{_locale.GetGameOverCurrentWordString(curStep.Word.Text, prevStep.Word.Seconds)}");
 
             return sb.ToString();
         }
