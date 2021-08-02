@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace CSharpPilot2.Commands
 {
-    internal class Seeker
+    internal class Dispatcher
     {
     }
 }
