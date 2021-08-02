@@ -47,11 +47,13 @@ namespace CSharpPilot2.Commands
             {
                 if (token.StartsWith(Properties.ParameterPrefix))
                 {
+                    // Encountered new parameter; flush old args
                     if (args.Count > 0 && currentParam is not null)
                     {
                         parameters.Add(new ParsedParameter(currentParam, args.ToArray()));
                         args.Clear();
                     }
+
                     currentParam = token;
                 }
                 else
