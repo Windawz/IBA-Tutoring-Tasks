@@ -6,9 +6,5 @@ using System.Threading.Tasks;
 
 namespace CSharpPilot2.Commands
 {
-    internal record ParserProperties(
-        string CommandPrefix,
-        string ParameterPrefix,
-        string[] Delimiters
-    );
+    internal record CommandParseOptions(string Prefix, string[] ParameterDelimiters);
 }
