@@ -9,7 +9,7 @@ namespace CSharpPilot2.Commands
 {
     internal record ParameterTemplate(string Name, string[] Args)
     {
-        static ParameterTemplate[] ParseParameters(string parameters, ParameterParseOptions options)
+        public static ParameterTemplate[] ParseParameters(string parameters, ParameterParseOptions options)
         {
             string[] tokens = parameters.Split(
                 options.ArgDelimiters,
