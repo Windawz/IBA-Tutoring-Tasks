@@ -8,7 +8,17 @@ namespace CSharpPilot2.Commands
 {
     internal class Manager
     {
-        public static CommandTemplate ParseCommandTemplate(string command, ParseOptions options)
+        public Manager()
+        {
+
+        }
+
+        public ExecutionResult Execute(string command)
+        {
+            
+        }
+    
+        private static CommandTemplate ParseCommandTemplate(string command, ParseOptions options)
         {
             if (!command.StartsWith(options.CommandPrefix))
             {
