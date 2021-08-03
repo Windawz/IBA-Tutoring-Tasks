@@ -10,6 +10,7 @@ namespace CSharpPilot2.Commands
 {
     // I hate to couple it with the Gameplay classes but I don't want to take another long detour.
     internal record Context(
-        Locale Locale
+        Locale Locale,
+        State State
     );
 }
