@@ -6,5 +6,5 @@ using System.Threading.Tasks;
 
 namespace CSharpPilot2.Commands
 {
-    internal record CommandTemplate(string Name, ParsedParameter[] Parameters);
+    internal record CommandTemplate(string Name, ParameterTemplate[] Parameters);
 }

@@ -34,11 +34,11 @@ namespace CSharpPilot2.Commands
 
             if (tokens.Length == 1)
             {
-                return new CommandTemplate(Name: name, Parameters: new ParsedParameter[0]);
+                return new CommandTemplate(Name: name, Parameters: new ParameterTemplate[0]);
             }
 
             IEnumerable<string>     remaining       = tokens.Skip(1);
-            List<ParsedParameter>   parameters      = new();
+            List<ParameterTemplate>   parameters      = new();
 
             List<string>            args            = new();
             string?                 currentParam    = null;
@@ -50,7 +50,7 @@ namespace CSharpPilot2.Commands
                     // Encountered new parameter; flush old args
                     if (args.Count > 0 && currentParam is not null)
                     {
-                        parameters.Add(new ParsedParameter(currentParam, args.ToArray()));
+                        parameters.Add(new ParameterTemplate(currentParam, args.ToArray()));
                         args.Clear();
                     }
 
