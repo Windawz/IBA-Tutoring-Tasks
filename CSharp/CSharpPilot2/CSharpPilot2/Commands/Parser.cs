@@ -14,7 +14,7 @@ namespace CSharpPilot2.Commands
         public ParserProperties Properties { get; }
 
         /// <exception cref="ParseException"></exception>
-        public ParsedCommand Parse(string input)
+        public CommandTemplate Parse(string input)
         {
             string[] tokens = input.Split(
                 Properties.Delimiters,
@@ -34,7 +34,7 @@ namespace CSharpPilot2.Commands
 
             if (tokens.Length == 1)
             {
-                return new ParsedCommand(Name: name, Parameters: new ParsedParameter[0]);
+                return new CommandTemplate(Name: name, Parameters: new ParsedParameter[0]);
             }
 
             IEnumerable<string>     remaining       = tokens.Skip(1);
@@ -62,7 +62,7 @@ namespace CSharpPilot2.Commands
                 }
             }
 
-            return new ParsedCommand(name, parameters.ToArray());
+            return new CommandTemplate(name, parameters.ToArray());
         }
     }
 }
