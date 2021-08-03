@@ -12,18 +12,15 @@ namespace CSharpPilot2.Gameplay
         public Game(InputSource inputSource, Rules rules, Locale locale)
         {
             _inputSource        = inputSource;
-            _rules              = rules;
             _locale             = locale;
-            _requestProvider    = new RequestProvider(_rules, _locale);
-            _players            = new Player[_rules.Properties.PlayerCount];
+            _state              = new State(rules);
+            _requestProvider    = new RequestProvider(_state.Rules, _locale);
         }
 
         private readonly InputSource        _inputSource;
-        private readonly Rules              _rules;
         private readonly Locale             _locale;
         private readonly RequestProvider    _requestProvider;
-        private readonly State              _state = new();
-        private readonly Player[]           _players;
+        private readonly State              _state;
 
         public IReadOnlyList<Step> Steps =>
             _state.Steps;
@@ -43,7 +40,7 @@ namespace CSharpPilot2.Gameplay
         private void Play()
         {
             bool isPlaying = true;
-            Player currentPlayer = _players[0];
+            Player currentPlayer = _state.Players[0];
             Player loser;
 
             while (isPlaying)
@@ -55,7 +52,7 @@ namespace CSharpPilot2.Gameplay
 
                 _state.Steps.Add(new Step(currentPlayer, word));
 
-                if (prevWord is not null && !_rules.WordValidator(word, prevWord))
+                if (prevWord is not null && !_state.Rules.WordValidator(word, prevWord))
                 {
                     loser = currentPlayer;
                     isPlaying = false;
@@ -68,13 +65,13 @@ namespace CSharpPilot2.Gameplay
         }
         private void CreatePlayers()
         {
-            for (int i = 0; i < _rules.Properties.PlayerCount; i++) {
+            for (int i = 0; i < _state.Rules.Properties.PlayerCount; i++) {
                 string name = _requestProvider
                     .GetNameRequest(playerIndex: i)
                     .Perform(_inputSource)
                     .Text;
 
-                _players[i] = new Player(Index: i, Name: name);
+                _state.Players[i] = new Player(Index: i, Name: name);
             }
         }
         private Word RequestWordTimed(Player requestingPlayer)
@@ -95,7 +92,7 @@ namespace CSharpPilot2.Gameplay
             Console.ReadKey(intercept: true);
         }
         private Player GetNextPlayer(Player current) => 
-            _players[(current.Index + 1) % _players.Length];
+            _state.Players[(current.Index + 1) % _state.Players.Length];
         private string GetEndGameStatsString()
         {
             var twoLastSteps = _state.Steps.TakeLast(2);
@@ -116,11 +113,11 @@ namespace CSharpPilot2.Gameplay
             string bullet = "- ";
             var ruleStrings = new string[6]
             {
-                _locale.GetIntroRuleFirstString(_rules.Properties.PlayerCount),
+                _locale.GetIntroRuleFirstString(_state.Rules.Properties.PlayerCount),
                 _locale.GetIntroRuleSecondString(),
                 _locale.GetIntroRuleThirdString(),
-                _locale.GetIntroRuleFourthString(_rules.Properties.MinWordTextLength, _rules.Properties.MaxWordTextLength),
-                _locale.GetIntroRuleFifthString(_rules.Properties.MaxWordSeconds),
+                _locale.GetIntroRuleFourthString(_state.Rules.Properties.MinWordTextLength, _state.Rules.Properties.MaxWordTextLength),
+                _locale.GetIntroRuleFifthString(_state.Rules.Properties.MaxWordSeconds),
                 _locale.GetIntroRuleSixthString()
             };
 
