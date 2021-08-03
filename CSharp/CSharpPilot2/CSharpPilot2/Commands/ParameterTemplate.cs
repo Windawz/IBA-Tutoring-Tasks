@@ -16,28 +16,35 @@ namespace CSharpPilot2.Commands
                 StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries
             );
 
-            string?                     curParam        = null;
+            string?                     lastParam       = null;
+            string?                     curParam        = lastParam;
             List<string>                args            = new();
             List<ParameterTemplate>     templates       = new();
 
-            foreach (string token in tokens)
+            for (int i = 0; i < tokens.Length; i++)
             {
+                string token = tokens[i];
+
                 if (token.StartsWith(options.Prefix))
                 {
-                    if (args.Count > 0 && curParam is not null)
-                    {
-                        string name = curParam.Substring(1);
-                        ParameterTemplate template = new(name, args.ToArray());
-                        templates.Add(template);
-                        args.Clear();
-                    }
-
                     curParam = token;
                 }
                 else
                 {
                     args.Add(token);
                 }
+
+                // If curParam has changed or token is the last one left:
+                if (curParam != lastParam || i == tokens.Length - 1)
+                {
+                    if (curParam is not null)
+                    {
+                        templates.Add(new ParameterTemplate(curParam[1..], args.ToArray()));
+                    }
+                    args.Clear();
+                }
+
+                lastParam = curParam;
             }
 
             return templates.ToArray();
