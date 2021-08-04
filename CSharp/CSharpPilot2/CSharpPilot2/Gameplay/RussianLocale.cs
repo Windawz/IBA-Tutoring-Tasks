@@ -39,6 +39,8 @@ namespace CSharpPilot2.Gameplay
             $"На ввод даётся {FormatTime(maxSeconds)}.";
         public override string GetIntroRuleSixthString() =>
             $"При неправильном вводе время не восстанавливается, а идёт дальше.";
+        public override string GetErrorParsingCommand(string command, string reason) =>
+            $"Ошибка обработки комманды \"{command}\". Причина: \"{reason}\"";
 
         protected override string FormatTime(double seconds) =>
             $"{seconds:F}с";

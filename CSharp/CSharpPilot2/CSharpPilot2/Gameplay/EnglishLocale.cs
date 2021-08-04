@@ -42,6 +42,8 @@ namespace CSharpPilot2.Gameplay
             $"You have {FormatTime(maxSeconds)} for input.";
         public override string GetIntroRuleSixthString() =>
             $"On invalid input time isn't restored and keeps going.";
+        public override string GetErrorParsingCommand(string command, string reason) =>
+            $"Error parsing command \"{command}\". Reason: \"{reason}\"";
 
         protected override string FormatTime(double seconds) =>
             $"{seconds:F}s";

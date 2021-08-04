@@ -8,14 +8,31 @@ namespace CSharpPilot2.Commands
 {
     internal class Manager
     {
-        public Manager(Context context) =>
-            _context = context;
+        public Manager(Context context, ParseOptions options, IDictionary<string, Action> dictionary)
+        {
+            _context        = context;
+            _options        = options;
+            _dictionary     = dictionary;
+        }
 
-        private readonly Context _context;
+        private readonly Context                        _context;
+        private readonly ParseOptions                   _options;
+        private readonly IDictionary<string, Action>    _dictionary;
 
         public ExecutionResult Execute(string command)
         {
-            
+            ParsedCommand parsedCommand;
+            try
+            {
+                parsedCommand = ParseCommandTemplate(command, _options);
+            }
+            catch (ArgumentException e)
+            {
+                return new ExecutionResult(
+                    HasFailed: true, 
+                    FailMessage: $"{_context.Locale.GetErrorParsingCommand(command, e.Message)}"
+                );
+            }
         }
     
         private static ParsedCommand ParseCommandTemplate(string command, ParseOptions options)

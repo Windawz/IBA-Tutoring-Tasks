@@ -21,6 +21,7 @@ namespace CSharpPilot2.Gameplay
         public abstract string GetIntroRuleFourthString(int minWordTextLength, int maxWordTextLength);
         public abstract string GetIntroRuleFifthString(double maxSeconds);
         public abstract string GetIntroRuleSixthString();
+        public abstract string GetErrorParsingCommand(string command, string reason);
 
         protected abstract string FormatTime(double seconds);
     }
