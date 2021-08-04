@@ -6,5 +6,5 @@ using System.Threading.Tasks;
 
 namespace CSharpPilot2.Commands
 {
-    delegate void Action(Context context);
+    delegate ExecutionResult Action(Context context, IDictionary<string, ParsedParameter> parameters);
 }
