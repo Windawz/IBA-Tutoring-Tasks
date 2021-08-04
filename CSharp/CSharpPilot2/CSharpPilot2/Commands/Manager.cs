@@ -8,10 +8,10 @@ namespace CSharpPilot2.Commands
 {
     internal class Manager
     {
-        public Manager()
-        {
+        public Manager(Context context) =>
+            _context = context;
 
-        }
+        private readonly Context _context;
 
         public ExecutionResult Execute(string command)
         {
