@@ -64,30 +64,34 @@ namespace CSharpPilot2.Commands
                 throw new ArgumentException("Command string has no tokens", nameof(command));
             }
 
-            var                         paramTokens     = tokens.Skip(1);
-            string                      commandName     = tokens.First();
-            string?                     lastParam       = null;
-            string?                     curParam        = lastParam;
-            List<string>                args            = new();
-            List<ParsedParameter>       parsedParams    = new();
+            var                             paramTokens     = tokens.Skip(1);
+            string                          commandName     = tokens.First();
+            string?                         lastParam       = null;
+            string?                         curParam        = lastParam;
+            List<string>                    args            = new();
+            Dictionary<string, string[]>    parsedParams    = new();
 
-            foreach (string token in paramTokens)
+            foreach (string paramToken in paramTokens)
             {
-                if (token.StartsWith(options.ParameterPrefix))
+                if (paramToken.StartsWith(options.ParameterPrefix))
                 {
-                    curParam = token;
+                    string refinedToken = paramToken[1..];
+                    if (!String.IsNullOrWhiteSpace(refinedToken) && !refinedToken.StartsWith(options.ParameterPrefix))
+                    {
+                        curParam = refinedToken;
+                    }
                 }
                 else
                 {
-                    args.Add(token);
+                    args.Add(paramToken);
                 }
 
                 // If curParam has changed or token is the last one left:
-                if (curParam != lastParam || token == paramTokens.Last())
+                if (curParam != lastParam || paramToken == paramTokens.Last())
                 {
                     if (curParam is not null)
                     {
-                        parsedParams.Add(new ParsedParameter(curParam[1..], args.ToArray()));
+                        parsedParams[curParam] = args.ToArray();
                     }
                     args.Clear();
                 }
@@ -95,7 +99,7 @@ namespace CSharpPilot2.Commands
                 lastParam = curParam;
             }
 
-            return new ParsedCommand(commandName, parsedParams.ToArray());
+            return new ParsedCommand(commandName, parsedParams);
         }
     }
 }

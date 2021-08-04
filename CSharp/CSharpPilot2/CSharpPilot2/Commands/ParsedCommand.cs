@@ -6,5 +6,5 @@ using System.Threading.Tasks;
 
 namespace CSharpPilot2.Commands
 {
-    internal record ParsedCommand(string Name, ParsedParameter[] Parameters);
+    internal record ParsedCommand(string Name, IDictionary<string, string[]> Parameters);
 }
