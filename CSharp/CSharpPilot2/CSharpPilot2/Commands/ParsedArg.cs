@@ -6,9 +6,9 @@ using System.Threading.Tasks;
 
 namespace CSharpPilot2
 {
-    internal class Arg
+    internal class ParsedArg
     {
-        public Arg(string value) =>
+        public ParsedArg(string value) =>
             Value = value;
 
         public string Value { get; init; }
