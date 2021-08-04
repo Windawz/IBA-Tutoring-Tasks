@@ -41,6 +41,8 @@ namespace CSharpPilot2.Gameplay
             $"При неправильном вводе время не восстанавливается, а идёт дальше.";
         public override string GetErrorParsingCommand(string command, string reason) =>
             $"Ошибка обработки комманды \"{command}\". Причина: \"{reason}\"";
+        public override string GetErrorCommandNotFound(string command) =>
+            $"Ошибка: команда \"{command}\" не найдена.";
 
         protected override string FormatTime(double seconds) =>
             $"{seconds:F}с";

@@ -44,6 +44,8 @@ namespace CSharpPilot2.Gameplay
             $"On invalid input time isn't restored and keeps going.";
         public override string GetErrorParsingCommand(string command, string reason) =>
             $"Error parsing command \"{command}\". Reason: \"{reason}\"";
+        public override string GetErrorCommandNotFound(string command) =>
+            $"Error: command \"{command}\" not found.";
 
         protected override string FormatTime(double seconds) =>
             $"{seconds:F}s";
