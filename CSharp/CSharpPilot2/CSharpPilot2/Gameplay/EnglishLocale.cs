@@ -43,7 +43,7 @@ namespace CSharpPilot2.Gameplay
         public override string GetIntroRuleSixthString() =>
             $"On invalid input time isn't restored and keeps going.";
         public override string GetErrorParsingCommand(string command, string reason) =>
-            $"Error parsing command \"{command}\". Reason: \"{reason}\"";
+            $"Error parsing command \"{command}\". Reason: \"{reason}\".";
         public override string GetErrorCommandNotFound(string command) =>
             $"Error: command \"{command}\" not found.";
 

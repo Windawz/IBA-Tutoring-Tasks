@@ -40,7 +40,7 @@ namespace CSharpPilot2.Gameplay
         public override string GetIntroRuleSixthString() =>
             $"При неправильном вводе время не восстанавливается, а идёт дальше.";
         public override string GetErrorParsingCommand(string command, string reason) =>
-            $"Ошибка обработки комманды \"{command}\". Причина: \"{reason}\"";
+            $"Ошибка обработки команды \"{command}\". Причина: \"{reason}\".";
         public override string GetErrorCommandNotFound(string command) =>
             $"Ошибка: команда \"{command}\" не найдена.";
 
