@@ -33,6 +33,18 @@ namespace CSharpPilot2.Commands
                     FailMessage: $"{_context.Locale.GetErrorParsingCommand(command, e.Message)}"
                 );
             }
+
+            if (_dictionary.TryGetValue(parsedCommand.Name, out Action? action))
+            {
+                return action.Invoke(_context, parsedCommand.Parameters);
+            }
+            else
+            {
+                return new ExecutionResult(
+                    HasFailed: true,
+                    FailMessage: $"{_context.Locale.GetErrorCommandNotFound(parsedCommand.Name)}"
+                );
+            }
         }
     
         private static ParsedCommand ParseCommandTemplate(string command, ParseOptions options)
