@@ -57,19 +57,19 @@ namespace CSharpPilot2.Commands
             var tokens = command.Split(
                 options.Delimiters,
                 StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries
-            );
+            ).Select(x => x.ToLowerInvariant());
 
             if (!tokens.Any())
             {
                 throw new ArgumentException("Command string has no tokens", nameof(command));
             }
 
-            var                             paramTokens     = tokens.Skip(1);
-            string                          commandName     = tokens.First();
-            string?                         lastParam       = null;
-            string?                         curParam        = lastParam;
-            List<string>                    args            = new();
-            Dictionary<string, string[]>    parsedParams    = new();
+            var         paramTokens     = tokens.Skip(1);
+            string      commandName     = tokens.First();
+            string?     lastParam       = null;
+            string?     curParam        = lastParam;
+            var         args            = new List<ParsedArg>();
+            var         parsedParams    = new Dictionary<string, ParsedParameter>();
 
             foreach (string paramToken in paramTokens)
             {
@@ -83,7 +83,7 @@ namespace CSharpPilot2.Commands
                 }
                 else
                 {
-                    args.Add(paramToken);
+                    args.Add(new ParsedArg(paramToken));
                 }
 
                 // If curParam has changed or token is the last one left:
@@ -91,7 +91,7 @@ namespace CSharpPilot2.Commands
                 {
                     if (curParam is not null)
                     {
-                        parsedParams[curParam] = args.ToArray();
+                        parsedParams[curParam] = new ParsedParameter(curParam, args.ToArray());
                     }
                     args.Clear();
                 }

@@ -6,13 +6,8 @@ using System.Threading.Tasks;
 
 namespace CSharpPilot2
 {
-    internal class ParsedArg
+    internal record ParsedArg(string Value)
     {
-        public ParsedArg(string value) =>
-            Value = value;
-
-        public string Value { get; init; }
-
         public bool TryAsInteger(out int output) =>
             int.TryParse(Value, out output);
         public bool TryAsDouble(out double output) =>
