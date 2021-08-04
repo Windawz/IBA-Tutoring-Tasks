@@ -18,7 +18,7 @@ namespace CSharpPilot2.Commands
             
         }
     
-        private static CommandTemplate ParseCommandTemplate(string command, ParseOptions options)
+        private static ParsedCommand ParseCommandTemplate(string command, ParseOptions options)
         {
             if (!command.StartsWith(options.CommandPrefix))
             {
@@ -40,7 +40,7 @@ namespace CSharpPilot2.Commands
             string?                     lastParam       = null;
             string?                     curParam        = lastParam;
             List<string>                args            = new();
-            List<ParameterTemplate>     paramTemplates  = new();
+            List<ParsedParameter>       parsedParams    = new();
 
             foreach (string token in paramTokens)
             {
@@ -58,7 +58,7 @@ namespace CSharpPilot2.Commands
                 {
                     if (curParam is not null)
                     {
-                        paramTemplates.Add(new ParameterTemplate(curParam[1..], args.ToArray()));
+                        parsedParams.Add(new ParsedParameter(curParam[1..], args.ToArray()));
                     }
                     args.Clear();
                 }
@@ -66,7 +66,7 @@ namespace CSharpPilot2.Commands
                 lastParam = curParam;
             }
 
-            return new CommandTemplate(commandName, paramTemplates.ToArray());
+            return new ParsedCommand(commandName, parsedParams.ToArray());
         }
     }
 }
