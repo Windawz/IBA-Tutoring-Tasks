@@ -4,13 +4,16 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
+
 namespace CSharpPilot2.Commands
 {
+    using CommandsT = Dictionary<string, ParsedCommand>;
+
     internal class CommandList
     {
-        public CommandList(Dictionary<string, ParsedCommand> commands) =>
+        public CommandList(CommandsT commands) =>
             Commands = commands;
 
-        public Dictionary<string, ParsedCommand> Commands { get; }
+        public CommandsT Commands { get; }
     }
 }
