@@ -4,6 +4,8 @@ using System.Linq;
 
 using CSharpPilot2.Gameplay;
 using CSharpPilot2.Input;
+using System.Text;
+
 using CSharpPilot2.Locales;
 
 namespace CSharpPilot2
@@ -12,7 +14,13 @@ namespace CSharpPilot2
     {
         private static void Main(string[] args)
         {
-            Game game = new(ReadInputInfo, GetRules(), new RussianLocale());
+            Locale locale = new RussianLocale();
+
+            Encoding encoding = locale.GetEncoding();
+            Console.InputEncoding = encoding;
+            Console.OutputEncoding = encoding;
+
+            Game game = new(ReadInputInfo, GetRules(), locale);
             game.Start();
         }
 
