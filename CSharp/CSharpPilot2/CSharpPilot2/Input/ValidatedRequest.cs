@@ -4,8 +4,11 @@ namespace CSharpPilot2.Input
 {
     internal class ValidatedRequest : Request
     {
-        public ValidatedRequest(InputValidator validator, InputForgiver forgiver) : base() =>
-            (Validator, Forgiver) = (validator, forgiver);
+        public ValidatedRequest(InputValidator validator, InputForgiver forgiver) : base()
+        {
+            Validator = validator;
+            Forgiver = forgiver;
+        }
 
         protected InputValidator Validator { get; }
         protected InputForgiver Forgiver { get; }
