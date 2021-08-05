@@ -11,12 +11,7 @@ namespace CSharpPilot2
     {
         private static void Main(string[] args)
         {
-            Game game = new(
-                inputSource:    ReadInputInfo,
-                rules:          GetRules(),
-                locale:         new RussianLocale()
-            );
-
+            Game game = new(ReadInputInfo, GetRules(), new RussianLocale());
             game.Start();
         }
 
