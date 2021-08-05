@@ -1,4 +1,5 @@
-﻿using System;
+﻿using System.Collections.Generic;
+using System.Collections.Immutable;
 
 namespace CSharpPilot2.Input
 {
@@ -8,37 +9,37 @@ namespace CSharpPilot2.Input
     /// </summary>
     internal class Request
     {
-        public Request() { }
-
-        public event EventHandler? RequestStarted;
-        public event EventHandler<InputInfo>? RequestEnded;
-        public event EventHandler<InputInfo>? InputInfoReceived;
-
-        public InputInfo Perform(InputSource source)
+        public Request(InputSource source, IList<Interceptor> interceptors)
         {
-            OnRequestStarted();
+            _interceptors = interceptors.ToImmutableList();
+            Source = source;
+        }
 
+        private readonly ImmutableList<Interceptor> _interceptors;
 
-            InputInfo? inputInfo = PerformImpl(source: () =>
+        protected InputSource Source { get; }
+
+        public InputInfo Perform()
+        {
+            InputInfo inputInfo;
+            while (true)
             {
-                InputInfo? inputInfo = source();
-                OnInputInfoReceived(inputInfo);
-                return inputInfo;
-            });
-
-            OnRequestEnded(inputInfo);
+                bool isIntercepted = false;
+                inputInfo = Source();
+                foreach (var interceptor in _interceptors)
+                {
+                    if (interceptor.Condition(inputInfo))
+                    {
+                        isIntercepted = true;
+                        interceptor.Action(inputInfo);
+                    }
+                }
+                if (!isIntercepted)
+                {
+                    break;
+                }
+            }
             return inputInfo;
         }
-        protected virtual InputInfo PerformImpl(InputSource source)
-        {
-            InputInfo? inputInfo = source();
-            return inputInfo;
-        }
-        protected virtual void OnRequestStarted() =>
-            RequestStarted?.Invoke(this, EventArgs.Empty);
-        protected virtual void OnRequestEnded(InputInfo inputInfo) =>
-            RequestEnded?.Invoke(this, inputInfo);
-        protected virtual void OnInputInfoReceived(InputInfo inputInfo) =>
-            InputInfoReceived?.Invoke(this, inputInfo);
     }
 }
