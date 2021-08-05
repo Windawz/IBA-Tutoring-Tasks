@@ -28,10 +28,7 @@ namespace CSharpPilot2.Commands
             }
             catch (ArgumentException e)
             {
-                return new ExecutionResult(
-                    HasFailed: true, 
-                    FailMessage: $"{_context.Locale.GetErrorParsingCommand(command, e.Message)}"
-                );
+                return new ExecutionResult(HasFailed: true, FailMessage: $"{_context.Locale.GetErrorParsingCommand(command, e.Message)}");
             }
 
             if (_list.Commands.TryGetValue(parsedCommand.Name, out CommandInfo? info))
@@ -40,10 +37,7 @@ namespace CSharpPilot2.Commands
             }
             else
             {
-                return new ExecutionResult(
-                    HasFailed: true,
-                    FailMessage: $"{_context.Locale.GetErrorCommandNotFound(parsedCommand.Name)}"
-                );
+                return new ExecutionResult(HasFailed: true, FailMessage: $"{_context.Locale.GetErrorCommandNotFound(parsedCommand.Name)}");
             }
         }
     
