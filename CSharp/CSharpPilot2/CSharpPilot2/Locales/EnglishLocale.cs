@@ -5,7 +5,7 @@
         public override string GetNameRequestString(int playerIndex) =>
             $"Player {playerIndex + 1}, enter name:";
         public override string GetWordRequestString(string playerName) =>
-            $"\"{playerName}\", enter word:";
+            $"{playerName}, enter word:";
         public override string GetInvalidWordString(string word) =>
             $"Word \"{word}\" is invalid!";
         public override string GetInvalidInputString() =>
