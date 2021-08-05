@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace CSharpPilot2.Commands
 {
-    using CommandsT = Dictionary<string, ParsedCommand>;
+    using CommandsT = Dictionary<string, CommandInfo>;
 
     internal class CommandList
     {

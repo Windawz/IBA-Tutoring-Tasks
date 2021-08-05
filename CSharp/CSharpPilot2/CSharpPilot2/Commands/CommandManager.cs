@@ -8,16 +8,16 @@ namespace CSharpPilot2.Commands
 {
     internal class CommandManager
     {
-        public CommandManager(CommandContext context, CommandOptions options, IDictionary<string, CommandInfo> dictionary)
+        public CommandManager(CommandContext context, CommandOptions options, CommandList list)
         {
             _context        = context;
             _options        = options;
-            _dictionary     = dictionary;
+            _list           = list;
         }
 
-        private readonly CommandContext                            _context;
-        private readonly CommandOptions                       _options;
-        private readonly IDictionary<string, CommandInfo>   _dictionary;
+        private readonly CommandContext     _context;
+        private readonly CommandOptions     _options;
+        private readonly CommandList        _list;
 
         public ExecutionResult Execute(string command)
         {
@@ -34,7 +34,7 @@ namespace CSharpPilot2.Commands
                 );
             }
 
-            if (_dictionary.TryGetValue(parsedCommand.Name, out CommandInfo? info))
+            if (_list.Commands.TryGetValue(parsedCommand.Name, out CommandInfo? info))
             {
                 return info.Action.Invoke(_context, parsedCommand.Parameters);
             }
