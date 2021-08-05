@@ -6,16 +6,16 @@ using System.Threading.Tasks;
 
 namespace CSharpPilot2.Commands
 {
-    internal class Manager
+    internal class CommandManager
     {
-        public Manager(Context context, CommandOptions options, IDictionary<string, CommandInfo> dictionary)
+        public CommandManager(CommandContext context, CommandOptions options, IDictionary<string, CommandInfo> dictionary)
         {
             _context        = context;
             _options        = options;
             _dictionary     = dictionary;
         }
 
-        private readonly Context                            _context;
+        private readonly CommandContext                            _context;
         private readonly CommandOptions                       _options;
         private readonly IDictionary<string, CommandInfo>   _dictionary;
 
