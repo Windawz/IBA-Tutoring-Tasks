@@ -8,7 +8,7 @@ namespace CSharpPilot2.Commands
 {
     internal class Manager
     {
-        public Manager(Context context, ParseOptions options, IDictionary<string, CommandInfo> dictionary)
+        public Manager(Context context, CommandOptions options, IDictionary<string, CommandInfo> dictionary)
         {
             _context        = context;
             _options        = options;
@@ -16,7 +16,7 @@ namespace CSharpPilot2.Commands
         }
 
         private readonly Context                            _context;
-        private readonly ParseOptions                       _options;
+        private readonly CommandOptions                       _options;
         private readonly IDictionary<string, CommandInfo>   _dictionary;
 
         public ExecutionResult Execute(string command)
@@ -47,7 +47,7 @@ namespace CSharpPilot2.Commands
             }
         }
     
-        private static ParsedCommand ParseCommandTemplate(string command, ParseOptions options)
+        private static ParsedCommand ParseCommandTemplate(string command, CommandOptions options)
         {
             if (!command.StartsWith(options.CommandPrefix))
             {
