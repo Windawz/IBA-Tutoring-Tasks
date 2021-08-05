@@ -38,7 +38,7 @@ namespace CSharpPilot2
                 properties,
                 Rules.GetDefaultWordValidator(properties),
                 Rules.GetDefaultInputValidator(properties),
-                inputInfo => Command.IsValidCommandName(inputInfo.Text)
+                inputInfo => false
             );
         }
     }
