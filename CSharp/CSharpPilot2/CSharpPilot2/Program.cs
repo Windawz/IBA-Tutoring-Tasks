@@ -34,12 +34,8 @@ namespace CSharpPilot2
         {
             RulesProperties properties = new(2, 10.0, 8, 30);
 
-            return new Rules(
-                properties,
-                Rules.GetDefaultWordValidator(properties),
-                Rules.GetDefaultInputValidator(properties),
-                inputInfo => false
-            );
+            return new Rules(properties, Rules.GetDefaultWordValidator(properties), Rules.GetDefaultInputValidator(properties),
+                inputInfo => false);
         }
     }
 }
