@@ -12,16 +12,16 @@ namespace CSharpPilot2.Gameplay
     {
         public Game(InputSource inputSource, Rules rules, Locale locale)
         {
-            _inputSource        = inputSource;
-            _locale             = locale;
-            _state              = new State(rules);
-            _requestProvider    = new RequestProvider(_state.Rules, _locale);
+            _inputSource = inputSource;
+            _locale = locale;
+            _state = new State(rules);
+            _requestProvider = new RequestProvider(_state.Rules, _locale);
         }
 
-        private readonly InputSource        _inputSource;
-        private readonly Locale             _locale;
-        private readonly RequestProvider    _requestProvider;
-        private readonly State              _state;
+        private readonly InputSource _inputSource;
+        private readonly Locale _locale;
+        private readonly RequestProvider _requestProvider;
+        private readonly State _state;
 
         public IReadOnlyList<Step> Steps =>
             _state.Steps;
