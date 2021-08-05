@@ -10,9 +10,9 @@ namespace CSharpPilot2.Input
     {
         public Request() { }
 
-        public event EventHandler?              RequestStarted;
-        public event EventHandler<InputInfo>?   RequestEnded;
-        public event EventHandler<InputInfo>?   InputInfoReceived;
+        public event EventHandler? RequestStarted;
+        public event EventHandler<InputInfo>? RequestEnded;
+        public event EventHandler<InputInfo>? InputInfoReceived;
 
         public InputInfo Perform(InputSource source)
         {
