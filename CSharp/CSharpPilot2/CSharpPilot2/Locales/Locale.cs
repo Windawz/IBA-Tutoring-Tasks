@@ -1,7 +1,12 @@
-﻿namespace CSharpPilot2.Locales
+﻿using System.Text;
+
+namespace CSharpPilot2.Locales
 {
     internal abstract class Locale
     {
+        public virtual Encoding GetEncoding() =>
+            Encoding.UTF8;
+
         public abstract string GetNameRequestString(int playerIndex);
         public abstract string GetWordRequestString(string playerName);
         public abstract string GetInvalidWordString(string word);
