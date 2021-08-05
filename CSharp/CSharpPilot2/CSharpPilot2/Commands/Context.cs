@@ -5,6 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 
 using CSharpPilot2.Gameplay;
+using CSharpPilot2.Locales;
 
 namespace CSharpPilot2.Commands
 {

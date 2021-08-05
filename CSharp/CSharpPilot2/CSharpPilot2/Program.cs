@@ -3,6 +3,7 @@ using System.Timers;
 
 using CSharpPilot2.Input;
 using CSharpPilot2.Gameplay;
+using CSharpPilot2.Locales;
 
 namespace CSharpPilot2
 {
