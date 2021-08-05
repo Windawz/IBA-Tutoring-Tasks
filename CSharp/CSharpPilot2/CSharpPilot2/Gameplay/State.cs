@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 
 namespace CSharpPilot2.Gameplay
 {
@@ -7,7 +6,7 @@ namespace CSharpPilot2.Gameplay
     {
         public State(Rules rules)
         {
-            Rules   = rules;
+            Rules = rules;
             Players = new Player[rules.Properties.PlayerCount];
         }
 

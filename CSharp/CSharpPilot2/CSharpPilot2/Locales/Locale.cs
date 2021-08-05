@@ -1,6 +1,4 @@
-﻿using CSharpPilot2.Input;
-
-namespace CSharpPilot2.Locales
+﻿namespace CSharpPilot2.Locales
 {
     internal abstract class Locale
     {

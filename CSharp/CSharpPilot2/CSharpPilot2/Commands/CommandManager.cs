@@ -1,8 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace CSharpPilot2.Commands
 {
@@ -10,14 +8,14 @@ namespace CSharpPilot2.Commands
     {
         public CommandManager(CommandContext context, CommandOptions options, CommandList list)
         {
-            _context        = context;
-            _options        = options;
-            _list           = list;
+            _context = context;
+            _options = options;
+            _list = list;
         }
 
-        private readonly CommandContext     _context;
-        private readonly CommandOptions     _options;
-        private readonly CommandList        _list;
+        private readonly CommandContext _context;
+        private readonly CommandOptions _options;
+        private readonly CommandList _list;
 
         public ExecutionResult Execute(string command)
         {
@@ -28,10 +26,7 @@ namespace CSharpPilot2.Commands
             }
             catch (ArgumentException e)
             {
-                return new ExecutionResult(
-                    HasFailed: true, 
-                    FailMessage: $"{_context.Locale.GetErrorParsingCommand(command, e.Message)}"
-                );
+                return new ExecutionResult(HasFailed: true, FailMessage: $"{_context.Locale.GetErrorParsingCommand(command, e.Message)}");
             }
 
             if (_list.Commands.TryGetValue(parsedCommand.Name, out CommandInfo? info))
@@ -40,13 +35,10 @@ namespace CSharpPilot2.Commands
             }
             else
             {
-                return new ExecutionResult(
-                    HasFailed: true,
-                    FailMessage: $"{_context.Locale.GetErrorCommandNotFound(parsedCommand.Name)}"
-                );
+                return new ExecutionResult(HasFailed: true, FailMessage: $"{_context.Locale.GetErrorCommandNotFound(parsedCommand.Name)}");
             }
         }
-    
+
         private static ParsedCommand ParseCommandTemplate(string command, CommandOptions options)
         {
             if (!command.StartsWith(options.CommandPrefix))
@@ -54,7 +46,7 @@ namespace CSharpPilot2.Commands
                 throw new ArgumentException($"Command string doesn't start with {options.CommandPrefix}", nameof(command));
             }
 
-            var tokens = command.Split(
+            IEnumerable<string>? tokens = command.Split(
                 options.Delimiters,
                 StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries
             ).Select(x => x.ToLowerInvariant());
@@ -64,12 +56,12 @@ namespace CSharpPilot2.Commands
                 throw new ArgumentException("Command string has no tokens", nameof(command));
             }
 
-            var         paramTokens     = tokens.Skip(1);
-            string      commandName     = tokens.First();
-            string?     lastParam       = null;
-            string?     curParam        = lastParam;
-            var         args            = new List<ParsedArg>();
-            var         parsedParams    = new Dictionary<string, ParsedParameter>();
+            IEnumerable<string>? paramTokens = tokens.Skip(1);
+            string commandName = tokens.First();
+            string? lastParam = null;
+            string? curParam = lastParam;
+            var args = new List<ParsedArg>();
+            var parsedParams = new Dictionary<string, ParsedParameter>();
 
             foreach (string paramToken in paramTokens)
             {

@@ -12,16 +12,16 @@ namespace CSharpPilot2.Gameplay
     {
         public Game(InputSource inputSource, Rules rules, Locale locale)
         {
-            _inputSource        = inputSource;
-            _locale             = locale;
-            _state              = new State(rules);
-            _requestProvider    = new RequestProvider(_state.Rules, _locale);
+            _inputSource = inputSource;
+            _locale = locale;
+            _state = new State(rules);
+            _requestProvider = new RequestProvider(_state.Rules, _locale);
         }
 
-        private readonly InputSource        _inputSource;
-        private readonly Locale             _locale;
-        private readonly RequestProvider    _requestProvider;
-        private readonly State              _state;
+        private readonly InputSource _inputSource;
+        private readonly Locale _locale;
+        private readonly RequestProvider _requestProvider;
+        private readonly State _state;
 
         public IReadOnlyList<Step> Steps =>
             _state.Steps;
@@ -66,7 +66,8 @@ namespace CSharpPilot2.Gameplay
         }
         private void CreatePlayers()
         {
-            for (int i = 0; i < _state.Rules.Properties.PlayerCount; i++) {
+            for (int i = 0; i < _state.Rules.Properties.PlayerCount; i++)
+            {
                 string name = _requestProvider
                     .GetNameRequest(playerIndex: i)
                     .Perform(_inputSource)
@@ -92,11 +93,11 @@ namespace CSharpPilot2.Gameplay
             Console.WriteLine(_locale.GetPressAnyKeyToContinueString());
             Console.ReadKey(intercept: true);
         }
-        private Player GetNextPlayer(Player current) => 
+        private Player GetNextPlayer(Player current) =>
             _state.Players[(current.Index + 1) % _state.Players.Length];
         private string GetEndGameStatsString()
         {
-            var twoLastSteps = _state.Steps.TakeLast(2);
+            IEnumerable<Step>? twoLastSteps = _state.Steps.TakeLast(2);
             Step curStep = twoLastSteps.Last();
             Step prevStep = twoLastSteps.SkipLast(1).Last();
 
@@ -112,7 +113,7 @@ namespace CSharpPilot2.Gameplay
         private string GetIntroString()
         {
             string bullet = "- ";
-            var ruleStrings = new string[6]
+            string[]? ruleStrings = new string[6]
             {
                 _locale.GetIntroRuleFirstString(_state.Rules.Properties.PlayerCount),
                 _locale.GetIntroRuleSecondString(),
@@ -127,7 +128,7 @@ namespace CSharpPilot2.Gameplay
                 .Append(' ')
                 .AppendLine(_locale.GetIntroRulesTitleString());
 
-            foreach (var str in ruleStrings)
+            foreach (string? str in ruleStrings)
             {
                 sb.Append(bullet).AppendLine(str);
             }
