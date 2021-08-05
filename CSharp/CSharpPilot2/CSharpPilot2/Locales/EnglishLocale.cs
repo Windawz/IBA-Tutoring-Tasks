@@ -1,17 +1,11 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace CSharpPilot2.Gameplay
+﻿namespace CSharpPilot2.Locales
 {
     internal class EnglishLocale : Locale
     {
         public override string GetNameRequestString(int playerIndex) =>
             $"Player {playerIndex + 1}, enter name:";
         public override string GetWordRequestString(string playerName) =>
-            $"\"{playerName}\", enter word:";
+            $"{playerName}, enter word:";
         public override string GetInvalidWordString(string word) =>
             $"Word \"{word}\" is invalid!";
         public override string GetInvalidInputString() =>
@@ -42,6 +36,10 @@ namespace CSharpPilot2.Gameplay
             $"You have {FormatTime(maxSeconds)} for input.";
         public override string GetIntroRuleSixthString() =>
             $"On invalid input time isn't restored and keeps going.";
+        public override string GetErrorParsingCommand(string command, string reason) =>
+            $"Error parsing command \"{command}\". Reason: \"{reason}\".";
+        public override string GetErrorCommandNotFound(string command) =>
+            $"Error: command \"{command}\" not found.";
 
         protected override string FormatTime(double seconds) =>
             $"{seconds:F}s";

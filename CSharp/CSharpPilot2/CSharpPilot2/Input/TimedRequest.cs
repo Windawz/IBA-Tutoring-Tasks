@@ -7,9 +7,6 @@
 
         public double SecondsPassed { get; private set; } = 0.0;
 
-        protected override InputInfo PerformImpl(InputSource source)
-        {
-            return base.PerformImpl(source) with { Seconds = SecondsPassed };
-        }
+        protected override InputInfo PerformImpl(InputSource source) => base.PerformImpl(source) with { Seconds = SecondsPassed };
     }
 }

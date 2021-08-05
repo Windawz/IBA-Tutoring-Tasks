@@ -1,9 +1,12 @@
-﻿using CSharpPilot2.Input;
+﻿using System.Text;
 
-namespace CSharpPilot2.Gameplay
+namespace CSharpPilot2.Locales
 {
     internal abstract class Locale
     {
+        public virtual Encoding GetEncoding() =>
+            Encoding.UTF8;
+
         public abstract string GetNameRequestString(int playerIndex);
         public abstract string GetWordRequestString(string playerName);
         public abstract string GetInvalidWordString(string word);
@@ -21,6 +24,8 @@ namespace CSharpPilot2.Gameplay
         public abstract string GetIntroRuleFourthString(int minWordTextLength, int maxWordTextLength);
         public abstract string GetIntroRuleFifthString(double maxSeconds);
         public abstract string GetIntroRuleSixthString();
+        public abstract string GetErrorParsingCommand(string command, string reason);
+        public abstract string GetErrorCommandNotFound(string command);
 
         protected abstract string FormatTime(double seconds);
     }

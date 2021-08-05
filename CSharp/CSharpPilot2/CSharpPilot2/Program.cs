@@ -1,8 +1,12 @@
 ﻿using System;
 using System.Timers;
+using System.Linq;
 
-using CSharpPilot2.Input;
 using CSharpPilot2.Gameplay;
+using CSharpPilot2.Input;
+using System.Text;
+
+using CSharpPilot2.Locales;
 
 namespace CSharpPilot2
 {
@@ -10,12 +14,13 @@ namespace CSharpPilot2
     {
         private static void Main(string[] args)
         {
-            Game game = new(
-                inputSource:    ReadInputInfo,
-                rules:          GetRules(),
-                locale:         new RussianLocale()
-            );
+            Locale locale = new RussianLocale();
 
+            Encoding encoding = locale.GetEncoding();
+            Console.InputEncoding = encoding;
+            Console.OutputEncoding = encoding;
+
+            Game game = new(ReadInputInfo, GetRules(), locale);
             game.Start();
         }
 
@@ -38,12 +43,26 @@ namespace CSharpPilot2
         {
             RulesProperties properties = new(2, 10.0, 8, 30);
 
-            return new Rules(
-                properties,
-                Rules.GetDefaultWordValidator(properties),
-                Rules.GetDefaultInputValidator(properties),
-                inputInfo => Command.IsValidCommandName(inputInfo.Text)
-            );
+            return new Rules(properties, GetDefaultWordValidator(properties), GetDefaultInputValidator(properties),
+                inputInfo => false);
         }
+        private static WordValidator GetDefaultWordValidator(RulesProperties properties) =>
+            (cur, prev) =>
+            {
+                if (String.Equals(cur.Text, prev.Text, StringComparison.InvariantCultureIgnoreCase)
+                    || (cur.Seconds > properties.MaxWordSeconds)
+                )
+                {
+                    return false;
+                }
+
+                System.Collections.Generic.IEnumerable<(char Char, int Count)>? curCounts = cur.Text.ToLowerInvariant().CharacterCounts();
+                System.Collections.Generic.IEnumerable<(char Char, int Count)>? prevCounts = prev.Text.ToLowerInvariant().CharacterCounts();
+
+                return curCounts.SequenceEqual(prevCounts);
+            };
+        private static InputValidator GetDefaultInputValidator(RulesProperties properties) =>
+            (inputInfo) => inputInfo.Text.Length <= properties.MaxWordTextLength
+                           && inputInfo.Text.Length >= properties.MinWordTextLength;
     }
 }

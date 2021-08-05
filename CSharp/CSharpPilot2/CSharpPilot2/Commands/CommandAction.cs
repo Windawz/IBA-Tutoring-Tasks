@@ -1,4 +1,6 @@
-﻿namespace CSharpPilot2.Input
+﻿using System.Collections.Generic;
+
+namespace CSharpPilot2.Commands
 {
-    internal delegate void CommandAction(CommandContext context);
+    internal delegate ExecutionResult CommandAction(CommandContext context, IDictionary<string, ParsedParameter> parameters);
 }
