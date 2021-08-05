@@ -7,7 +7,7 @@ namespace CSharpPilot2.Gameplay
     {
         public State(Rules rules)
         {
-            Rules   = rules;
+            Rules = rules;
             Players = new Player[rules.Properties.PlayerCount];
         }
 
