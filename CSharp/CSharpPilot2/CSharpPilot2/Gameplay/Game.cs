@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 
 using CSharpPilot2.Input;
+using CSharpPilot2.Locales;
 
 namespace CSharpPilot2.Gameplay
 {

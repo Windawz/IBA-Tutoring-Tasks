@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace CSharpPilot2.Gameplay
+namespace CSharpPilot2.Locales
 {
     internal class EnglishLocale : Locale
     {

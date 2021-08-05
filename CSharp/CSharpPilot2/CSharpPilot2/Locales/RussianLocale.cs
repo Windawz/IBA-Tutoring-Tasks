@@ -1,7 +1,6 @@
-﻿
-using CSharpPilot2.Input;
+﻿using CSharpPilot2.Input;
 
-namespace CSharpPilot2.Gameplay
+namespace CSharpPilot2.Locales
 {
     internal class RussianLocale : Locale
     {

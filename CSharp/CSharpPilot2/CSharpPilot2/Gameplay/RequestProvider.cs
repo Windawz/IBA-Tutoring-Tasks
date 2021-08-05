@@ -1,6 +1,7 @@
 ﻿using System;
 
 using CSharpPilot2.Input;
+using CSharpPilot2.Locales;
 
 namespace CSharpPilot2.Gameplay
 {
