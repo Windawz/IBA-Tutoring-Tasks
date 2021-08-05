@@ -22,7 +22,7 @@ namespace CSharpPilot2.Commands
             ParsedCommand parsedCommand;
             try
             {
-                parsedCommand = ParseCommandTemplate(command, _options);
+                parsedCommand = ParseCommand(command, _options);
             }
             catch (ArgumentException e)
             {
@@ -39,7 +39,7 @@ namespace CSharpPilot2.Commands
             }
         }
 
-        private static ParsedCommand ParseCommandTemplate(string command, CommandOptions options)
+        private static ParsedCommand ParseCommand(string command, CommandOptions options)
         {
             if (!command.StartsWith(options.CommandPrefix))
             {
