@@ -1,8 +1,17 @@
-﻿namespace CSharpPilot2.Input
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+
+using CSharpPilot2.Gameplay;
+using CSharpPilot2.Locales;
+
+namespace CSharpPilot2.Commands
 {
-    /// <summary>
-    /// This class is empty for now, but is kept here in case
-    /// the program's command functionality needs to be extended.
-    /// </summary>
-    internal sealed class CommandContext { }
+    // I hate to couple it with the Gameplay classes but I don't want to take another long detour.
+    internal record CommandContext(
+        Locale Locale,
+        State State
+    );
 }

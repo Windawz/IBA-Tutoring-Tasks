@@ -6,5 +6,9 @@ using System.Threading.Tasks;
 
 namespace CSharpPilot2.Commands
 {
-    delegate ExecutionResult CommandAction(CommandContext context, IDictionary<string, ParsedParameter> parameters);
+    internal record CommandOptions(
+        string CommandPrefix,
+        string ParameterPrefix,
+        string[] Delimiters
+    );
 }
