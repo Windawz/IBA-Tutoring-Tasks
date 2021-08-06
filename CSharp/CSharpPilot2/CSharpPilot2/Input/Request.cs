@@ -7,17 +7,15 @@ namespace CSharpPilot2.Input
 {
     internal class Request
     {
-        public Request(InputSource source) : this(source, Array.Empty<Interceptor>()) { }
-        public Request(InputSource source, Interceptor interceptor) : this(source, ImmutableList.Create(interceptor)) { }
-        public Request(InputSource source, IReadOnlyCollection<Interceptor> interceptors)
-        {
-            Source = source;
-            _interceptors = interceptors.ToImmutableList();
-        }
+        private Request(InputSource source) =>
+            _source = source;
+        public Request(InputSource source, Interceptor interceptor) : this(source) =>
+            _interceptors.Add(interceptor);
+        public Request(InputSource source, IReadOnlyCollection<Interceptor> interceptors) : this(source) =>
+            _interceptors.AddRange(interceptors);
 
-        private readonly ImmutableList<Interceptor> _interceptors;
-
-        protected InputSource Source { get; init; }
+        private readonly List<Interceptor> _interceptors = new();
+        private readonly InputSource _source;
 
         public event EventHandler? RequestStarted;
 
@@ -26,7 +24,7 @@ namespace CSharpPilot2.Input
             InputInfo inputInfo;
             while (true)
             {
-                inputInfo = Source();
+                inputInfo = _source();
                 Interceptor? interceptor = FindInterceptor(inputInfo);
                 if (interceptor is not null)
                 {
