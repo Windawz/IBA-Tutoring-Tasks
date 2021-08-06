@@ -6,5 +6,5 @@ using System.Threading.Tasks;
 
 namespace CSharpPilot2.Input
 {
-    internal record Interceptor(InterceptCondition Condition, InterceptAction Action);
+    internal delegate InterceptResult InterceptAction(InputInfo inputInfo);
 }
