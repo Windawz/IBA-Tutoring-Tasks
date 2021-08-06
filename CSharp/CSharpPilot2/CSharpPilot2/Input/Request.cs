@@ -7,15 +7,21 @@ namespace CSharpPilot2.Input
 {
     internal class Request
     {
-        public Request(InputSource source) =>
+        public Request(InputSource source)
+        {
             _source = source;
-        public Request(InputSource source, Interceptor interceptor) : this(source) =>
-            _interceptors.Add(interceptor);
-        public Request(InputSource source, IReadOnlyCollection<Interceptor> interceptors) : this(source) =>
-            _interceptors.AddRange(interceptors);
 
-        private readonly List<Interceptor> _interceptors = new();
+            AddDefaultInterceptors();
+        }
+
+        public Request(InputSource source, Interceptor interceptor) : this(source) =>
+            Interceptors.Add(interceptor);
+        public Request(InputSource source, IReadOnlyCollection<Interceptor> interceptors) : this(source) =>
+            Interceptors.AddRange(interceptors);
+
         private readonly InputSource _source;
+        
+        protected List<Interceptor> Interceptors { get; } = new();
 
         public event EventHandler? RequestStarted;
 
@@ -37,7 +43,8 @@ namespace CSharpPilot2.Input
             }
             return inputInfo;
         }
+        protected virtual void AddDefaultInterceptors() { }
         private Interceptor? FindInterceptor(InputInfo inputInfo) =>
-            _interceptors.Where(i => i.Condition(inputInfo)).FirstOrDefault();
+            Interceptors.Where(i => i.Condition(inputInfo)).FirstOrDefault();
     }
 }
