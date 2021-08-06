@@ -1,14 +1,20 @@
-﻿using CSharpPilot2.Gameplay;
+﻿using System.Collections.Generic;
+
+using CSharpPilot2.Gameplay;
 
 namespace CSharpPilot2.Input
 {
-    internal class TimedRequest : ValidatedRequest
+    internal class TimedRequest : Request
     {
-        public TimedRequest(InputValidator validator) : base(validator) =>
-            InputInfoReceived += (sender, e) => SecondsPassed += e.Seconds;
+        public TimedRequest(InputSource source) : base(source) { }
+        public TimedRequest(InputSource source, Interceptor interceptor) : base(source, interceptor) { }
+        public TimedRequest(InputSource source, IReadOnlyCollection<Interceptor> interceptors) : base(source, interceptors)
+        {
+            InterceptCondition condition = _ => true;
+            InterceptAction action = x => { SecondsSpent += x.Seconds; return InterceptResult.Continue; };
 
-        public double SecondsPassed { get; private set; } = 0.0;
+        }
 
-        protected override InputInfo PerformImpl(InputSource source) => base.PerformImpl(source) with { Seconds = SecondsPassed };
+        public double SecondsSpent { get; private set; } = 0.0;
     }
 }
