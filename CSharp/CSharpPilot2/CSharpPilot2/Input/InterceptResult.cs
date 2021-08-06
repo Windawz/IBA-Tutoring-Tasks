@@ -6,5 +6,10 @@ using System.Threading.Tasks;
 
 namespace CSharpPilot2.Input
 {
-    internal record Interceptor(Predicate<InputInfo> Condition, Func<InputInfo, InterceptResult> Action);
+    internal enum InterceptResult
+    {
+        Break,
+        Continue,
+        Fail,
+    }
 }
