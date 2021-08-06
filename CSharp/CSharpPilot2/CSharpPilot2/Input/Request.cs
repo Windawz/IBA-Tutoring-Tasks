@@ -5,10 +5,6 @@ using System.Collections.Immutable;
 
 namespace CSharpPilot2.Input
 {
-    /// <summary>
-    /// Represents an input request from the specified source. The input info will
-    /// belong to the specified player.
-    /// </summary>
     internal class Request
     {
         public Request(InputSource source, IList<Interceptor> interceptors)
