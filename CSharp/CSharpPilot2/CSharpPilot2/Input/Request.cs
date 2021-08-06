@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Collections.Immutable;
 
 namespace CSharpPilot2.Input
@@ -18,6 +19,8 @@ namespace CSharpPilot2.Input
         private readonly ImmutableList<Interceptor> _interceptors;
 
         protected InputSource Source { get; }
+
+        public event EventHandler? RequestStarted;
 
         public InputInfo Perform()
         {
