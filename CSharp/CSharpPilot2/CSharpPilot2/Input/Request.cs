@@ -8,14 +8,14 @@ namespace CSharpPilot2.Input
     internal class Request
     {
         public Request(InputSource source) : this(source, Array.Empty<Interceptor>()) { }
-        public Request(InputSource source, Interceptor interceptor) : this(source, new Interceptor[1] { interceptor }) { }
-        public Request(InputSource source, Interceptor[] interceptors)
+        public Request(InputSource source, Interceptor interceptor) : this(source, ImmutableList.Create(interceptor)) { }
+        public Request(InputSource source, IReadOnlyCollection<Interceptor> interceptors)
         {
             Source = source;
-            _interceptors = interceptors.ToImmutableArray();
+            _interceptors = interceptors.ToImmutableList();
         }
 
-        private readonly ImmutableArray<Interceptor> _interceptors;
+        private readonly ImmutableList<Interceptor> _interceptors;
 
         protected InputSource Source { get; init; }
 
