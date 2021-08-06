@@ -9,20 +9,21 @@ namespace CSharpPilot2.Commands
         public CommandManager(CommandContext context, CommandOptions options, CommandList list)
         {
             _context = context;
-            _options = options;
+            Options = options;
             _list = list;
         }
 
         private readonly CommandContext _context;
-        private readonly CommandOptions _options;
         private readonly CommandList _list;
+
+        public CommandOptions Options { get; }
 
         public ExecutionResult Execute(string command)
         {
             ParsedCommand parsedCommand;
             try
             {
-                parsedCommand = ParseCommand(command, _options);
+                parsedCommand = ParseCommand(command, Options);
             }
             catch (ArgumentException e)
             {
