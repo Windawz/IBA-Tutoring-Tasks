@@ -18,10 +18,11 @@ namespace CSharpPilot2.Input
             Interceptors.Add(interceptor);
         public Request(InputSource source, IReadOnlyCollection<Interceptor> interceptors) : this(source) =>
             Interceptors.AddRange(interceptors);
+        public Request(Request other) : this(other._source, other.Interceptors) { }
 
         private readonly InputSource _source;
         
-        protected List<Interceptor> Interceptors { get; } = new();
+        public List<Interceptor> Interceptors { get; } = new();
 
         public event EventHandler? RequestStarted;
 
@@ -43,10 +44,6 @@ namespace CSharpPilot2.Input
             }
             return inputInfo;
         }
-        public void AddInterceptor(Interceptor interceptor) =>
-            Interceptors.Add(interceptor);
-        public void AddInterceptorRange(IEnumerable<Interceptor> interceptors) =>
-            Interceptors.AddRange(interceptors);
         protected virtual void AddDefaultInterceptors() { }
         private Interceptor? FindInterceptor(InputInfo inputInfo) =>
             Interceptors.Where(i => i.Condition(inputInfo)).FirstOrDefault();
