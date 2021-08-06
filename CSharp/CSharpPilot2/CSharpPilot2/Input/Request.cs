@@ -43,6 +43,10 @@ namespace CSharpPilot2.Input
             }
             return inputInfo;
         }
+        public void AddInterceptor(Interceptor interceptor) =>
+            Interceptors.Add(interceptor);
+        public void AddInterceptorRange(IEnumerable<Interceptor> interceptors) =>
+            Interceptors.AddRange(interceptors);
         protected virtual void AddDefaultInterceptors() { }
         private Interceptor? FindInterceptor(InputInfo inputInfo) =>
             Interceptors.Where(i => i.Condition(inputInfo)).FirstOrDefault();
