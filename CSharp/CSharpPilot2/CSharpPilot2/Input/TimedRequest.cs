@@ -1,4 +1,6 @@
-﻿namespace CSharpPilot2.Input
+﻿using CSharpPilot2.Gameplay;
+
+namespace CSharpPilot2.Input
 {
     internal class TimedRequest : ValidatedRequest
     {
