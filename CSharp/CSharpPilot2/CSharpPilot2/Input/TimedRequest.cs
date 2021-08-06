@@ -4,7 +4,7 @@ namespace CSharpPilot2.Input
 {
     internal class TimedRequest : ValidatedRequest
     {
-        public TimedRequest(InputValidator validator, InputForgiver forgiver) : base(validator, forgiver) =>
+        public TimedRequest(InputValidator validator) : base(validator) =>
             InputInfoReceived += (sender, e) => SecondsPassed += e.Seconds;
 
         public double SecondsPassed { get; private set; } = 0.0;

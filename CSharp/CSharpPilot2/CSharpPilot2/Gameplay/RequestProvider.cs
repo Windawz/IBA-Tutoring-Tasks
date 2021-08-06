@@ -15,7 +15,7 @@ namespace CSharpPilot2.Gameplay
 
         public TimedRequest GetWordRequestTimed(Player player)
         {
-            var request = new TimedRequest(Rules.InputValidator, Rules.InputForgiver);
+            var request = new TimedRequest(Rules.InputValidator);
 
             double GetTimeLeft(TimedRequest request) =>
                 Rules.Properties.MaxWordSeconds - request.SecondsPassed;
@@ -36,7 +36,7 @@ namespace CSharpPilot2.Gameplay
         }
         public ValidatedRequest GetWordRequest(Player player)
         {
-            var request = new ValidatedRequest(Rules.InputValidator, Rules.InputForgiver);
+            var request = new ValidatedRequest(Rules.InputValidator);
 
             request.RequestStarted += (sender, e) =>
             {
