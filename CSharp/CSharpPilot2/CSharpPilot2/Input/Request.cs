@@ -7,7 +7,7 @@ namespace CSharpPilot2.Input
 {
     internal class Request
     {
-        private Request(InputSource source) =>
+        public Request(InputSource source) =>
             _source = source;
         public Request(InputSource source, Interceptor interceptor) : this(source) =>
             _interceptors.Add(interceptor);
