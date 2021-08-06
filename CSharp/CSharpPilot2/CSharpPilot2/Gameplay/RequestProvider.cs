@@ -7,50 +7,25 @@ namespace CSharpPilot2.Gameplay
 {
     internal class RequestProvider
     {
-        public RequestProvider(Rules rules, Locale locale) =>
-            (Rules, Locale) = (rules, locale);
-
-        protected Rules Rules { get; }
-        protected Locale Locale { get; }
-
-        public TimedRequest GetWordRequestTimed(Player player)
+        public RequestProvider(Rules rules, Locale locale, InputSource source)
         {
-            var request = new TimedRequest(Rules.InputValidator);
-
-            double GetTimeLeft(TimedRequest request) =>
-                Rules.Properties.MaxWordSeconds - request.SecondsPassed;
-
-            request.RequestStarted += (sender, e) =>
-            {
-                string msg = $"{Locale.GetWordRequestString(player.Name)} ({Locale.GetTimeLeftSuffixString(GetTimeLeft(request))})";
-                Console.WriteLine(msg);
-            };
-
-            request.InputInfoInvalid += (sender, e) =>
-            {
-                string msg = $"{Locale.GetInvalidInputString()} ({Locale.GetTimeLeftSuffixString(GetTimeLeft(request))})";
-                Console.WriteLine(msg);
-            };
-
-            return request;
+            _source = source;
+            _rules = rules;
+            _locale = locale;
         }
-        public ValidatedRequest GetWordRequest(Player player)
+
+        private readonly InputSource _source;
+        private readonly Rules _rules;
+        private readonly Locale _locale;
+
+        public Request GetWordRequestTimed(Player player)
         {
-            var request = new ValidatedRequest(Rules.InputValidator);
-
-            request.RequestStarted += (sender, e) =>
-            {
-                string msg = $"{Locale.GetWordRequestString(player.Name)}";
-                Console.WriteLine(msg);
-            };
-
-            request.InputInfoInvalid += (sender, e) =>
-            {
-                string msg = $"{Locale.GetInvalidInputString()}";
-                Console.WriteLine(msg);
-            };
-
-            return request;
+           
+        }
+        public Request GetWordRequest(Player player)
+        {
+            Interceptor interceptor = new(x => _rules.InputValidator(x), x => Console.WriteLine($"{_locale.GetInvalidInputString()}"));
+            return new Request(_source, { interceptor });
         }
         public Request GetNameRequest(int playerIndex)
         {
