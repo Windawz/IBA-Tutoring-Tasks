@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 using System.Collections.Generic;
 using System.Collections.Immutable;
 
@@ -27,22 +28,20 @@ namespace CSharpPilot2.Input
             InputInfo inputInfo;
             while (true)
             {
-                bool isIntercepted = false;
                 inputInfo = Source();
-                foreach (var interceptor in _interceptors)
+                Interceptor? interceptor = FindInterceptor(inputInfo);
+                if (interceptor is not null)
                 {
-                    if (interceptor.Condition(inputInfo))
-                    {
-                        isIntercepted = true;
-                        interceptor.Action(inputInfo);
-                    }
+                    interceptor.Action(inputInfo);
                 }
-                if (!isIntercepted)
+                else
                 {
                     break;
                 }
             }
             return inputInfo;
         }
+        private Interceptor? FindInterceptor(InputInfo inputInfo) =>
+            _interceptors.Where(i => i.Condition(inputInfo)).FirstOrDefault();
     }
 }
