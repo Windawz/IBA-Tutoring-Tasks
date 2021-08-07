@@ -14,7 +14,7 @@ namespace CSharpPilot2.Input
         }
         public Request(InputSource source, Interceptor interceptor) : this(source) =>
             Interceptors.Add(interceptor);
-        public Request(InputSource source, IReadOnlyCollection<Interceptor> interceptors) : this(source) =>
+        public Request(InputSource source, IEnumerable<Interceptor> interceptors) : this(source) =>
             Interceptors.AddRange(interceptors);
 
         private readonly InputSource _source;

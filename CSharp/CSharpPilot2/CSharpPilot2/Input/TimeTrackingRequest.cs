@@ -8,7 +8,7 @@ namespace CSharpPilot2.Input
     {
         public TimeTrackingRequest(InputSource source) : base(source) { }
         public TimeTrackingRequest(InputSource source, Interceptor interceptor) : base(source, interceptor) { }
-        public TimeTrackingRequest(InputSource source, IReadOnlyCollection<Interceptor> interceptors) : base(source, interceptors) { }
+        public TimeTrackingRequest(InputSource source, IEnumerable<Interceptor> interceptors) : base(source, interceptors) { }
 
         public double SecondsSpent { get; private set; } = 0.0;
 
