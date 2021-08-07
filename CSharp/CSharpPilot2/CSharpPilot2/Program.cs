@@ -21,7 +21,7 @@ namespace CSharpPilot2
             Console.InputEncoding = encoding;
             Console.OutputEncoding = encoding;
 
-            Game game = new(ReadInputInfo, GetRules(), locale, GetDefaultCommandOptions(), GetDefaultCommandList());
+            Game game = new(ReadInputInfo, GetRules(), locale, GetDefaultCommandOptions());
             game.Start();
         }
 
@@ -65,7 +65,7 @@ namespace CSharpPilot2
             (inputInfo) => inputInfo.Text.Length <= properties.MaxWordTextLength
                            && inputInfo.Text.Length >= properties.MinWordTextLength;
         private static CommandOptions GetDefaultCommandOptions() =>
-            new CommandOptions("/", "-", new string[] { " " });
+            new CommandOptions("/", "-", new string[] { " " }, GetDefaultCommandList());
         private static CommandList GetDefaultCommandList()
         {
             Dictionary<string, CommandInfo> d = new();

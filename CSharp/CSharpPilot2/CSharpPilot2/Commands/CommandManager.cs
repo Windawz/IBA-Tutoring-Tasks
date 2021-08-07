@@ -6,21 +6,20 @@ namespace CSharpPilot2.Commands
 {
     internal class CommandManager
     {
-        public CommandManager(CommandContext context, CommandOptions options, CommandList list)
+        public CommandManager(CommandContext context, CommandOptions options)
         {
             _context = context;
             Options = options;
-            _list = list;
         }
 
         private readonly CommandContext _context;
-        private readonly CommandList _list;
 
         public CommandOptions Options { get; }
 
         public ExecutionResult Execute(string command)
         {
             ParsedCommand parsedCommand;
+            CommandList list = Options.CommandList;
             try
             {
                 parsedCommand = ParseCommand(command, Options);
@@ -30,7 +29,7 @@ namespace CSharpPilot2.Commands
                 return new ExecutionResult(HasFailed: true, FailMessage: $"{_context.Locale.GetErrorParsingCommand(command, e.Message)}");
             }
 
-            if (_list.Commands.TryGetValue(parsedCommand.Name, out CommandInfo? info))
+            if (list.Commands.TryGetValue(parsedCommand.Name, out CommandInfo? info))
             {
                 return info.Action.Invoke(_context, parsedCommand.Parameters);
             }

@@ -11,12 +11,12 @@ namespace CSharpPilot2.Gameplay
 {
     internal class Game
     {
-        public Game(InputSource inputSource, Rules rules, Locale locale, CommandOptions commandOptions, CommandList commandList)
+        public Game(InputSource inputSource, Rules rules, Locale locale, CommandOptions commandOptions)
         {
             _locale = locale;
             _state = new State(rules);
 
-            CommandManager commandManager = new(GetCommandContext(), commandOptions, commandList);
+            CommandManager commandManager = new(GetCommandContext(), commandOptions);
             _requestProvider = new RequestProvider(_state.Rules, _locale, inputSource, commandManager);
         }
 
