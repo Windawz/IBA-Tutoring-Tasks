@@ -21,7 +21,7 @@ namespace CSharpPilot2.Input
 
         public List<Interceptor> Interceptors { get; } = new();
 
-        public event EventHandler? RequestStarted;
+        public event RequestStartedEventHandler? RequestStarted;
 
         public InputInfo Perform()
         {
