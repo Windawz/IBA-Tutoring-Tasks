@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 
+using CSharpPilot2.Commands;
 using CSharpPilot2.Input;
 using CSharpPilot2.Locales;
 
@@ -10,15 +11,15 @@ namespace CSharpPilot2.Gameplay
 {
     internal class Game
     {
-        public Game(InputSource inputSource, Rules rules, Locale locale)
+        public Game(InputSource inputSource, Rules rules, Locale locale, CommandOptions commandOptions, CommandList commandList)
         {
-            _inputSource = inputSource;
             _locale = locale;
             _state = new State(rules);
-            _requestProvider = new RequestProvider(_state.Rules, _locale);
+
+            CommandManager commandManager = new(GetCommandContext(), commandOptions, commandList);
+            _requestProvider = new RequestProvider(_state.Rules, _locale, inputSource, commandManager);
         }
 
-        private readonly InputSource _inputSource;
         private readonly Locale _locale;
         private readonly RequestProvider _requestProvider;
         private readonly State _state;
@@ -64,13 +65,15 @@ namespace CSharpPilot2.Gameplay
             Console.WriteLine(GetEndGameStatsString());
             RequestAnyKey();
         }
+        private CommandContext GetCommandContext() => 
+            new CommandContext(_locale, _state);
         private void CreatePlayers()
         {
             for (int i = 0; i < _state.Rules.Properties.PlayerCount; i++)
             {
                 string name = _requestProvider
                     .GetNameRequest(playerIndex: i)
-                    .Perform(_inputSource)
+                    .Perform()
                     .Text;
 
                 _state.Players[i] = new Player(Index: i, Name: name);
@@ -79,13 +82,13 @@ namespace CSharpPilot2.Gameplay
         private Word RequestWordTimed(Player requestingPlayer)
         {
             TimeTrackingRequest request = _requestProvider.GetTimeTrackingWordRequest(requestingPlayer);
-            InputInfo inputInfo = request.Perform(_inputSource);
+            InputInfo inputInfo = request.Perform();
             return new Word(inputInfo.Text, inputInfo.Seconds);
         }
         private Word RequestWord(Player requestingPlayer)
         {
-            ValidatedRequest request = _requestProvider.GetWordRequest(requestingPlayer);
-            InputInfo inputInfo = request.Perform(_inputSource);
+            Request request = _requestProvider.GetWordRequest(requestingPlayer);
+            InputInfo inputInfo = request.Perform();
             return new Word(inputInfo.Text, inputInfo.Seconds);
         }
         private void RequestAnyKey()
