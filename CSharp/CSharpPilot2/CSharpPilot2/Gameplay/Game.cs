@@ -78,7 +78,7 @@ namespace CSharpPilot2.Gameplay
         }
         private Word RequestWordTimed(Player requestingPlayer)
         {
-            TimedRequest request = _requestProvider.GetWordRequestTimed(requestingPlayer);
+            TimeTrackingRequest request = _requestProvider.GetTimeTrackingWordRequest(requestingPlayer);
             InputInfo inputInfo = request.Perform(_inputSource);
             return new Word(inputInfo.Text, inputInfo.Seconds);
         }

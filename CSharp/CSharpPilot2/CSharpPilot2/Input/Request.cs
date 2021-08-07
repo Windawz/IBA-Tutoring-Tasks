@@ -10,42 +10,48 @@ namespace CSharpPilot2.Input
         public Request(InputSource source)
         {
             _source = source;
-
             AddDefaultInterceptors();
         }
-
         public Request(InputSource source, Interceptor interceptor) : this(source) =>
             Interceptors.Add(interceptor);
         public Request(InputSource source, IReadOnlyCollection<Interceptor> interceptors) : this(source) =>
             Interceptors.AddRange(interceptors);
-        public Request(Request other) : this(other._source, other.Interceptors) { }
 
         private readonly InputSource _source;
-        
+
         public List<Interceptor> Interceptors { get; } = new();
 
         public event EventHandler? RequestStarted;
 
         public InputInfo Perform()
         {
+            var ordered = GetOrdered(Interceptors);
             InputInfo inputInfo;
-            while (true)
+            bool doRetry;
+            do
             {
+                doRetry = false;
                 inputInfo = _source();
-                Interceptor? interceptor = FindInterceptor(inputInfo);
-                if (interceptor is not null)
+                var matching = GetMatching(ordered, inputInfo);
+                foreach (Interceptor i in matching)
                 {
-                    interceptor.Action(inputInfo);
-                }
-                else
-                {
-                    break;
+                    i.Action(inputInfo);
+                    if (IsRetrier(i))
+                    {
+                        doRetry = true;
+                        break;
+                    }
                 }
             }
+            while (doRetry);
             return inputInfo;
         }
         protected virtual void AddDefaultInterceptors() { }
-        private Interceptor? FindInterceptor(InputInfo inputInfo) =>
-            Interceptors.Where(i => i.Condition(inputInfo)).FirstOrDefault();
+        private static IEnumerable<Interceptor> GetOrdered(IEnumerable<Interceptor> interceptors) =>
+            interceptors.OrderBy(i => i.Behaviour).ThenByDescending(i => i.Priority);
+        private static IEnumerable<Interceptor> GetMatching(IEnumerable<Interceptor> interceptors, InputInfo inputInfo) =>
+            interceptors.Where(i => i.Condition(inputInfo));
+        private static bool IsRetrier(Interceptor interceptor) =>
+            interceptor.Behaviour == InterceptorBehavior.Retry;
     }
 }

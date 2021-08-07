@@ -6,5 +6,10 @@ using System.Threading.Tasks;
 
 namespace CSharpPilot2.Input
 {
-    internal delegate bool InterceptCondition(InputInfo inputInfo);
+    internal enum InterceptorPriority
+    {
+        Normal,
+        High,
+        Highest,
+    }
 }

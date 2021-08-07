@@ -6,10 +6,9 @@ using System.Threading.Tasks;
 
 namespace CSharpPilot2.Input
 {
-    internal enum InterceptResult
+    enum InterceptorBehavior
     {
-        Break,
-        Continue,
-        Fail,
+        Pass,
+        Retry,
     }
 }
