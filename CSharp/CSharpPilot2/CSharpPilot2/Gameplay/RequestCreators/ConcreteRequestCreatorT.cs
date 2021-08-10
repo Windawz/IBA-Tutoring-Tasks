@@ -4,7 +4,7 @@ using CSharpPilot2.Locales;
 
 namespace CSharpPilot2.Gameplay.RequestCreators
 {
-    internal class ConcreteRequestCreator<TParam> : ConcreteRequestCreatorBase
+    internal abstract class ConcreteRequestCreator<TParam> : ConcreteRequestCreatorBase
     {
         public ConcreteRequestCreator(CommandManager commandManager, InputSource inputSource, Locale locale)
             : base(commandManager, inputSource, locale) { }
