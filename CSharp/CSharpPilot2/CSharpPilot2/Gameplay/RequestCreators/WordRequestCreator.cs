@@ -28,6 +28,6 @@ namespace CSharpPilot2.Gameplay.RequestCreators
         private RequestStartedEventHandler GetStartedHandler() =>
             (sender, e) => GetStartedHandlerMessageString();
         private Interceptor GetInputInterceptor() =>
-            new Interceptor(i => !InputValidator(i), _ => Console.WriteLine(GetInputInterceptorMessageString()));
+            new(i => !InputValidator(i), _ => Console.WriteLine(GetInputInterceptorMessageString()));
     }
 }
