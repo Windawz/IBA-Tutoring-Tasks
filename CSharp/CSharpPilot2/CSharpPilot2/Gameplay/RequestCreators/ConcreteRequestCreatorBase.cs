@@ -9,7 +9,7 @@ namespace CSharpPilot2.Gameplay.RequestCreators
         public ConcreteRequestCreatorBase(CommandManager commandManager, InputSource inputSource, Locale locale)
             : base(commandManager, inputSource, locale) { }
 
-        protected virtual Request CreateRequestBase()
+        protected Request CreateRequestBase()
         {
             Request request = new(InputSource, GetDefaultInterceptors());
             request.RequestStarted += GetDefaultStartedHandler();
