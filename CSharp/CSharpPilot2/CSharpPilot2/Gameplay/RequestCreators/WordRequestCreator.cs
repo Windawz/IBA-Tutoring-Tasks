@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 
 using CSharpPilot2.Commands;
@@ -17,7 +18,7 @@ namespace CSharpPilot2.Gameplay.RequestCreators
         protected override RequestStartedEventHandler GetDefaultStartedHandler() =>
             base.GetDefaultStartedHandler().Combine(GetStartedHandler());
         protected override IEnumerable<Interceptor> GetDefaultInterceptors() =>
-            base.GetDefaultInterceptors().Append();
+            base.GetDefaultInterceptors().Append(GetInputInterceptor());
 
         protected virtual string GetStartedHandlerMessageString() =>
             Locale.GetWordRequestString(ReceivedParameter);
@@ -27,6 +28,6 @@ namespace CSharpPilot2.Gameplay.RequestCreators
         private RequestStartedEventHandler GetStartedHandler() =>
             (sender, e) => GetStartedHandlerMessageString();
         private Interceptor GetInputInterceptor() =>
-            new Interceptor(i => !InputValidator(i), )
+            new Interceptor(i => !InputValidator(i), _ => Console.WriteLine(GetInputInterceptorMessageString()));
     }
 }
