@@ -1,6 +1,6 @@
 ﻿namespace CSharpPilot2.Locales
 {
-    internal class EnglishLocale : Locale
+    internal sealed class EnglishLocale : Locale
     {
         public override string GetNameRequestString(int playerIndex) =>
             $"Player {playerIndex + 1}, enter name:";

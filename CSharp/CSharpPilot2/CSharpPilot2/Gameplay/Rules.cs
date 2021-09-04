@@ -1,4 +1,4 @@
 ﻿namespace CSharpPilot2.Gameplay
 {
-    internal record Rules(RulesProperties Properties, WordValidator WordValidator, InputValidator InputValidator);
+    internal sealed record Rules(RulesProperties Properties, WordValidator WordValidator, InputValidator InputValidator);
 }

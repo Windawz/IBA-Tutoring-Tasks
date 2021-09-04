@@ -2,7 +2,7 @@
 
 namespace CSharpPilot2.Gameplay
 {
-    internal class State
+    internal sealed class State
     {
         public State(Rules rules)
         {

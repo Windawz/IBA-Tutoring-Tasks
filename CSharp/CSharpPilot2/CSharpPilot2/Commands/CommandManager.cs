@@ -4,7 +4,7 @@ using System.Linq;
 
 namespace CSharpPilot2.Commands
 {
-    internal class CommandManager
+    internal sealed class CommandManager
     {
         public CommandManager(CommandContext context, CommandOptions options)
         {

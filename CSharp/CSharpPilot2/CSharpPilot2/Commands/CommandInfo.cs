@@ -1,4 +1,4 @@
 ﻿namespace CSharpPilot2.Commands
 {
-    internal record CommandInfo(string Name, string Description, CommandAction Action);
+    internal sealed record CommandInfo(string Name, string Description, CommandAction Action);
 }

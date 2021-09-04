@@ -9,7 +9,7 @@ using CSharpPilot2.Locales;
 
 namespace CSharpPilot2.Gameplay
 {
-    internal class Game
+    internal sealed class Game
     {
         public Game(IInputSource inputSource, Rules rules, Locale locale, CommandOptions commandOptions)
         {

@@ -2,5 +2,5 @@
 
 namespace CSharpPilot2.Commands
 {
-    internal record ParsedCommand(string Name, IDictionary<string, ParsedParameter> Parameters);
+    internal sealed record ParsedCommand(string Name, IDictionary<string, ParsedParameter> Parameters);
 }

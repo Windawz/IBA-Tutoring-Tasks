@@ -1,6 +1,6 @@
 ﻿namespace CSharpPilot2.Locales
 {
-    internal class RussianLocale : Locale
+    internal sealed class RussianLocale : Locale
     {
         public override string GetNameRequestString(int playerIndex) =>
             $"Игрок {playerIndex + 1}, введите имя:";
