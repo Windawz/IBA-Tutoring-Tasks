@@ -1,5 +1,7 @@
-﻿namespace CSharpPilot2.IO {
-    interface IInputSource {
-        Input Get();    
+﻿namespace CSharpPilot2.IO
+{
+    interface IInputSource
+    {
+        Input Get();
     }
 }

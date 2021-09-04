@@ -2,5 +2,5 @@
 
 namespace CSharpPilot2.Gameplay
 {
-    internal delegate bool InputValidator(Input input);
+    delegate bool InputValidator(Input input);
 }

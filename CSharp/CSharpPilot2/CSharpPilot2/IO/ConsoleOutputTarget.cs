@@ -2,9 +2,12 @@
 
 using static System.Console;
 
-namespace CSharpPilot2.IO {
-    sealed class ConsoleOutputTarget : IOutputTarget {
-        public void Put(IOutput output) {
+namespace CSharpPilot2.IO
+{
+    sealed class ConsoleOutputTarget : IOutputTarget
+    {
+        public void Put(IOutput output)
+        {
             OutputInfo info = output.Info;
             string text = info.Text;
             ConsoleColor color = info.Color is null ? _oldColor : TranslateColor((OutputColor)info.Color);
@@ -12,17 +15,19 @@ namespace CSharpPilot2.IO {
             SetColor(color);
 
             Write(text);
-            if (info.NewLine) {
+            if (info.NewLine)
+            {
                 WriteLine();
             }
 
             RestoreColor();
         }
 
-        private static ConsoleColor _oldColor = ForegroundColor;
+        static ConsoleColor _oldColor = ForegroundColor;
 
-        private static ConsoleColor TranslateColor(OutputColor color) =>
-            color switch {
+        static ConsoleColor TranslateColor(OutputColor color) =>
+            color switch
+            {
                 OutputColor.Gray => ConsoleColor.Gray,
                 OutputColor.Red => ConsoleColor.Red,
                 OutputColor.Green => ConsoleColor.Green,
@@ -30,12 +35,11 @@ namespace CSharpPilot2.IO {
                 _ => throw new ArgumentOutOfRangeException(
                     nameof(color), $"Failed to translate unknown {nameof(OutputColor)} `{color}` to {nameof(ConsoleColor)}"),
             };
-        private void SetColor(ConsoleColor color) {
+        void SetColor(ConsoleColor color)
+        {
             _oldColor = ForegroundColor;
             ForegroundColor = color;
         }
-        private void RestoreColor() {
-            ForegroundColor = _oldColor;
-        }
+        void RestoreColor() => ForegroundColor = _oldColor;
     }
 }

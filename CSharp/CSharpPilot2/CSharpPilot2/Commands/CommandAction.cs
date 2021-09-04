@@ -2,5 +2,5 @@
 
 namespace CSharpPilot2.Commands
 {
-    internal delegate ExecutionResult CommandAction(CommandContext context, IDictionary<string, ParsedParameter> parameters);
+    delegate ExecutionResult CommandAction(CommandContext context, IDictionary<string, ParsedParameter> parameters);
 }

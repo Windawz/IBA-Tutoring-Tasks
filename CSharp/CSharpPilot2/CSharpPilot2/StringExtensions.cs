@@ -4,7 +4,7 @@ using System.Linq;
 namespace CSharpPilot2
 {
     // Convenience extension methods for implementing word comparison logic.
-    internal static class StringExtensions
+    static class StringExtensions
     {
         public static int CharacterCount(this string str, char c) =>
             str.Where(x => x == c).Count();

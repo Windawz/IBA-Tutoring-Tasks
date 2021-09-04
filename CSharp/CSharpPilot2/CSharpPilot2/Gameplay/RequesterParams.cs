@@ -8,7 +8,8 @@ namespace CSharpPilot2.Gameplay
     readonly struct RequesterParams
     {
         public RequesterParams(IInputSource inputSource, IOutputTarget outputTarget, Predicate<string> commandDetector, Action<string> commandHandler,
-            Predicate<Input> inputValidator, TimeLeftBuilder timeLeftBuilder) {
+            Predicate<Input> inputValidator, TimeLeftBuilder timeLeftBuilder)
+        {
             InputSource = inputSource;
             OutputTarget = outputTarget;
             CommandDetector = commandDetector;

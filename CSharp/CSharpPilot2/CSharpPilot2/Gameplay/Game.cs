@@ -9,7 +9,7 @@ using CSharpPilot2.Locales;
 
 namespace CSharpPilot2.Gameplay
 {
-    internal sealed class Game
+    sealed class Game
     {
         public Game(IInputSource inputSource, Rules rules, Locale locale, CommandOptions commandOptions)
         {
@@ -30,9 +30,9 @@ namespace CSharpPilot2.Gameplay
             _requester = new Requester(requesterParams);
         }
 
-        private readonly Locale _locale;
-        private readonly Requester _requester;
-        private readonly State _state;
+        readonly Locale _locale;
+        readonly Requester _requester;
+        readonly State _state;
 
         public IReadOnlyList<Step> Steps =>
             _state.Steps;
@@ -44,14 +44,14 @@ namespace CSharpPilot2.Gameplay
             PostPlay();
         }
 
-        private void PrePlay()
+        void PrePlay()
         {
             Console.WriteLine(GetIntroString());
             _requester.Mode = RequesterMode.Default;
             RequestAnyKey();
             CreatePlayers();
         }
-        private void Play()
+        void Play()
         {
             bool isPlaying = true;
             Player currentPlayer = _state.Players[0];
@@ -60,7 +60,8 @@ namespace CSharpPilot2.Gameplay
             while (isPlaying)
             {
                 Word? prevWord = _state.Steps.LastOrDefault()?.Word;
-                if (prevWord is not null) {
+                if (prevWord is not null)
+                {
                     _requester.Mode = RequesterMode.Timed;
                 }
 
@@ -76,29 +77,30 @@ namespace CSharpPilot2.Gameplay
                 currentPlayer = GetNextPlayer(currentPlayer);
             }
         }
-        private void PostPlay() {
+        void PostPlay()
+        {
             _requester.Mode = RequesterMode.Default;
             Console.WriteLine(GetEndGameStatsString());
             RequestAnyKey();
         }
-        private CommandContext GetCommandContext() => 
+        CommandContext GetCommandContext() =>
             new CommandContext(_locale, _state);
-        private void CreatePlayers()
+        void CreatePlayers()
         {
             for (int i = 0; i < _state.Rules.Properties.PlayerCount; i++)
             {
                 _state.Players[i] = new Player(Index: i, Name: RequestName(i));
             }
         }
-        private string RequestName(int playerIndex) =>
+        string RequestName(int playerIndex) =>
             _requester.RequestName(_locale.GetNameRequestString(playerIndex));
-        private Word RequestWord(string playerName) =>
+        Word RequestWord(string playerName) =>
             _requester.RequestWord(_locale.GetWordRequestString(playerName), _locale.GetInvalidInputString());
-        private void RequestAnyKey() =>
+        void RequestAnyKey() =>
             _requester.RequestAnyKey(_locale.GetPressAnyKeyToContinueString());
-        private Player GetNextPlayer(Player current) =>
+        Player GetNextPlayer(Player current) =>
             _state.Players[(current.Index + 1) % _state.Players.Length];
-        private string GetEndGameStatsString()
+        string GetEndGameStatsString()
         {
             IEnumerable<Step>? twoLastSteps = _state.Steps.TakeLast(2);
             Step curStep = twoLastSteps.Last();
@@ -113,7 +115,7 @@ namespace CSharpPilot2.Gameplay
 
             return sb.ToString();
         }
-        private string GetIntroString()
+        string GetIntroString()
         {
             string bullet = "- ";
             string[]? ruleStrings = new string[6]

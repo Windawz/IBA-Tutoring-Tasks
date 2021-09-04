@@ -2,7 +2,7 @@
 
 namespace CSharpPilot2.Locales
 {
-    internal abstract class Locale
+    abstract class Locale
     {
         public virtual Encoding GetEncoding() =>
             Encoding.UTF8;

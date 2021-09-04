@@ -1,5 +1,7 @@
-﻿namespace CSharpPilot2.IO {
-    interface IOutput {
+﻿namespace CSharpPilot2.IO
+{
+    interface IOutput
+    {
         OutputInfo Info { get; }
     }
 }

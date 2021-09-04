@@ -1,7 +1,8 @@
 ﻿
 namespace CSharpPilot2.Gameplay
 {
-    enum RequesterMode {
+    enum RequesterMode
+    {
         Default,
         Timed,
     }

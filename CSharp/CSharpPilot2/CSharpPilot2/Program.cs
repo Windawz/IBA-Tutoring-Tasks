@@ -1,8 +1,7 @@
 ﻿using System;
-using System.Timers;
-using System.Text;
-using System.Linq;
 using System.Collections.Generic;
+using System.Linq;
+using System.Text;
 
 using CSharpPilot2.Commands;
 using CSharpPilot2.Gameplay;
@@ -11,9 +10,9 @@ using CSharpPilot2.Locales;
 
 namespace CSharpPilot2
 {
-    internal partial class Program
+    partial class Program
     {
-        private static void Main(string[] args)
+        static void Main(string[] args)
         {
             Locale locale = new RussianLocale();
 
@@ -25,13 +24,13 @@ namespace CSharpPilot2
             game.Start();
         }
 
-        private static Rules GetRules()
+        static Rules GetRules()
         {
             RulesProperties properties = new(2, 10.0, 8, 30);
 
             return new Rules(properties, GetDefaultWordValidator(properties), GetDefaultInputValidator(properties));
         }
-        private static WordValidator GetDefaultWordValidator(RulesProperties properties) =>
+        static WordValidator GetDefaultWordValidator(RulesProperties properties) =>
             (cur, prev) =>
             {
                 if (String.Equals(cur.Text, prev.Text, StringComparison.InvariantCultureIgnoreCase)
@@ -46,12 +45,12 @@ namespace CSharpPilot2
 
                 return curCounts.SequenceEqual(prevCounts);
             };
-        private static InputValidator GetDefaultInputValidator(RulesProperties properties) =>
+        static InputValidator GetDefaultInputValidator(RulesProperties properties) =>
             (inputInfo) => inputInfo.Text.Length <= properties.MaxWordTextLength
                            && inputInfo.Text.Length >= properties.MinWordTextLength;
-        private static CommandOptions GetDefaultCommandOptions() =>
+        static CommandOptions GetDefaultCommandOptions() =>
             new CommandOptions("/", "-", new string[] { " " }, GetDefaultCommandList());
-        private static CommandList GetDefaultCommandList()
+        static CommandList GetDefaultCommandList()
         {
             Dictionary<string, CommandInfo> d = new();
             // No functionality for those to work yet.

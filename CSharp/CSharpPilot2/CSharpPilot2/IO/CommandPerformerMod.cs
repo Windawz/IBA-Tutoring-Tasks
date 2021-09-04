@@ -1,23 +1,31 @@
 ﻿using System;
 
-namespace CSharpPilot2.IO {
-    sealed class CommandPerformerMod : PerformerMod {
-        public CommandPerformerMod(IPerformer performer, Predicate<string> commandDetector, Action<string> commandHandler) : base(performer) {
-            _commandDetector=commandDetector;
-            _commandHandler=commandHandler;
+namespace CSharpPilot2.IO
+{
+    sealed class CommandPerformerMod : PerformerMod
+    {
+        public CommandPerformerMod(IPerformer performer, Predicate<string> commandDetector, Action<string> commandHandler) : base(performer)
+        {
+            _commandDetector = commandDetector;
+            _commandHandler = commandHandler;
         }
 
-        private Predicate<string> _commandDetector;
-        private Action<string> _commandHandler;
+        readonly Predicate<string> _commandDetector;
+        readonly Action<string> _commandHandler;
 
-        public override Input Perform(Request request) {
+        public override Input Perform(Request request)
+        {
             Input input;
-            
-            while (true) {
+
+            while (true)
+            {
                 input = base.Perform(request);
-                if (_commandDetector(input.Text)) {
+                if (_commandDetector(input.Text))
+                {
                     _commandHandler(input.Text);
-                } else {
+                }
+                else
+                {
                     break;
                 }
             }

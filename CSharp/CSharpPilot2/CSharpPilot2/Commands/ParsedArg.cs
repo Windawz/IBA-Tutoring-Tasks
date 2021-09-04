@@ -2,7 +2,7 @@
 
 namespace CSharpPilot2
 {
-    internal sealed record ParsedArg(string Value)
+    sealed record ParsedArg(string Value)
     {
         public bool TryAsInteger(out int output) =>
             Int32.TryParse(Value, out output);

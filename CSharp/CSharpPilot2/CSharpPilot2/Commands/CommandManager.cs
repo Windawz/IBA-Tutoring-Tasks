@@ -4,7 +4,7 @@ using System.Linq;
 
 namespace CSharpPilot2.Commands
 {
-    internal sealed class CommandManager
+    sealed class CommandManager
     {
         public CommandManager(CommandContext context, CommandOptions options)
         {
@@ -12,7 +12,7 @@ namespace CSharpPilot2.Commands
             Options = options;
         }
 
-        private readonly CommandContext _context;
+        readonly CommandContext _context;
 
         public CommandOptions Options { get; }
 
@@ -39,7 +39,7 @@ namespace CSharpPilot2.Commands
             }
         }
 
-        private static ParsedCommand ParseCommand(string command, CommandOptions options)
+        static ParsedCommand ParseCommand(string command, CommandOptions options)
         {
             if (!command.StartsWith(options.CommandPrefix))
             {

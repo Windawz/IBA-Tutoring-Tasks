@@ -5,7 +5,7 @@ namespace CSharpPilot2.Commands
 {
     using CommandsT = IDictionary<string, CommandInfo>;
 
-    internal sealed class CommandList
+    sealed class CommandList
     {
         public CommandList(CommandsT commands) =>
             Commands = commands;
