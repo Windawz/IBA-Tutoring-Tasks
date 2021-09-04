@@ -3,24 +3,35 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 
-using CSharpPilot2.Input;
+using CSharpPilot2.Commands;
+using CSharpPilot2.IO;
 using CSharpPilot2.Locales;
 
 namespace CSharpPilot2.Gameplay
 {
     internal class Game
     {
-        public Game(InputSource inputSource, Rules rules, Locale locale)
+        public Game(IInputSource inputSource, Rules rules, Locale locale, CommandOptions commandOptions)
         {
-            _inputSource = inputSource;
             _locale = locale;
             _state = new State(rules);
-            _requestProvider = new RequestProvider(_state.Rules, _locale);
+
+            CommandManager commandManager = new(GetCommandContext(), commandOptions);
+
+            RequesterParams requesterParams = new(
+                inputSource,
+                new ConsoleOutputTarget(),
+                _ => false, // placeholder
+                _ => { },
+                i => rules.InputValidator(i),
+                t => locale.GetTimeLeftSuffixString(t)
+            );
+
+            _requester = new Requester(requesterParams);
         }
 
-        private readonly InputSource _inputSource;
         private readonly Locale _locale;
-        private readonly RequestProvider _requestProvider;
+        private readonly Requester _requester;
         private readonly State _state;
 
         public IReadOnlyList<Step> Steps =>
@@ -28,13 +39,15 @@ namespace CSharpPilot2.Gameplay
 
         public void Start()
         {
-            Initialize();
+            PrePlay();
             Play();
+            PostPlay();
         }
 
-        private void Initialize()
+        private void PrePlay()
         {
             Console.WriteLine(GetIntroString());
+            _requester.Mode = RequesterMode.Default;
             RequestAnyKey();
             CreatePlayers();
         }
@@ -47,9 +60,11 @@ namespace CSharpPilot2.Gameplay
             while (isPlaying)
             {
                 Word? prevWord = _state.Steps.LastOrDefault()?.Word;
+                if (prevWord is not null) {
+                    _requester.Mode = RequesterMode.Timed;
+                }
 
-                Word word = prevWord is null ?
-                    RequestWord(currentPlayer) : RequestWordTimed(currentPlayer);
+                Word word = RequestWord(currentPlayer.Name);
 
                 _state.Steps.Add(new Step(currentPlayer, word));
 
@@ -60,39 +75,27 @@ namespace CSharpPilot2.Gameplay
                 }
                 currentPlayer = GetNextPlayer(currentPlayer);
             }
-
+        }
+        private void PostPlay() {
+            _requester.Mode = RequesterMode.Default;
             Console.WriteLine(GetEndGameStatsString());
             RequestAnyKey();
         }
+        private CommandContext GetCommandContext() => 
+            new CommandContext(_locale, _state);
         private void CreatePlayers()
         {
             for (int i = 0; i < _state.Rules.Properties.PlayerCount; i++)
             {
-                string name = _requestProvider
-                    .GetNameRequest(playerIndex: i)
-                    .Perform(_inputSource)
-                    .Text;
-
-                _state.Players[i] = new Player(Index: i, Name: name);
+                _state.Players[i] = new Player(Index: i, Name: RequestName(i));
             }
         }
-        private Word RequestWordTimed(Player requestingPlayer)
-        {
-            TimedRequest request = _requestProvider.GetWordRequestTimed(requestingPlayer);
-            InputInfo inputInfo = request.Perform(_inputSource);
-            return new Word(inputInfo.Text, inputInfo.Seconds);
-        }
-        private Word RequestWord(Player requestingPlayer)
-        {
-            ValidatedRequest request = _requestProvider.GetWordRequest(requestingPlayer);
-            InputInfo inputInfo = request.Perform(_inputSource);
-            return new Word(inputInfo.Text, inputInfo.Seconds);
-        }
-        private void RequestAnyKey()
-        {
-            Console.WriteLine(_locale.GetPressAnyKeyToContinueString());
-            Console.ReadKey(intercept: true);
-        }
+        private string RequestName(int playerIndex) =>
+            _requester.RequestName(_locale.GetNameRequestString(playerIndex));
+        private Word RequestWord(string playerName) =>
+            _requester.RequestWord(_locale.GetWordRequestString(playerName), _locale.GetInvalidInputString());
+        private void RequestAnyKey() =>
+            _requester.RequestAnyKey(_locale.GetPressAnyKeyToContinueString());
         private Player GetNextPlayer(Player current) =>
             _state.Players[(current.Index + 1) % _state.Players.Length];
         private string GetEndGameStatsString()

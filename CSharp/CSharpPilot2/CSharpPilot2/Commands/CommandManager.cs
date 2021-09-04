@@ -6,30 +6,30 @@ namespace CSharpPilot2.Commands
 {
     internal class CommandManager
     {
-        public CommandManager(CommandContext context, CommandOptions options, CommandList list)
+        public CommandManager(CommandContext context, CommandOptions options)
         {
             _context = context;
-            _options = options;
-            _list = list;
+            Options = options;
         }
 
         private readonly CommandContext _context;
-        private readonly CommandOptions _options;
-        private readonly CommandList _list;
+
+        public CommandOptions Options { get; }
 
         public ExecutionResult Execute(string command)
         {
             ParsedCommand parsedCommand;
+            CommandList list = Options.CommandList;
             try
             {
-                parsedCommand = ParseCommandTemplate(command, _options);
+                parsedCommand = ParseCommand(command, Options);
             }
             catch (ArgumentException e)
             {
                 return new ExecutionResult(HasFailed: true, FailMessage: $"{_context.Locale.GetErrorParsingCommand(command, e.Message)}");
             }
 
-            if (_list.Commands.TryGetValue(parsedCommand.Name, out CommandInfo? info))
+            if (list.Commands.TryGetValue(parsedCommand.Name, out CommandInfo? info))
             {
                 return info.Action.Invoke(_context, parsedCommand.Parameters);
             }
@@ -39,7 +39,7 @@ namespace CSharpPilot2.Commands
             }
         }
 
-        private static ParsedCommand ParseCommandTemplate(string command, CommandOptions options)
+        private static ParsedCommand ParseCommand(string command, CommandOptions options)
         {
             if (!command.StartsWith(options.CommandPrefix))
             {
