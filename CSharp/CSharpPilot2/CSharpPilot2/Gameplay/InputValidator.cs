@@ -1,6 +1,6 @@
-﻿using CSharpPilot2.Input;
+﻿using CSharpPilot2.IO;
 
 namespace CSharpPilot2.Gameplay
 {
-    internal delegate bool InputValidator(InputInfo inputInfo);
+    internal delegate bool InputValidator(Input input);
 }
