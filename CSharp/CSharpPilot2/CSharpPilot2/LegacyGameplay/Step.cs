@@ -1,4 +1,4 @@
-﻿namespace CSharpPilot2.Gameplay
+﻿namespace CSharpPilot2.LegacyGameplay
 {
     // The type that game history is composed of.
     // Each valid player action gets recorded in a step.

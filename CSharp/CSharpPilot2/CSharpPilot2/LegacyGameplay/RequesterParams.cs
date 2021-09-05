@@ -2,7 +2,7 @@
 
 using CSharpPilot2.IO;
 
-namespace CSharpPilot2.Gameplay
+namespace CSharpPilot2.LegacyGameplay
 {
     // FIXME: Temporary, until I come up with a better design.
     readonly struct RequesterParams

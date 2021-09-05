@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 
 using CSharpPilot2.Commands;
-using CSharpPilot2.Gameplay;
+using CSharpPilot2.LegacyGameplay;
 using CSharpPilot2.IO;
 using CSharpPilot2.Locales;
 

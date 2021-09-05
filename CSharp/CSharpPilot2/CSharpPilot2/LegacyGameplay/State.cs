@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 
-namespace CSharpPilot2.Gameplay
+namespace CSharpPilot2.LegacyGameplay
 {
     sealed class State
     {

@@ -1,5 +1,5 @@
 ﻿
-namespace CSharpPilot2.Gameplay
+namespace CSharpPilot2.LegacyGameplay
 {
     enum RequesterMode
     {

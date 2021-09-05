@@ -7,7 +7,7 @@ using CSharpPilot2.Commands;
 using CSharpPilot2.IO;
 using CSharpPilot2.Locales;
 
-namespace CSharpPilot2.Gameplay
+namespace CSharpPilot2.LegacyGameplay
 {
     sealed class Game
     {

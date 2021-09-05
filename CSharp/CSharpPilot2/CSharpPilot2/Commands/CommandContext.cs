@@ -1,5 +1,5 @@
 ﻿
-using CSharpPilot2.Gameplay;
+using CSharpPilot2.LegacyGameplay;
 using CSharpPilot2.Locales;
 
 namespace CSharpPilot2.Commands
