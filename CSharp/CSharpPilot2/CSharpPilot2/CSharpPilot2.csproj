@@ -16,8 +16,4 @@
     <None Include="C:\Work\Coding\IBA-Tutoring-Tasks\CSharp\CSharpPilot2\CSharpPilot2\.editorconfig" />
   </ItemGroup>
 
-  <ItemGroup>
-    <Folder Include="Gameplay\" />
-  </ItemGroup>
-
 </Project>

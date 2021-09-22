@@ -1,11 +1,11 @@
 ﻿using System;
 
-namespace CSharpPilot2.IO
+namespace CSharpPilot2.IO.PerformerMods
 {
-    sealed partial class TimedPerformerMod : PerformerMod
+    sealed partial class TimingMod : PerformerMod
     {
-        public TimedPerformerMod(IPerformer performer) : this(performer, null) { }
-        public TimedPerformerMod(IPerformer performer, TimeLeftBuilder? timeLeftBuilder) : base(performer) =>
+        public TimingMod(IPerformer performer) : this(performer, null) { }
+        public TimingMod(IPerformer performer, TimeLeftBuilder? timeLeftBuilder) : base(performer) =>
             TimeLeftBuilder = timeLeftBuilder;
 
         public TimeLeftBuilder? TimeLeftBuilder { get; init; }
@@ -31,13 +31,13 @@ namespace CSharpPilot2.IO
                 return sayDo;
             }
 
-            Func<OutputInfo> generator = () =>
+            Func<Output> generator = () =>
             {
-                double secondsSpend = acc.Seconds;
-                OutputInfo? info = sayDo.Output.Info;
+                double secondsSpent = acc.Seconds;
+                Output? info = sayDo.Output.Info;
                 return info with
                 {
-                    Text = info.Text + TimeLeftBuilder(secondsSpend),
+                    Text = info.Text + TimeLeftBuilder(secondsSpent),
                 };
             };
 

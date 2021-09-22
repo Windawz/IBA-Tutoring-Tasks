@@ -1,8 +1,8 @@
-﻿namespace CSharpPilot2.IO
+﻿namespace CSharpPilot2.IO.PerformerMods
 {
-    sealed class RetryingPerformerMod : PerformerMod
+    sealed class RetryingMod : PerformerMod
     {
-        public RetryingPerformerMod(IPerformer performer) : base(performer) { }
+        public RetryingMod(IPerformer performer) : base(performer) { }
 
         public override Input Perform(Request request)
         {

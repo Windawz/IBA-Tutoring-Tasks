@@ -2,6 +2,6 @@
 {
     interface IOutput
     {
-        OutputInfo Info { get; }
+        Output Info { get; }
     }
 }

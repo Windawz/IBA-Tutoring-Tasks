@@ -1,10 +1,10 @@
 ﻿using System;
 
-namespace CSharpPilot2.IO
+namespace CSharpPilot2.IO.PerformerMods
 {
-    sealed class CommandPerformerMod : PerformerMod
+    sealed class CommandCatchingMod : PerformerMod
     {
-        public CommandPerformerMod(IPerformer performer, Predicate<string> commandDetector, Action<string> commandHandler) : base(performer)
+        public CommandCatchingMod(IPerformer performer, Predicate<string> commandDetector, Action<string> commandHandler) : base(performer)
         {
             _commandDetector = commandDetector;
             _commandHandler = commandHandler;

@@ -2,6 +2,8 @@
 {
     interface IInputSource
     {
+        InputSourceReadMode ReadMode { get; set; }
+
         Input Get();
     }
 }

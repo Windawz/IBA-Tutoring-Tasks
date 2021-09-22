@@ -1,29 +1,37 @@
 ﻿using System;
-
-using static System.Console;
+using System.Text;
 
 namespace CSharpPilot2.IO
 {
     sealed class ConsoleOutputTarget : IOutputTarget
     {
+        public ConsoleOutputTarget(Encoding encoding) =>
+            _encoding = encoding;
+        
+        private readonly Encoding _encoding;
+
         public void Put(IOutput output)
         {
-            OutputInfo info = output.Info;
+            Output info = output.Info;
             string text = info.Text;
-            ConsoleColor color = info.Color is null ? _oldColor : TranslateColor((OutputColor)info.Color);
 
-            SetColor(color);
+            ConsoleColor oldColor = Console.ForegroundColor;
+            ConsoleColor color = info.Color is null ? oldColor : TranslateColor((OutputColor)info.Color);
 
-            Write(text);
+            Encoding oldEncoding = Console.OutputEncoding;
+
+            Console.ForegroundColor = color;
+            Console.OutputEncoding = _encoding;
+
+            Console.Write(text);
             if (info.NewLine)
             {
-                WriteLine();
+                Console.WriteLine();
             }
 
-            RestoreColor();
+            Console.ForegroundColor = oldColor;
+            Console.OutputEncoding = oldEncoding;
         }
-
-        static ConsoleColor _oldColor = ForegroundColor;
 
         static ConsoleColor TranslateColor(OutputColor color) =>
             color switch
@@ -35,11 +43,5 @@ namespace CSharpPilot2.IO
                 _ => throw new ArgumentOutOfRangeException(
                     nameof(color), $"Failed to translate unknown {nameof(OutputColor)} `{color}` to {nameof(ConsoleColor)}"),
             };
-        void SetColor(ConsoleColor color)
-        {
-            _oldColor = ForegroundColor;
-            ForegroundColor = color;
-        }
-        void RestoreColor() => ForegroundColor = _oldColor;
     }
 }

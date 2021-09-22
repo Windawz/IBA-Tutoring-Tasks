@@ -4,10 +4,10 @@ namespace CSharpPilot2.IO
 {
     sealed class GeneratedOutput : IOutput
     {
-        public GeneratedOutput(Func<OutputInfo> generator) => _generator = generator;
+        public GeneratedOutput(Func<Output> generator) => _generator = generator;
 
-        readonly Func<OutputInfo> _generator;
+        readonly Func<Output> _generator;
 
-        public OutputInfo Info => _generator();
+        public Output Info => _generator();
     }
 }
