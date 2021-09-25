@@ -33,6 +33,9 @@ namespace CSStarterTest1.DataOps
         /// <returns>
         /// A table made up of all tokens extracted from the .csv string.
         /// </returns>
+        /// <exception cref="ArgumentOutOfRangeException">
+        /// May be thrown if a token has exceeded <see cref="StringBuilder.MaxCapacity"/>
+        /// </exception>
         public string[][] Parse(string data)
         {
             string[] lines = data.Split(Environment.NewLine, StringSplitOptions.TrimEntries);
@@ -62,6 +65,9 @@ namespace CSStarterTest1.DataOps
         /// <returns>
         /// Array of fields extracted from the line, or empty array if the line was ignored.
         /// </returns>
+        /// <exception cref="ArgumentOutOfRangeException">
+        /// May be thrown if a token has exceeded <see cref="StringBuilder.MaxCapacity"/>
+        /// </exception>
         private string[] ParseLine(string value)
         {
             if (value.StartsWith(Comment))
@@ -81,6 +87,9 @@ namespace CSStarterTest1.DataOps
         /// <returns>
         /// An array of tokens.
         /// </returns>
+        /// <exception cref="ArgumentOutOfRangeException">
+        /// May be thrown if a token has exceeded <see cref="StringBuilder.MaxCapacity"/>
+        /// </exception>
         private string[] Split(string value)
         {
             List<string> tokens = new();
@@ -171,6 +180,10 @@ namespace CSStarterTest1.DataOps
         /// <returns>
         /// Start index of the separator token, -1 if not found.
         /// </returns>
+        /// <exception cref="ArgumentOutOfRangeException">
+        /// Caused by invalid <paramref name="startIndex"/>.
+        /// Refer to <see cref="String.IndexOf(String, int, StringComparison)"/>.
+        /// </exception>
         private int IndexOfSeparator(string haystack, int startIndex)
         {
             return haystack.IndexOf(Separator, startIndex, ComparisonType);
@@ -184,6 +197,10 @@ namespace CSStarterTest1.DataOps
         /// <returns>
         /// Start indices of the first and the following wrapper, -1 correspondingly if not found.
         /// </returns>
+        /// <exception cref="ArgumentOutOfRangeException">
+        /// Caused by invalid <paramref name="startIndex"/>.
+        /// Refer to <see cref="String.IndexOf(String, int, StringComparison)"/>.
+        /// </exception>
         private (int Left, int Right) IndicesOfWrappers(string haystack, int startIndex)
         {
             int index = haystack.IndexOf(Wrapper, startIndex, ComparisonType);
