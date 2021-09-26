@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Reflection;
+using System.Text;
 using System.Linq;
 
 namespace CSStarterTest1.Tester
@@ -11,23 +13,37 @@ namespace CSStarterTest1.Tester
         {
             ConsoleColor defaultColor = Console.ForegroundColor;
 
-            Assembly asm = Assembly.GetExecutingAssembly();
-            Console.WriteLine($"Executing assembly: \"{asm.GetName()}\"");
+            Assembly assembly = Assembly.GetExecutingAssembly();
+            Console.WriteLine($"Executing assembly: \"{assembly.GetName()}\"");
 
-            ITest[] tests = asm
-                .GetTypes()
-                .Where(t => t.GetInterface(nameof(ITest)) is not null)
-                .Select(t => 
-                    (ITest)t
-                    .GetConstructor(Array.Empty<Type>())!.Invoke(Array.Empty<object>()) // If null then something's really wrong
-                )
-                .ToArray();
+            TextWriter? logWriter = TryGetLogWriter("tests.log");
+            if (logWriter is null)
+            {
+                Console.ForegroundColor = ConsoleColor.Yellow;
+                Console.WriteLine("Failed to create a log file for tests.");
+                Console.ForegroundColor = defaultColor;
+                logWriter = TextWriter.Null;
+            }
+
+            Test[] tests = null!;
+            try
+            { 
+                tests = GatherTests(assembly, logWriter);
+            }
+            catch (InvalidOperationException e)
+            {
+                Console.ForegroundColor = ConsoleColor.Yellow;
+                Console.WriteLine($"Failed to gather tests. Error message: \"{e.Message}\"");
+                Console.ForegroundColor = defaultColor;
+                Die(-1);
+            }
 
             Console.ForegroundColor = ConsoleColor.Cyan;
             Console.WriteLine();
             Console.WriteLine($"{tests.Length} test(s) detected:");
+
             Console.ForegroundColor = ConsoleColor.DarkCyan;
-            foreach (ITest t in tests)
+            foreach (Test t in tests)
             {
                 Console.WriteLine($" + {t.GetType().Name}");
             }
@@ -37,33 +53,81 @@ namespace CSStarterTest1.Tester
             Console.WriteLine($"Performing...");
             Console.WriteLine();
 
-            Dictionary<ITest, TestResult> results = new();
-
-            void PrintTestsOf(TestResult tr)
-            {
-                var matching = results.Where(kv => kv.Value == tr).ToArray();
-                Console.WriteLine($"{tr} : {matching.Length}");
-                foreach (var r in matching)
-                {
-                    Console.WriteLine($" + {r.Key.GetType().Name}");
-                }
-            }
-
-            foreach (ITest t in tests)
+            Dictionary<Test, TestResult> results = new();
+            foreach (Test t in tests)
             {
                 results[t] = t.Perform();
             }
 
             Console.ForegroundColor = ConsoleColor.Green;
-            PrintTestsOf(TestResult.Success);
+            PrintResults(results, TestResult.Success);
+
             Console.ForegroundColor = ConsoleColor.Red;
-            PrintTestsOf(TestResult.Failure);
+            PrintResults(results, TestResult.Failure);
 
             Console.ForegroundColor = defaultColor;
 
+            Die(0);
+        }
+
+        private static Test[] GatherTests(Assembly assembly, TextWriter logWriter)
+        {
+            var types = assembly
+                .GetTypes()
+                .Where(t => t.BaseType == typeof(Test));
+
+            List<Test> tests = new();
+            foreach (Type t in types)
+            {
+                ConstructorInfo? ctor = t.GetConstructor(new Type[] { typeof(TextWriter) });
+                if (ctor is null)
+                {
+                    throw new InvalidOperationException($"Test \"{t.Name}\" has no fitting constructor");
+                }
+
+                Test test = (Test)ctor.Invoke(new object[] { logWriter });
+                tests.Add(test);
+            }
+            return tests.ToArray();
+        }
+        private static void PrintResults(Dictionary<Test, TestResult> results, TestResult which)
+        {
+            var matching = results.Where(kv => kv.Value == which).ToArray();
+            Console.WriteLine($"{which} : {matching.Length}");
+            foreach (var r in matching)
+            {
+                Console.WriteLine($" + {r.Key.GetType().Name}");
+            }
+        }
+        private static TextWriter? TryGetLogWriter(string fileName)
+        {
+            Stream? stream = null;
+            try
+            {
+                stream = new FileStream(fileName, FileMode.Create, FileAccess.Write, FileShare.Read);
+            }
+            catch (SystemException)
+            {
+                if (stream is not null)
+                {
+                    stream.Dispose();
+                }
+            }
+            if (stream is not null)
+            {
+                return new StreamWriter(stream, encoding: Encoding.UTF8, leaveOpen: false);
+            }
+            else
+            {
+                return null;
+            }
+        }
+        private static void Die(int exitCode)
+        {
             Console.WriteLine();
             Console.WriteLine("Press any key to continue...");
             Console.ReadKey(intercept: true);
+            Environment.Exit(exitCode);
         }
     }
 }
