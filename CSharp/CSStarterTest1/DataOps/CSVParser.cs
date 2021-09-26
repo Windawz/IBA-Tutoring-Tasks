@@ -138,6 +138,9 @@ namespace CSStarterTest1.DataOps
                 // Are we at the last char of the separator?
                 bool atSepEnd = sepExists &&
                                 i == sep + Separator.Length - 1;
+                
+                // Are we at the last char?
+                bool atLast = i == value.Length - 1;
 
                 char c = value[i];
 
@@ -150,9 +153,11 @@ namespace CSStarterTest1.DataOps
                 {
                     token.Append(c);
                 }
-                // If that failed, see if we're at least at the separator's start.
+                // If that failed, see if we're at least at the separator's start,
+                // or if the string is about to end.
+                //
                 // Flush if so.
-                else if (atSep)
+                if (atSep || atLast)
                 {
                     tokens.Add(token.ToString());
                     token.Clear();
