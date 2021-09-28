@@ -59,6 +59,8 @@ namespace CSStarterTest1.Tester
                 results[t] = t.Perform();
             }
 
+            logWriter.Close();
+
             Console.ForegroundColor = ConsoleColor.Green;
             PrintResults(results, TestResult.Success);
 
