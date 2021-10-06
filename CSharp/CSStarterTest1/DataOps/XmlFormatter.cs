@@ -47,12 +47,13 @@ namespace CSStarterTest1.DataOps
             {
                 elementName = DefaultElementName;
             }
-
+            
             var elements = data
                 .GetType()
                 .GetProperties()
                 .Select(p => (Name: XmlConvert.EncodeName(p.Name), Value: p.GetValue(data)))
-                .Select(nv => IsBasicType(nv.Value) ? new XElement(nv.Name, nv.Value) : ToXml(nv.Value, nv.Name))
+                .Select(nv => // ugly!!!!!!
+                    IsBasicType(nv.Value) ? new XElement(nv.Name, nv.Value is DateTime dt ? FormatDateTime(dt) : nv.Value) : ToXml(nv.Value, nv.Name))
                 .Where(xe => xe is not null);
 
             XElement result = new(elementName);
@@ -61,6 +62,8 @@ namespace CSStarterTest1.DataOps
             return result;
         }
 
+        private static string FormatDateTime(DateTime dt) =>
+            dt.ToString(FormatSettings.MainDateTimeFormatString); // can't tell XElement what format to use, so gotta hack around
         private static bool IsBasicType<T>(T value) => 
             typeof(T).IsPrimitive || value is
                 Enum or
