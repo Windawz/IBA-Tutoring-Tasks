@@ -65,7 +65,7 @@ namespace CSStarterTest1.DataOps
                 return null;
             }
 
-            if (!DateTime.TryParseExact(line[(int)DataField.Date], "dd.MM.yyyy", CultureInfo.InvariantCulture, DateTimeStyles.None, out DateTime date))
+            if (!DateTime.TryParseExact(line[(int)DataField.Date], FormatSettings.MainDateTimeFormatString, CultureInfo.InvariantCulture, DateTimeStyles.None, out DateTime date))
             {
                 return null;
             }
