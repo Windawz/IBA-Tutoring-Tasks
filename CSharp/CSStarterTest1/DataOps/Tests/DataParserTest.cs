@@ -1,11 +1,11 @@
 ﻿using System;
 using System.IO;
 
-using CSStarterTest1.DataOps;
+using CSStarterTest1.TestUtils;
 
-namespace CSStarterTest1.Tester.Tests
+namespace CSStarterTest1.DataOps.Tests
 {
-    internal sealed class DataParserTest : Test
+    public sealed class DataParserTest : Test
     {
         public DataParserTest(TextWriter logWriter) : base(logWriter) { }
 

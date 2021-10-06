@@ -5,101 +5,128 @@ using System.Reflection;
 using System.Text;
 using System.Linq;
 
+using CSStarterTest1.TestUtils;
+
 namespace CSStarterTest1.Tester
 {
-    public class Program
+    public sealed class Program
     {
+        private static readonly Dictionary<TestResult, ConsoleColor> _testResultColors = new()
+        {
+            [TestResult.Success] = ConsoleColor.Green,
+            [TestResult.Failure] = ConsoleColor.Red,
+        };
+        private static readonly AssemblyName[] _testedAssemblyNames =
+        {
+            new AssemblyName("DataOps"),
+        };
+        private static readonly TextWriter _testLogWriter = TryGetLogWriter("tests.log") ?? TextWriter.Null;
+
         public static void Main()
         {
-            ConsoleColor defaultColor = Console.ForegroundColor;
+            Console.ForegroundColor = ConsoleColor.White;
 
-            Assembly assembly = Assembly.GetExecutingAssembly();
-            Console.WriteLine($"Executing assembly: \"{assembly.GetName()}\"");
-
-            TextWriter? logWriter = TryGetLogWriter("tests.log");
-            if (logWriter is null)
+            if (_testLogWriter == TextWriter.Null)
             {
-                Console.ForegroundColor = ConsoleColor.Yellow;
-                Console.WriteLine("Failed to create a log file for tests.");
-                Console.ForegroundColor = defaultColor;
-                logWriter = TextWriter.Null;
+                WriteLineColored("Failed to create a log file for tests.", ConsoleColor.Yellow);
+                Console.WriteLine();
             }
 
-            Test[] tests = null!;
-            try
-            { 
-                tests = GatherTests(assembly, logWriter);
-            }
-            catch (InvalidOperationException e)
-            {
-                Console.ForegroundColor = ConsoleColor.Yellow;
-                Console.WriteLine($"Failed to gather tests. Error message: \"{e.Message}\"");
-                Console.ForegroundColor = defaultColor;
-                Die(-1);
-            }
-
-            Console.ForegroundColor = ConsoleColor.Cyan;
-            Console.WriteLine();
-            Console.WriteLine($"{tests.Length} test(s) detected:");
-
-            Console.ForegroundColor = ConsoleColor.DarkCyan;
-            foreach (Test t in tests)
-            {
-                Console.WriteLine($" + {t.GetType().Name}");
-            }
-            Console.ForegroundColor = defaultColor;
-
-            Console.WriteLine();
-            Console.WriteLine($"Performing...");
+            Assembly[] referencedAssemblies = LoadAndPrintTestableAssemblies();
             Console.WriteLine();
 
-            Dictionary<Test, TestResult> results = new();
-            foreach (Test t in tests)
-            {
-                results[t] = t.Perform();
-            }
+            Type[] testTypes = GetAndPrintTestTypesFrom(referencedAssemblies);
+            Console.WriteLine();
 
-            logWriter.Close();
+            Test[] tests = InstantiateTestsAndReport(testTypes);
+            Console.WriteLine();
 
-            Console.ForegroundColor = ConsoleColor.Green;
-            PrintResults(results, TestResult.Success);
+            PerformTestsAndReport(tests);
 
-            Console.ForegroundColor = ConsoleColor.Red;
-            PrintResults(results, TestResult.Failure);
-
-            Console.ForegroundColor = defaultColor;
-
-            Die(0);
+            Finish(0);
         }
-
-        private static Test[] GatherTests(Assembly assembly, TextWriter logWriter)
+        private static void PerformTestsAndReport(IEnumerable<Test> tests)
         {
-            var types = assembly
-                .GetTypes()
-                .Where(t => t.BaseType == typeof(Test));
+            Console.WriteLine("Performing tests...");
+
+            Dictionary<Test, TestResult> results = TestPerformer.Perform(tests);
+
+            Console.WriteLine("Test results:");
+            PrintResults(results);
+        }
+        private static Test[] InstantiateTestsAndReport(IEnumerable<Type> testTypes)
+        {
+            Console.WriteLine("Instantiating tests...");
 
             List<Test> tests = new();
-            foreach (Type t in types)
-            {
-                ConstructorInfo? ctor = t.GetConstructor(new Type[] { typeof(TextWriter) });
-                if (ctor is null)
-                {
-                    throw new InvalidOperationException($"Test \"{t.Name}\" has no fitting constructor");
-                }
 
-                Test test = (Test)ctor.Invoke(new object[] { logWriter });
+            Console.WriteLine("Instantiated tests:");
+            foreach (Type testType in testTypes)
+            {
+                Test test;
+                try
+                {
+                    test = TestInstantiator.Instantiate(testType, _testLogWriter);
+                }
+                catch (Exception ex)
+                {
+                    WriteLineColored($"  {testType.Name} ({ex.GetType().Name}) : {ex.Message}", ConsoleColor.Red);
+                    continue;
+                }
+                WriteLineColored($"  {testType.Name}", ConsoleColor.Green);
                 tests.Add(test);
             }
+
             return tests.ToArray();
         }
-        private static void PrintResults(Dictionary<Test, TestResult> results, TestResult which)
+        private static Type[] GetAndPrintTestTypesFrom(IEnumerable<Assembly> assemblies)
         {
-            var matching = results.Where(kv => kv.Value == which).ToArray();
-            Console.WriteLine($"{which} : {matching.Length}");
-            foreach (var r in matching)
+            Console.WriteLine("Getting test types...");
+
+            Type[] testTypes = assemblies
+                .SelectMany(a => TestFinder.LoadTestTypes(a))
+                .ToArray();
+
+            Console.WriteLine("Test types:");
+            foreach (Type testType in testTypes)
             {
-                Console.WriteLine($" + {r.Key.GetType().Name}");
+                WriteLineColored($"  {testType.Name}", ConsoleColor.Green);
             }
+
+            return testTypes;
+        }
+        private static Assembly[] LoadAndPrintTestableAssemblies()
+        {
+            Console.WriteLine("Loading testable assemblies...");
+
+            AssemblyLoadInfo[] infos = _testedAssemblyNames.Select(name => AssemblyLoader.Load(name)).ToArray();
+
+            Console.WriteLine("Loaded assemblies:");
+            foreach (var info in infos)
+            {
+                WriteLineColored($"  {info.Name.Name}", info.LoadedAssembly is null ? ConsoleColor.Red : ConsoleColor.Green);
+            }
+
+            return infos
+                .Where(i => i.LoadedAssembly is not null)
+                .Select(i => i.LoadedAssembly!)
+                .ToArray();
+        }
+        private static void PrintResults(Dictionary<Test, TestResult> results)
+        {
+            var sorted = results.OrderByDescending(kv => kv.Value);
+
+            foreach (var result in sorted)
+            {
+                WriteLineColored($"  {result.Key.GetType().Name}", _testResultColors[result.Value]);
+            }
+        }
+        private static void WriteLineColored(string text, ConsoleColor color)
+        {
+            ConsoleColor old = Console.ForegroundColor;
+            Console.ForegroundColor = color;
+            Console.WriteLine(text);
+            Console.ForegroundColor = old;
         }
         private static TextWriter? TryGetLogWriter(string fileName)
         {
@@ -124,7 +151,7 @@ namespace CSStarterTest1.Tester
                 return null;
             }
         }
-        private static void Die(int exitCode)
+        private static void Finish(int exitCode)
         {
             Console.WriteLine();
             Console.WriteLine("Press any key to continue...");

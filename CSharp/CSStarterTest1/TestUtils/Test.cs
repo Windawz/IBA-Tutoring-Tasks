@@ -1,17 +1,16 @@
 ﻿using System;
 using System.IO;
-using System.Text;
 
-namespace CSStarterTest1.Tester
+namespace CSStarterTest1.TestUtils
 {
-    internal abstract class Test
+    public abstract class Test
     {
         protected Test(TextWriter writer)
         {
             Logger = new(writer, GetType().Name);
         }
 
-        protected TestLogger Logger { get; } 
+        protected TestLogger Logger { get; }
 
         public abstract TestResult Perform();
     }

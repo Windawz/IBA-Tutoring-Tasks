@@ -9,6 +9,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\DataOps\DataOps.csproj" />
+    <ProjectReference Include="..\TestUtils\TestUtils.csproj" />
   </ItemGroup>
 
 </Project>

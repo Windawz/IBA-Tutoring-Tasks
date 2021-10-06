@@ -1,26 +1,25 @@
 ﻿using System;
 using System.IO;
-using System.Text;
 
-namespace CSStarterTest1.Tester
+namespace CSStarterTest1.TestUtils
 {
-    internal sealed class TestLogger 
+    public sealed class TestLogger
     {
-        public TestLogger(TextWriter writer, string testName)
+        internal TestLogger(TextWriter writer, string tag)
         {
             _writer = writer;
-            _prefix = GetPrefix(testName);
+            _tagPrefix = BuildPrefix(tag);
         }
 
         private readonly TextWriter _writer;
-        private readonly string _prefix;
+        private readonly string _tagPrefix;
         private bool _cleanLine = true;
 
         public TestLogger Write(char c)
         {
             if (_cleanLine)
             {
-                _writer.Write(_prefix);
+                _writer.Write(_tagPrefix);
                 _cleanLine = false;
             }
             _writer.Write(c);
@@ -46,7 +45,7 @@ namespace CSStarterTest1.Tester
             return this;
         }
 
-        private static string GetPrefix(string testName) =>
+        private static string BuildPrefix(string testName) =>
             $"[ {testName} ]: ";
     }
 }
