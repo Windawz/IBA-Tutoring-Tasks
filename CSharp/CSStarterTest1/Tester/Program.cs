@@ -153,6 +153,8 @@ namespace CSStarterTest1.Tester
         }
         private static void Finish(int exitCode)
         {
+            _testLogWriter.Close();    
+
             Console.WriteLine();
             Console.WriteLine("Press any key to continue...");
             Console.ReadKey(intercept: true);
