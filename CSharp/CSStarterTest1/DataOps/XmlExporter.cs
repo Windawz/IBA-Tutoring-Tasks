@@ -22,7 +22,7 @@ namespace CSStarterTest1.DataOps
         };
         private readonly XmlWriter _writer;
 
-        public void Export<T>(T data)
+        public void Export(object data)
         {
             WriteRootStart();
 
@@ -31,7 +31,7 @@ namespace CSStarterTest1.DataOps
             WriteRootEnd();
             _writer.Flush();
         }
-        public void ExportRange<T>(IEnumerable<T> datas)
+        public void ExportRange(IEnumerable<object> datas)
         {
             WriteRootStart();
 
@@ -51,9 +51,9 @@ namespace CSStarterTest1.DataOps
         {
             _writer.WriteEndElement();
         }
-        private void WriteData<T>(T data)
+        private void WriteData(object data)
         {
-            XElement? xe = new XmlFormatter().ToXml(data);
+            XElement? xe = XmlFormatter.Format(data);
             if (xe is null)
             {
                 return;

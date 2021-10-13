@@ -1,4 +1,5 @@
-﻿namespace CSStarterTest1.DataOps
+﻿
+namespace CSStarterTest1.DataOps
 {
     internal static class FormatSettings
     {

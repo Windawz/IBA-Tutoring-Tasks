@@ -12,7 +12,6 @@ namespace CSStarterTest1.DataOps.Tests
 
         public override TestResult Perform()
         {
-            XmlFormatter fmt = new();
             Data testData = new(new(2020, 12, 31), "FirstName", "SecondName", "FathersName", "CityName", "CountryName");
             string expectedXml =
 @$"<{XmlFormatter.DefaultElementName}>
@@ -36,7 +35,7 @@ namespace CSStarterTest1.DataOps.Tests
     </{nameof(Data.CountryName)}>
 </{XmlFormatter.DefaultElementName}>";
 
-            string actualXml = fmt.ToXml(testData)!.ToString();
+            string actualXml = XmlFormatter.Format(testData)!.ToString();
 
             Regex whitespaceRemover = new(@"\s+");
             expectedXml = whitespaceRemover.Replace(expectedXml, "");

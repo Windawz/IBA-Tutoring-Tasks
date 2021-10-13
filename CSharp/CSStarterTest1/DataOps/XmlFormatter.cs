@@ -10,7 +10,7 @@ namespace CSStarterTest1.DataOps
     /// Formats any data into XML.<br/>
     /// The resulting XML is not guarranteed to be a valid standalone XML document.
     /// </summary>
-    internal sealed class XmlFormatter
+    internal static class XmlFormatter
     {
         /// <summary>
         /// The default name of the element representing the formatted data, if none is provided.
@@ -18,16 +18,15 @@ namespace CSStarterTest1.DataOps
         public static readonly string DefaultElementName = "Object";
 
         /// <summary>
-        /// Formats <paramref name="data"/>'s public properties into XML.
+        /// Formats <paramref name="value"/>'s public properties into XML.
         /// <para/>
         /// Properties, whose type is not primitive (checked by <see cref="Type.IsPrimitive"/>), and is not one of the following:
         /// <see cref="Enum"/>,
         /// <see cref="Guid"/>,
         /// <see cref="string"/>,
-        /// <see cref="DateTime"/>, will be formatted recursively.
+        /// <see cref="DateTime"/>; will be formatted recursively.
         /// </summary>
-        /// <typeparam name="T">The type of data.</typeparam>
-        /// <param name="data">The data to format.</param>
+        /// <param name="value">The value to format.</param>
         /// <param name="elementName">
         /// The name of the element encapsulating the data's XML-converted properties.<br/>
         /// Will be replaced by <see cref="DefaultElementName"/> if null or whitespace.
@@ -35,11 +34,11 @@ namespace CSStarterTest1.DataOps
         /// Overriden by recursive calls on encountering a composite type.
         /// </param>
         /// <returns>
-        /// An <see cref="XElement"/> representing the data, or null if <paramref name="data"/> is null.
+        /// An <see cref="XElement"/> representing the data, or null if <paramref name="value"/> is null.
         /// </returns>
-        public XElement? ToXml<T>(T? data, string? elementName = null)
+        public static XElement? Format(object? value, string? elementName = null)
         {
-            if (data is null)
+            if (value is null)
             {
                 return null;
             }
@@ -48,12 +47,14 @@ namespace CSStarterTest1.DataOps
                 elementName = DefaultElementName;
             }
             
-            var elements = data
+            // NOTE: if the data field formatter cannot format the value, we try to break it up further
+            // for now, god forbid if it fails
+            var elements = value
                 .GetType()
                 .GetProperties()
-                .Select(p => (Name: XmlConvert.EncodeName(p.Name), Value: p.GetValue(data)))
+                .Select(p => (Name: XmlConvert.EncodeName(p.Name), Value: p.GetValue(value)))
                 .Select(nv => // ugly!!!!!!
-                    IsBasicType(nv.Value) ? new XElement(nv.Name, nv.Value is DateTime dt ? FormatDateTime(dt) : nv.Value) : ToXml(nv.Value, nv.Name))
+                    DataFieldFormatter.CanFormat(nv.Value) ? new XElement(nv.Name, DataFieldFormatter.Format(nv.Value)) : Format(nv.Value, nv.Name))
                 .Where(xe => xe is not null);
 
             XElement result = new(elementName);
@@ -61,14 +62,5 @@ namespace CSStarterTest1.DataOps
 
             return result;
         }
-
-        private static string FormatDateTime(DateTime dt) =>
-            dt.ToString(FormatSettings.MainDateTimeFormatString); // can't tell XElement what format to use, so gotta hack around
-        private static bool IsBasicType<T>(T value) => 
-            typeof(T).IsPrimitive || value is
-                Enum or
-                Guid or
-                string or
-                DateTime;
     }
 }
