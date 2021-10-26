@@ -1,0 +1,120 @@
+﻿<Window x:Class="CSStarterTest1.Gui.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:CSStarterTest1.Gui"
+        mc:Ignorable="d"
+        Title="DB Control GUI"
+        Height="600"
+        MinHeight="100"
+        Width="750"
+        MinWidth="750">
+
+    <Window.Resources>
+        <Style TargetType="{x:Type Control}"
+               x:Key="MainBaseStyle">
+            <Setter Property="FontSize" 
+                    Value="16" />
+            <Setter Property="FontFamily" 
+                    Value="Candara" />
+
+        </Style>
+        <Style TargetType="{x:Type Window}"
+               BasedOn="{StaticResource MainBaseStyle}"/>
+
+        <Style BasedOn="{StaticResource MainBaseStyle}"
+               TargetType="{x:Type Control}"
+               x:Key="TitleText">
+            <Setter Property="FontSize" 
+                    Value="30" />
+            <Setter Property="FontWeight" 
+                    Value="Bold" />
+            <Setter Property="HorizontalAlignment" 
+                    Value="Center" />
+        </Style>
+
+        <Style BasedOn="{StaticResource MainBaseStyle}"
+               TargetType="{x:Type Button}"
+               x:Key="DbViewButtonStyle">
+            <Setter Property="Height" 
+                    Value="24"/>
+            <Setter Property="VerticalContentAlignment" 
+                    Value="Center"/>
+            <Setter Property="HorizontalContentAlignment" 
+                    Value="Center"/>
+            <Setter Property="VerticalAlignment" 
+                    Value="Bottom"/>
+        </Style>
+    </Window.Resources>
+
+    <Window.Background>
+        <LinearGradientBrush EndPoint="0.5,1" 
+                             StartPoint="0.5,0">
+            <GradientStop Color="#FFFFF0AA" 
+                          Offset="0"/>
+            <GradientStop Color="#FFFFCC6C" 
+                          Offset="1"/>
+        </LinearGradientBrush>
+    </Window.Background>
+
+    <Grid Margin="5">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="50"/>
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="*" x:Name="gridColumnDatabase"/>
+            <ColumnDefinition Width="*" x:Name="gridColumnImport"/>
+        </Grid.ColumnDefinitions>
+
+        <Label Grid.Row="0"
+               Grid.Column="0" 
+               Style="{StaticResource TitleText}">
+            Database View
+        </Label>
+        <Label Grid.Row="0" 
+               Grid.Column="1" 
+               Style="{StaticResource TitleText}">
+            Import View
+        </Label>
+
+        <DockPanel Grid.Row="1" Grid.Column="0">
+            <StackPanel DockPanel.Dock="Bottom">
+                <Button DockPanel.Dock="Bottom"
+                    Style="{StaticResource DbViewButtonStyle}"
+                    x:Name="btnFilter">
+                    Filter
+                </Button>
+                <Button DockPanel.Dock="Bottom"
+                    Style="{StaticResource DbViewButtonStyle}"
+                    x:Name="btnExport">
+                    Export
+                </Button>
+            </StackPanel>
+            <DataGrid DockPanel.Dock="Top"
+                      x:Name="dataGridDbView">
+            </DataGrid>
+        </DockPanel>
+
+        <DockPanel Grid.Row="1" Grid.Column="1">
+            <StackPanel DockPanel.Dock="Bottom">
+                <Button DockPanel.Dock="Bottom"
+                        Style="{StaticResource DbViewButtonStyle}"
+                        x:Name="btnAddToDatabase">
+                    Add To Database
+                </Button>
+                <Button DockPanel.Dock="Bottom"
+                        Style="{StaticResource DbViewButtonStyle}"
+                        x:Name="btnImport"
+                        Click="btnImport_Click">
+                    Import
+                </Button>
+            </StackPanel>
+            <DataGrid DockPanel.Dock="Top"
+                      x:Name="dataGridImportView">
+            </DataGrid>
+        </DockPanel>
+
+    </Grid>
+</Window>
