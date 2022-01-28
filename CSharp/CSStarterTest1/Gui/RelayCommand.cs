@@ -11,8 +11,8 @@ namespace CSStarterTest1.Gui
             _canExecute = canExecute;
         }
 
-        private Action<object?> _execute;
-        private Predicate<object?>? _canExecute;
+        private readonly Action<object?> _execute;
+        private readonly Predicate<object?>? _canExecute;
         
         public event EventHandler? CanExecuteChanged
         {

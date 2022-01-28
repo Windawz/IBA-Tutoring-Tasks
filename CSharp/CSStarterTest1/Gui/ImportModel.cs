@@ -6,7 +6,7 @@ using System.Runtime.CompilerServices;
 
 using CSStarterTest1.DataOps;
 
-namespace CSStarterTest1.Gui.ImportLogic
+namespace CSStarterTest1.Gui
 {
     /// <summary>
     /// Represents the data imported from a .csv file.
@@ -29,33 +29,7 @@ namespace CSStarterTest1.Gui.ImportLogic
 
         public Data[] Data { get; }
 
-        public static ImportResult Open(string path, out ImportModel? model)
-        {
-            var result = ImportResult.Success;
-            try
-            {
-                model = new(path);
-            }
-            catch (Exception e)
-            {
-                switch (e)
-                {
-                    case ArgumentException eArg:
-                        result = ImportResult.InvalidPath;
-                        break;
-                    case FormatException eFmt:
-                        result = ImportResult.SyntaxError;
-                        break;
-                    case SystemException eSys:
-                        result = ImportResult.ReadingFailure;
-                        break;
-                    default:
-                        throw;
-                }
-                model = null;
-            }
-            return result;
-        }
+
 
         private static Data[] ReadCsv(string path)
         {
