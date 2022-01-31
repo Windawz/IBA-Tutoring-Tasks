@@ -8,7 +8,7 @@ using E = Microsoft.Office.Interop.Excel;
 
 namespace CSStarterTest1.DataOps.New
 {
-    public class XlsxExporter : IExporter
+    public class XlsxExporter : Exporter
     {
         public XlsxExporter()
         {
@@ -19,7 +19,9 @@ namespace CSStarterTest1.DataOps.New
             }
         }
 
-        public void Export(object? data, string path)
+        protected override string Extension => ".xlsx";
+
+        protected override void ExportImpl(object? data, string path)
         {
             using (var excel = Excel.OpenInstance("TestProgram"))
             {
@@ -101,16 +103,6 @@ namespace CSStarterTest1.DataOps.New
             }
             public void Save(string path)
             {
-                if (!Path.HasExtension(path))
-                {
-                    path = Path.ChangeExtension(path, ".xlsx");
-                }
-                if (Path.GetFileNameWithoutExtension(path) == "")
-                {
-                    int pos = path.LastIndexOf('.');
-                    path = path.Insert(pos, Title);
-                }
-
                 _book.SaveAs(Filename: path);
             }
             public void Dispose()
