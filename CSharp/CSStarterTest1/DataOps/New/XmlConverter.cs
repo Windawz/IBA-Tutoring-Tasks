@@ -5,6 +5,9 @@ using System.Xml.Linq;
 
 namespace CSStarterTest1.DataOps.New
 {
+    /// <summary>
+    /// Converts data records to XElements.
+    /// </summary>
     internal class XmlConverter
     {
         public XElement? Convert(object? data)
@@ -31,7 +34,7 @@ namespace CSStarterTest1.DataOps.New
 
             return xElement;
         }
-        private XElement ConvertImpl(object data)
+        private static XElement ConvertImpl(object data)
         {
             var xElement = new XElement("Record");
 
