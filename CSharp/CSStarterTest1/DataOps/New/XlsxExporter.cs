@@ -95,8 +95,8 @@ namespace CSStarterTest1.DataOps.New
 
                 for (int i = 0; i < props.Length; i++)
                 {
-                    PropertyInfo prop = props[i];
-                    string formatted = prop.GetValue(data)?.ToString() ?? "";
+                    object value = props[i].GetValue(data)!;
+                    string formatted = new DataFieldFormatter().Format(value);
 
                     _sheetCells[row, i + 1] = formatted;
                 }

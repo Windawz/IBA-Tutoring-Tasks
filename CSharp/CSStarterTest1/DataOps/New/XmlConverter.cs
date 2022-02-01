@@ -38,10 +38,11 @@ namespace CSStarterTest1.DataOps.New
         {
             var xElement = new XElement("Record");
 
+            var formatter = new DataFieldFormatter();
             var kvs = data
                 .GetType()
                 .GetProperties()
-                .Select(p => (Key: XmlConvert.EncodeName(p.Name), Value: p.GetValue(data)));
+                .Select(p => (Key: XmlConvert.EncodeName(p.Name), Value: formatter.Format(p.GetValue(data)!)));
 
             foreach (var (key, value) in kvs)
             {

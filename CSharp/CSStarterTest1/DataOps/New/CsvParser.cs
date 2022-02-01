@@ -8,8 +8,6 @@ namespace CSStarterTest1.DataOps.New
     /// </summary>
     internal class CsvParser
     {
-        private static readonly int DataFieldCount = typeof(Data).GetProperties().Length;
-
         public Data[] Parse(string text)
         {
             if (String.IsNullOrWhiteSpace(text))
@@ -31,22 +29,23 @@ namespace CSStarterTest1.DataOps.New
         private Data? ParseLine(string line)
         {
             string[] tokens = line.Split(';', StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries);
-            if (tokens.Length < DataFieldCount)
+            if (tokens.Length < Data.FieldCount)
             {
                 return null;
             }
 
             Data data;
+            var parser = new DataFieldParser();
             try
             {
                 data = new Data(
-                    int.Parse(tokens[0]),
-                    DateTime.Parse(tokens[1]),
-                    tokens[2],
-                    tokens[3],
-                    tokens[4],
-                    tokens[5],
-                    tokens[6]
+                    (int)parser.Parse(tokens[0], 0),
+                    (DateTime)parser.Parse(tokens[1], 1),
+                    (string)parser.Parse(tokens[2], 2),
+                    (string)parser.Parse(tokens[3], 3),
+                    (string)parser.Parse(tokens[4], 4),
+                    (string)parser.Parse(tokens[5], 5),
+                    (string)parser.Parse(tokens[6], 6)
                 );
             }
             catch (Exception ex) when (ex is FormatException || ex is OverflowException)
