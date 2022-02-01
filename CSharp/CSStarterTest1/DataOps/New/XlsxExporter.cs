@@ -8,7 +8,7 @@ using E = Microsoft.Office.Interop.Excel;
 
 namespace CSStarterTest1.DataOps.New
 {
-    public class XlsxExporter : Exporter
+    public class XlsxExporter : IExporter
     {
         public XlsxExporter()
         {
@@ -19,9 +19,7 @@ namespace CSStarterTest1.DataOps.New
             }
         }
 
-        protected override string Extension => ".xlsx";
-
-        protected override void ExportImpl(object? data, string path)
+        public void Export(object? data, string path)
         {
             using (var excel = Excel.OpenInstance("TestProgram"))
             {
