@@ -1,4 +1,4 @@
-﻿namespace CSStarterTest1.DataOps.New
+﻿namespace CSStarterTest1.DataOps
 {
     public interface IExporter
     {

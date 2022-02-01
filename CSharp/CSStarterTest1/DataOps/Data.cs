@@ -1,5 +1,12 @@
 ﻿using System;
 
-namespace CSStarterTest1.DataOps {
-    public sealed record Data(DateTime Date, string FirstName, string SecondName, string FathersName, string CityName, string CountryName);
+namespace CSStarterTest1.DataOps
+{
+    /// <summary>
+    /// Represents the most complete piece of data.
+    /// </summary>
+    public record Data(int Id, DateTime Date, string FirstName, string LastName, string SurName, string City, string Country)
+    {
+        public static readonly int FieldCount = typeof(Data).GetProperties().Length;
+    }
 }

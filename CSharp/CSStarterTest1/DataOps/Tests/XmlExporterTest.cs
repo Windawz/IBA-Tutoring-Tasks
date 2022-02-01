@@ -3,7 +3,7 @@ using System.IO;
 
 using CSStarterTest1.TestUtils;
 
-namespace CSStarterTest1.DataOps.New.Tests
+namespace CSStarterTest1.DataOps.Tests
 {
     public class XmlExporterTest : Test
     {
