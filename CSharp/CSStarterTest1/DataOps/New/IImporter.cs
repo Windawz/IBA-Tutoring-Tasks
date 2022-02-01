@@ -8,6 +8,6 @@ namespace CSStarterTest1.DataOps.New
 {
     public interface IImporter
     {
-        object? Import(string path);
+        Data[] Import(string path);
     }
 }
