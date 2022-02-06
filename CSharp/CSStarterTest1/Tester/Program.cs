@@ -18,6 +18,7 @@ namespace CSStarterTest1.Tester
         };
         private static readonly AssemblyName[] _testedAssemblyNames =
         {
+            new AssemblyName("DatabaseInterface"),
             new AssemblyName("DataOps"),
         };
         private static readonly TextWriter _testLogWriter = TryGetLogWriter("tests.log") ?? TextWriter.Null;
