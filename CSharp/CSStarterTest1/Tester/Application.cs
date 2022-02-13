@@ -19,7 +19,9 @@ namespace CSStarterTest1.Tester
         public Application(string[] testedAssemblies)
         {
             Console.ForegroundColor = ConsoleColor.White;
-            Console.SetError(new StreamWriter(File.OpenWrite("TesterLog.log"), Encoding.UTF8, leaveOpen: false));
+
+            _errorWriter = new StreamWriter(File.OpenWrite("TesterLog.log"), Encoding.UTF8, leaveOpen: false);
+            Console.SetError(_errorWriter);
 
             _testedAssemblies = testedAssemblies
                 .Select(s => new AssemblyName(s.Trim()))
@@ -29,6 +31,7 @@ namespace CSStarterTest1.Tester
         public int ExitCode { get; private set; }
 
         private AssemblyName[] _testedAssemblies;
+        private StreamWriter _errorWriter;
         private bool _disposed;
 
         public void Run()
@@ -43,7 +46,7 @@ namespace CSStarterTest1.Tester
             Console.WriteLine();
             
             PerformTestsAndReport(tests);
-
+            
             ExitCode = 0;
         }
         public void Dispose()
@@ -58,10 +61,16 @@ namespace CSStarterTest1.Tester
             {
                 if (disposing)
                 {
+                    _errorWriter.Dispose();
+
                     // TODO: dispose managed state (managed objects)
-                    Console.WriteLine();
-                    Console.WriteLine("Press any key to continue...");
-                    Console.ReadKey(intercept: true);
+                    try
+                    {
+                        Console.WriteLine();
+                        Console.WriteLine("Press any key to continue...");
+                        Console.ReadKey(intercept: true);
+                    }
+                    catch (Exception) { }
                 }
 
                 // TODO: free unmanaged resources (unmanaged objects) and override finalizer
