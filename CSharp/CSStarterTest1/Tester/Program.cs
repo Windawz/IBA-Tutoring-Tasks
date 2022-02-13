@@ -14,11 +14,6 @@ namespace CSStarterTest1.Tester
     {
         private const int DefaultIndentStep = 2;
 
-        private static readonly Dictionary<TestResult, ConsoleColor> _testResultColors = new()
-        {
-            [TestResult.Success] = ConsoleColor.Green,
-            [TestResult.Failure] = ConsoleColor.Red,
-        };
         private static readonly AssemblyName[] _testedAssemblyNames =
         {
             new AssemblyName("DatabaseInterface"),
@@ -147,7 +142,7 @@ namespace CSStarterTest1.Tester
 
             foreach (var result in sorted)
             {
-                WriteLineColored($"  {result.Key.GetType().Name}", _testResultColors[result.Value]);
+                WriteLineColored($"  {result.Key.GetType().Name}", result.Value.GetConsoleColor());
             }
         }
         private static void WriteLineColored(string text, ConsoleColor color)
