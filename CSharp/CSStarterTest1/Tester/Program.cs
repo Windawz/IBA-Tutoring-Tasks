@@ -26,18 +26,25 @@ namespace CSStarterTest1.Tester
         {
             Init();
 
-            Assembly[] referencedAssemblies = LoadAndPrintTestableAssemblies();
-            Console.WriteLine();
+            try
+            {
+                Assembly[] referencedAssemblies = LoadAndPrintTestableAssemblies();
+                Console.WriteLine();
 
-            Type[] testTypes = GetAndPrintTestTypesFrom(referencedAssemblies);
-            Console.WriteLine();
+                Type[] testTypes = GetAndPrintTestTypesFrom(referencedAssemblies);
+                Console.WriteLine();
 
-            Test[] tests = InstantiateTestsAndReport(testTypes);
-            Console.WriteLine();
+                Test[] tests = InstantiateTestsAndReport(testTypes);
+                Console.WriteLine();
+                
+                PerformTestsAndReport(tests);
+            }
+            finally
+            {
+                Finalize();
+            }
 
-            PerformTestsAndReport(tests);
-
-            Finish(0);
+            Exit(0);
         }
         private static void PerformTestsAndReport(IEnumerable<Test> tests)
         {
@@ -157,11 +164,11 @@ namespace CSStarterTest1.Tester
             Console.ForegroundColor = ConsoleColor.White;
             Console.SetError(new StreamWriter(File.OpenWrite("TesterLog.log"), Encoding.UTF8, leaveOpen: false));
         }
-        private static void CleanUp()
+        private static void Finalize()
         {
             
         }
-        private static void Finish(int exitCode)
+        private static void Exit(int exitCode)
         {
             Console.WriteLine();
             Console.WriteLine("Press any key to continue...");
