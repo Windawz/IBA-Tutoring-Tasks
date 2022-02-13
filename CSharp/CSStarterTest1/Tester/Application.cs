@@ -61,9 +61,9 @@ namespace CSStarterTest1.Tester
             {
                 if (disposing)
                 {
+                    // Dispose managed state (managed objects)
                     _errorWriter.Dispose();
 
-                    // TODO: dispose managed state (managed objects)
                     try
                     {
                         Console.WriteLine();
@@ -73,17 +73,19 @@ namespace CSStarterTest1.Tester
                     catch (Exception) { }
                 }
 
-                // TODO: free unmanaged resources (unmanaged objects) and override finalizer
-                // TODO: set large fields to null
+                // Free unmanaged resources (unmanaged objects) and override finalizer
+                // Set large fields to null
                 _disposed = true;
             }
         }
-        // TODO: override finalizer only if 'Dispose(bool disposing)' has code to free unmanaged resources
-        ~Application()
-        {
-            // Do not change this code. Put cleanup code in 'Dispose(bool disposing)' method
-            Dispose(disposing: false);
-        }
+
+        // Left in case Application has to handle unmanaged resources
+        //
+        // // Override finalizer only if 'Dispose(bool disposing)' has code to free unmanaged resources
+        // ~Application()
+        // {
+        //     Dispose(disposing: false);
+        // }
 
         private void PerformTestsAndReport(IEnumerable<Test> tests)
         {
