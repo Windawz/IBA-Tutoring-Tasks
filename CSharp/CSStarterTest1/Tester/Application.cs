@@ -11,8 +11,6 @@ namespace CSStarterTest1.Tester
 {
     internal class Application : IDisposable
     {
-        private const int DefaultIndentStep = 2;
-
         public Application(string[] testedAssemblies)
         {
             _errorWriter = new StreamWriter(File.OpenWrite("TesterLog.log"), Encoding.UTF8, leaveOpen: false);
@@ -23,6 +21,7 @@ namespace CSStarterTest1.Tester
                 .ToArray();
 
             _indenter = SimpleConsoleIndenter.GetIndenter(ConsoleOutputKind.Out);
+            _indenter.IndentStep = 2;
 
             Console.ForegroundColor = ConsoleColor.White;
         }
