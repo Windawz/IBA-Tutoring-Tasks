@@ -13,25 +13,25 @@ namespace CSStarterTest1.Tester
     {
         private const int DefaultIndentStep = 2;
 
-        private static readonly SimpleConsoleIndenter _indenter = 
-            SimpleConsoleIndenter.GetIndenter(ConsoleOutputKind.Out);
-
         public Application(string[] testedAssemblies)
         {
-            Console.ForegroundColor = ConsoleColor.White;
-
             _errorWriter = new StreamWriter(File.OpenWrite("TesterLog.log"), Encoding.UTF8, leaveOpen: false);
             Console.SetError(_errorWriter);
 
             _testedAssemblies = testedAssemblies
                 .Select(s => new AssemblyName(s.Trim()))
                 .ToArray();
+
+            _indenter = SimpleConsoleIndenter.GetIndenter(ConsoleOutputKind.Out);
+
+            Console.ForegroundColor = ConsoleColor.White;
         }
 
         public int ExitCode { get; private set; }
 
-        private AssemblyName[] _testedAssemblies;
         private StreamWriter _errorWriter;
+        private AssemblyName[] _testedAssemblies;
+        private SimpleConsoleIndenter _indenter;
         private bool _disposed;
 
         public void Run()
@@ -63,6 +63,7 @@ namespace CSStarterTest1.Tester
                 {
                     // Dispose managed state (managed objects)
                     _errorWriter.Dispose();
+                    _indenter.Dispose();
 
                     try
                     {
