@@ -13,22 +13,22 @@ namespace CSStarterTest1.Tester
     {
         private const int DefaultIndentStep = 2;
 
-        private static readonly AssemblyName[] _testedAssemblyNames =
-        {
-            new AssemblyName("DatabaseInterface"),
-            new AssemblyName("DataOps"),
-        };
         private static readonly SimpleConsoleIndenter _indenter = 
             SimpleConsoleIndenter.GetIndenter(ConsoleOutputKind.Out);
 
-        public Application()
+        public Application(string[] testedAssemblies)
         {
             Console.ForegroundColor = ConsoleColor.White;
             Console.SetError(new StreamWriter(File.OpenWrite("TesterLog.log"), Encoding.UTF8, leaveOpen: false));
+
+            _testedAssemblies = testedAssemblies
+                .Select(s => new AssemblyName(s.Trim()))
+                .ToArray();
         }
 
         public int ExitCode { get; private set; }
 
+        private AssemblyName[] _testedAssemblies;
         private bool _disposed;
 
         public void Run()
@@ -76,7 +76,7 @@ namespace CSStarterTest1.Tester
             Dispose(disposing: false);
         }
 
-        private static void PerformTestsAndReport(IEnumerable<Test> tests)
+        private void PerformTestsAndReport(IEnumerable<Test> tests)
         {
             Console.WriteLine("Performing tests...");
 
@@ -85,7 +85,7 @@ namespace CSStarterTest1.Tester
             Console.WriteLine("Test results:");
             PrintResults(results);
         }
-        private static Test[] InstantiateTestsAndReport(IEnumerable<Type> testTypes)
+        private Test[] InstantiateTestsAndReport(IEnumerable<Type> testTypes)
         {
             Console.WriteLine("Instantiating tests...");
 
@@ -134,7 +134,7 @@ namespace CSStarterTest1.Tester
 
             return tests.ToArray();
         }
-        private static Type[] GetAndPrintTestTypesFrom(IEnumerable<Assembly> assemblies)
+        private Type[] GetAndPrintTestTypesFrom(IEnumerable<Assembly> assemblies)
         {
             Console.WriteLine("Getting test types...");
 
@@ -153,11 +153,11 @@ namespace CSStarterTest1.Tester
 
             return testTypes;
         }
-        private static Assembly[] LoadAndPrintTestableAssemblies()
+        private Assembly[] LoadAndPrintTestableAssemblies()
         {
             Console.WriteLine("Loading testable assemblies...");
 
-            AssemblyLoadInfo[] infos = _testedAssemblyNames.Select(name => AssemblyLoader.Load(name)).ToArray();
+            AssemblyLoadInfo[] infos = _testedAssemblies.Select(name => AssemblyLoader.Load(name)).ToArray();
 
             Console.WriteLine("Loaded assemblies:");
 
@@ -173,7 +173,7 @@ namespace CSStarterTest1.Tester
                 .Select(i => i.LoadedAssembly!)
                 .ToArray();
         }
-        private static void PrintResults(Dictionary<Test, TestResult> results)
+        private void PrintResults(Dictionary<Test, TestResult> results)
         {
             var sorted = results.OrderByDescending(kv => kv.Value);
 
@@ -182,7 +182,7 @@ namespace CSStarterTest1.Tester
                 WriteLineColored($"  {result.Key.GetType().Name}", result.Value.GetConsoleColor());
             }
         }
-        private static void WriteLineColored(string text, ConsoleColor color)
+        private void WriteLineColored(string text, ConsoleColor color)
         {
             ConsoleColor old = Console.ForegroundColor;
             Console.ForegroundColor = color;

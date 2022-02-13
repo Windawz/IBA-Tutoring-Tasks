@@ -6,7 +6,12 @@ namespace CSStarterTest1.Tester
     {
         public static void Main()
         {
-            using var app = new Application();
+            string[] testedAssemblies =
+            {
+                "DatabaseInterface",
+                "DataOps",
+            };
+            using var app = new Application(testedAssemblies);
             app.Run();
             Environment.ExitCode = app.ExitCode;
         }
