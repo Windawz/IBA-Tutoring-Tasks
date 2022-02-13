@@ -41,7 +41,7 @@ namespace CSStarterTest1.Tester
             }
             finally
             {
-                Finalize();
+                Free();
             }
 
             Exit(0);
@@ -164,7 +164,7 @@ namespace CSStarterTest1.Tester
             Console.ForegroundColor = ConsoleColor.White;
             Console.SetError(new StreamWriter(File.OpenWrite("TesterLog.log"), Encoding.UTF8, leaveOpen: false));
         }
-        private static void Finalize()
+        private static void Free()
         {
             
         }
