@@ -4,6 +4,7 @@ using System.IO;
 using System.Reflection;
 using System.Text;
 using System.Linq;
+using System.CodeDom.Compiler;
 
 using CSStarterTest1.TestUtils;
 
@@ -11,6 +12,8 @@ namespace CSStarterTest1.Tester
 {
     public sealed class Program
     {
+        private const int DefaultIndentStep = 2;
+
         private static readonly Dictionary<TestResult, ConsoleColor> _testResultColors = new()
         {
             [TestResult.Success] = ConsoleColor.Green,
@@ -21,17 +24,12 @@ namespace CSStarterTest1.Tester
             new AssemblyName("DatabaseInterface"),
             new AssemblyName("DataOps"),
         };
-        private static readonly TextWriter _testLogWriter = TryGetLogWriter("tests.log") ?? TextWriter.Null;
+        private static readonly SimpleConsoleIndenter _indenter = 
+            SimpleConsoleIndenter.GetIndenter(ConsoleOutputKind.Out);
 
         public static void Main()
         {
-            Console.ForegroundColor = ConsoleColor.White;
-
-            if (_testLogWriter == TextWriter.Null)
-            {
-                WriteLineColored("Failed to create a log file for tests.", ConsoleColor.Yellow);
-                Console.WriteLine();
-            }
+            Init();
 
             Assembly[] referencedAssemblies = LoadAndPrintTestableAssemblies();
             Console.WriteLine();
@@ -59,24 +57,48 @@ namespace CSStarterTest1.Tester
         {
             Console.WriteLine("Instantiating tests...");
 
-            List<Test> tests = new();
+            var tests = new List<Test>();
+            var loggerProvider = new LoggerProvider();
+            var nameGen = new TestLogNameGenerator();
 
             Console.WriteLine("Instantiated tests:");
+            _indenter.Increase();
             foreach (Type testType in testTypes)
             {
-                Test test;
+                string testName = testType.Name;
+
+                TextWriter logger;
                 try
                 {
-                    test = TestInstantiator.Instantiate(testType, _testLogWriter);
+                    logger = loggerProvider.GetLogger(nameGen.GetLogName(testName));
                 }
                 catch (Exception ex)
                 {
-                    WriteLineColored($"  {testType.Name} ({ex.GetType().Name}) : {ex.Message}", ConsoleColor.Red);
+                    string message = $"Failed to create log file for \"{testName}\"";
+                    WriteLineColored(message, ConsoleColor.Yellow);
+                    // More detailed info goes into the error stream.
+                    Console.Error.WriteLine($"{message}: \"{ex}\"");
+                    logger = TextWriter.Null;
+                }
+
+                Test test;
+                try
+                {
+                    test = TestInstantiator.Instantiate(testType, logger);
+                }
+                catch (Exception ex)
+                {
+                    WriteLineColored($"{testType.Name} ({ex.GetType().Name}) : {ex.Message}", ConsoleColor.Red);
+
+                    // Failed to instantiate test, no need for the logger
+                    logger.Dispose();
+
                     continue;
                 }
-                WriteLineColored($"  {testType.Name}", ConsoleColor.Green);
+                WriteLineColored(testType.Name, ConsoleColor.Green);
                 tests.Add(test);
             }
+            _indenter.Decrease();
 
             return tests.ToArray();
         }
@@ -89,10 +111,13 @@ namespace CSStarterTest1.Tester
                 .ToArray();
 
             Console.WriteLine("Test types:");
+
+            _indenter.Increase();
             foreach (Type testType in testTypes)
             {
-                WriteLineColored($"  {testType.Name}", ConsoleColor.Green);
+                WriteLineColored(testType.Name, ConsoleColor.Green);
             }
+            _indenter.Decrease();
 
             return testTypes;
         }
@@ -103,10 +128,13 @@ namespace CSStarterTest1.Tester
             AssemblyLoadInfo[] infos = _testedAssemblyNames.Select(name => AssemblyLoader.Load(name)).ToArray();
 
             Console.WriteLine("Loaded assemblies:");
+
+            _indenter.Increase();
             foreach (var info in infos)
             {
-                WriteLineColored($"  {info.Name.Name}", info.LoadedAssembly is null ? ConsoleColor.Red : ConsoleColor.Green);
+                WriteLineColored($"{info.Name.Name}", info.LoadedAssembly is null ? ConsoleColor.Red : ConsoleColor.Green);
             }
+            _indenter.Decrease();
 
             return infos
                 .Where(i => i.LoadedAssembly is not null)
@@ -129,33 +157,17 @@ namespace CSStarterTest1.Tester
             Console.WriteLine(text);
             Console.ForegroundColor = old;
         }
-        private static TextWriter? TryGetLogWriter(string fileName)
+        private static void Init()
         {
-            Stream? stream = null;
-            try
-            {
-                stream = new FileStream(fileName, FileMode.Create, FileAccess.Write, FileShare.Read);
-            }
-            catch (SystemException)
-            {
-                if (stream is not null)
-                {
-                    stream.Dispose();
-                }
-            }
-            if (stream is not null)
-            {
-                return new StreamWriter(stream, encoding: Encoding.UTF8, leaveOpen: false);
-            }
-            else
-            {
-                return null;
-            }
+            Console.ForegroundColor = ConsoleColor.White;
+            Console.SetError(new StreamWriter(File.OpenWrite("TesterLog.log"), Encoding.UTF8, leaveOpen: false));
+        }
+        private static void CleanUp()
+        {
+            
         }
         private static void Finish(int exitCode)
         {
-            _testLogWriter.Close();    
-
             Console.WriteLine();
             Console.WriteLine("Press any key to continue...");
             Console.ReadKey(intercept: true);
