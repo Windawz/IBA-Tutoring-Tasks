@@ -87,16 +87,46 @@ namespace CSStarterTest1.Tester
         //     Dispose(disposing: false);
         // }
 
-        private void PerformTestsAndReport(IEnumerable<Test> tests)
+        private Assembly[] LoadAndPrintTestableAssemblies()
         {
-            Console.WriteLine("Performing tests...");
+            Console.WriteLine("Loading testable assemblies...");
 
-            Dictionary<Test, TestResult> results = TestPerformer.Perform(tests);
+            AssemblyLoadInfo[] infos = _testedAssemblies.Select(name => AssemblyLoader.Load(name)).ToArray();
 
-            Console.WriteLine("Test results:");
-            PrintResults(results);
+            Console.WriteLine("Loaded assemblies:");
+
+            _indenter.Increase();
+            foreach (var info in infos)
+            {
+                WriteLineColored($"{info.Name.Name}", info.LoadedAssembly is null ? ConsoleColor.Red : ConsoleColor.Green);
+            }
+            _indenter.Decrease();
+
+            return infos
+                .Where(i => i.LoadedAssembly is not null)
+                .Select(i => i.LoadedAssembly!)
+                .ToArray();
         }
-        private Test[] InstantiateTestsAndReport(IEnumerable<Type> testTypes)
+        private Type[] GetAndPrintTestTypesFrom(Assembly[] assemblies)
+        {
+            Console.WriteLine("Getting test types...");
+
+            Type[] testTypes = assemblies
+                .SelectMany(a => TestFinder.LoadTestTypes(a))
+                .ToArray();
+
+            Console.WriteLine("Test types:");
+
+            _indenter.Increase();
+            foreach (Type testType in testTypes)
+            {
+                WriteLineColored(testType.Name, ConsoleColor.Green);
+            }
+            _indenter.Decrease();
+
+            return testTypes;
+        }
+        private Test[] InstantiateTestsAndReport(Type[] testTypes)
         {
             Console.WriteLine("Instantiating tests...");
 
@@ -145,44 +175,14 @@ namespace CSStarterTest1.Tester
 
             return tests.ToArray();
         }
-        private Type[] GetAndPrintTestTypesFrom(IEnumerable<Assembly> assemblies)
+        private void PerformTestsAndReport(Test[] tests)
         {
-            Console.WriteLine("Getting test types...");
+            Console.WriteLine("Performing tests...");
 
-            Type[] testTypes = assemblies
-                .SelectMany(a => TestFinder.LoadTestTypes(a))
-                .ToArray();
+            Dictionary<Test, TestResult> results = TestPerformer.Perform(tests);
 
-            Console.WriteLine("Test types:");
-
-            _indenter.Increase();
-            foreach (Type testType in testTypes)
-            {
-                WriteLineColored(testType.Name, ConsoleColor.Green);
-            }
-            _indenter.Decrease();
-
-            return testTypes;
-        }
-        private Assembly[] LoadAndPrintTestableAssemblies()
-        {
-            Console.WriteLine("Loading testable assemblies...");
-
-            AssemblyLoadInfo[] infos = _testedAssemblies.Select(name => AssemblyLoader.Load(name)).ToArray();
-
-            Console.WriteLine("Loaded assemblies:");
-
-            _indenter.Increase();
-            foreach (var info in infos)
-            {
-                WriteLineColored($"{info.Name.Name}", info.LoadedAssembly is null ? ConsoleColor.Red : ConsoleColor.Green);
-            }
-            _indenter.Decrease();
-
-            return infos
-                .Where(i => i.LoadedAssembly is not null)
-                .Select(i => i.LoadedAssembly!)
-                .ToArray();
+            Console.WriteLine("Test results:");
+            PrintResults(results);
         }
         private void PrintResults(Dictionary<Test, TestResult> results)
         {
