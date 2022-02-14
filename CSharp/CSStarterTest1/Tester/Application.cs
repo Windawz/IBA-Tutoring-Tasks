@@ -5,6 +5,7 @@ using System.Linq;
 using System.Reflection;
 using System.Text;
 
+using CSStarterTest1.Tester.Stages;
 using CSStarterTest1.TestUtils;
 
 namespace CSStarterTest1.Tester
@@ -21,7 +22,7 @@ namespace CSStarterTest1.Tester
                 .ToArray();
 
             _indenter = SimpleConsoleIndenter.GetIndenter(ConsoleOutputKind.Out);
-            _indenter.IndentStep = 2;
+            _indenter.IndentStep = 4;
 
             Console.ForegroundColor = ConsoleColor.White;
         }
@@ -35,17 +36,17 @@ namespace CSStarterTest1.Tester
 
         public void Run()
         {
-            Assembly[] referencedAssemblies = LoadAndPrintTestableAssemblies();
-            Console.WriteLine();
+            IStage[] stages =
+            {
+                new LoadTestableAssembliesStage(),
+                new GetTestTypesStage(),
+                new InstantiateTestsStage(),
+                new PerformAndGetFailedTests(),
+            };
 
-            Type[] testTypes = GetAndPrintTestTypesFrom(referencedAssemblies);
-            Console.WriteLine();
+            var processor = new StageProcessor<AssemblyName, Test>(_indenter, stages);
+            _ = processor.Process(_testedAssemblies);
 
-            Test[] tests = InstantiateTestsAndReport(testTypes);
-            Console.WriteLine();
-            
-            PerformTestsAndReport(tests);
-            
             ExitCode = 0;
         }
         public void Dispose()
@@ -86,119 +87,5 @@ namespace CSStarterTest1.Tester
         // {
         //     Dispose(disposing: false);
         // }
-
-        private Assembly[] LoadAndPrintTestableAssemblies()
-        {
-            Console.WriteLine("Loading testable assemblies...");
-
-            AssemblyLoadInfo[] infos = _testedAssemblies.Select(name => AssemblyLoader.Load(name)).ToArray();
-
-            Console.WriteLine("Loaded assemblies:");
-
-            _indenter.Increase();
-            foreach (var info in infos)
-            {
-                WriteLineColored($"{info.Name.Name}", info.LoadedAssembly is null ? ConsoleColor.Red : ConsoleColor.Green);
-            }
-            _indenter.Decrease();
-
-            return infos
-                .Where(i => i.LoadedAssembly is not null)
-                .Select(i => i.LoadedAssembly!)
-                .ToArray();
-        }
-        private Type[] GetAndPrintTestTypesFrom(Assembly[] assemblies)
-        {
-            Console.WriteLine("Getting test types...");
-
-            Type[] testTypes = assemblies
-                .SelectMany(a => TestFinder.LoadTestTypes(a))
-                .ToArray();
-
-            Console.WriteLine("Test types:");
-
-            _indenter.Increase();
-            foreach (Type testType in testTypes)
-            {
-                WriteLineColored(testType.Name, ConsoleColor.Green);
-            }
-            _indenter.Decrease();
-
-            return testTypes;
-        }
-        private Test[] InstantiateTestsAndReport(Type[] testTypes)
-        {
-            Console.WriteLine("Instantiating tests...");
-
-            var tests = new List<Test>();
-            var loggerProvider = new LoggerProvider();
-            var nameGen = new TestLogNameGenerator();
-
-            Console.WriteLine("Instantiated tests:");
-            _indenter.Increase();
-            foreach (Type testType in testTypes)
-            {
-                string testName = testType.Name;
-
-                TextWriter logger;
-                try
-                {
-                    logger = loggerProvider.GetLogger(nameGen.GetLogName(testName));
-                }
-                catch (Exception ex)
-                {
-                    string message = $"Failed to create log file for \"{testName}\"";
-                    WriteLineColored(message, ConsoleColor.Yellow);
-                    // More detailed info goes into the error stream.
-                    Console.Error.WriteLine($"{message}: \"{ex}\"");
-                    logger = TextWriter.Null;
-                }
-
-                Test test;
-                try
-                {
-                    test = TestInstantiator.Instantiate(testType, logger);
-                }
-                catch (Exception ex)
-                {
-                    WriteLineColored($"{testType.Name} ({ex.GetType().Name}) : {ex.Message}", ConsoleColor.Red);
-
-                    // Failed to instantiate test, no need for the logger
-                    logger.Dispose();
-
-                    continue;
-                }
-                WriteLineColored(testType.Name, ConsoleColor.Green);
-                tests.Add(test);
-            }
-            _indenter.Decrease();
-
-            return tests.ToArray();
-        }
-        private void PerformTestsAndReport(Test[] tests)
-        {
-            Console.WriteLine("Performing tests...");
-
-            Dictionary<Test, TestResult> results = TestPerformer.Perform(tests);
-
-            Console.WriteLine("Test results:");
-            PrintResults(results);
-        }
-        private void PrintResults(Dictionary<Test, TestResult> results)
-        {
-            var sorted = results.OrderByDescending(kv => kv.Value);
-
-            foreach (var result in sorted)
-            {
-                WriteLineColored($"  {result.Key.GetType().Name}", result.Value.GetConsoleColor());
-            }
-        }
-        private void WriteLineColored(string text, ConsoleColor color)
-        {
-            ConsoleColor old = Console.ForegroundColor;
-            Console.ForegroundColor = color;
-            Console.WriteLine(text);
-            Console.ForegroundColor = old;
-        }
     }
 }
