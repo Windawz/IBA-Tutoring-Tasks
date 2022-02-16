@@ -3,7 +3,7 @@ using System.IO;
 
 namespace CSStarterTest1.TestUtils
 {
-    public sealed class TestLogger
+    public sealed class TestLogger : IDisposable
     {
         internal TestLogger(TextWriter writer, string tag)
         {
@@ -43,6 +43,10 @@ namespace CSStarterTest1.TestUtils
         {
             Write(s + _writer.NewLine);
             return this;
+        }
+        public void Dispose()
+        {
+            _writer.Dispose();
         }
 
         private static string BuildPrefix(string testName) =>
