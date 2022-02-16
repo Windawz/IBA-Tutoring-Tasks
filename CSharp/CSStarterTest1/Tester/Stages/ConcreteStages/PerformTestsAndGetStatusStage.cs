@@ -4,7 +4,7 @@ using System.Linq;
 
 using CSStarterTest1.TestUtils;
 
-namespace CSStarterTest1.Tester.Stages
+namespace CSStarterTest1.Tester.Stages.ConcreteStages
 {
     internal class PerformTestsAndGetStatusStage : Stage<Test, Nothing>
     {

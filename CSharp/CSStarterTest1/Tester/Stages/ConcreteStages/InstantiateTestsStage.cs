@@ -4,7 +4,7 @@ using System.IO;
 
 using CSStarterTest1.TestUtils;
 
-namespace CSStarterTest1.Tester.Stages
+namespace CSStarterTest1.Tester.Stages.ConcreteStages
 {
     internal class InstantiateTestsStage : Stage<Type, Test>
     {
@@ -47,7 +47,7 @@ namespace CSStarterTest1.Tester.Stages
                     tests.Add(new Output(null, testName));
 
                     Console.Error.WriteLine($"Failed to instantiate test \"{testName}\"; disposing logger; exception: \"{ex}\"");
-                    
+
                     continue;
                 }
                 tests.Add(new Output(test, testName));

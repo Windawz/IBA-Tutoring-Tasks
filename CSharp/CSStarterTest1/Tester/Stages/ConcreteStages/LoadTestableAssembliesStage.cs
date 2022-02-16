@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 
-namespace CSStarterTest1.Tester.Stages
+namespace CSStarterTest1.Tester.Stages.ConcreteStages
 {
     internal class LoadTestableAssembliesStage : Stage<AssemblyName, Assembly>
     {

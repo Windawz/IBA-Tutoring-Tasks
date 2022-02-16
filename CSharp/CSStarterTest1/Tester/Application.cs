@@ -6,6 +6,7 @@ using System.Reflection;
 using System.Text;
 
 using CSStarterTest1.Tester.Stages;
+using CSStarterTest1.Tester.Stages.ConcreteStages;
 using CSStarterTest1.TestUtils;
 
 namespace CSStarterTest1.Tester
