@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 
 using CSStarterTest1.TestUtils;
 
@@ -16,44 +17,60 @@ namespace CSStarterTest1.Tester.Stages.ConcreteStages
         };
         public override IStageOutput<Test>[] Process(Type[] input)
         {
-            var tests = new List<Output>();
-            var loggerProvider = new LoggerProvider();
-            var nameGen = new TestLogNameGenerator();
+            var provider = new LoggerProvider();
+            var generator = new TestLogNameGenerator();
 
-            foreach (Type testType in input)
+            return input
+                .Select(type => (Name: type.Name, Test: TryInstantiateTest(type, provider, generator)))
+                .Select(pair => new Output(pair.Test, pair.Name))
+                .ToArray();
+        }
+
+        private static TextWriter GetLoggerOrLogOnFail(string testName, LoggerProvider provider, TestLogNameGenerator generator)
+        {
+            TextWriter logger;
+            
+            try
             {
-                string testName = testType.Name;
-
-                TextWriter logger;
-                try
-                {
-                    logger = loggerProvider.GetLogger(nameGen.GetLogName(testName));
-                }
-                catch (Exception ex)
-                {
-                    Console.Error.WriteLine($"Failed to create log file for \"{testName}\"; exception: \"{ex}\"");
-                    logger = TextWriter.Null;
-                }
-
-                Test test;
-                try
-                {
-                    test = TestInstantiator.Instantiate(testType, logger);
-                }
-                catch (Exception ex)
-                {
-                    // Failed to instantiate test, no need for the logger
-                    logger.Dispose();
-                    tests.Add(new Output(null, testName));
-
-                    Console.Error.WriteLine($"Failed to instantiate test \"{testName}\"; disposing logger; exception: \"{ex}\"");
-
-                    continue;
-                }
-                tests.Add(new Output(test, testName));
+                logger = provider.GetLogger(generator.GetLogName(testName));
+            }
+            catch (Exception ex)
+            {
+                Console.Error.WriteLine($"Failed to create log file for \"{testName}\"; exception: \"{ex}\"");
+                logger = TextWriter.Null;
             }
 
-            return tests.ToArray();
+            return logger;
+        }
+        private static Test? TryInstantiateTestTypeOrLogOnFail(Type testType, TextWriter logger)
+        {
+            Test? test;
+
+            try
+            {
+                test = TestInstantiator.Instantiate(testType, logger);
+            }
+            catch (Exception ex)
+            {
+                Console.Error.WriteLine($"Failed to instantiate test \"{testType.Name}\"; disposing logger; exception: \"{ex}\"");
+                test = null;
+            }
+
+            return test;
+        }
+        private static Test? TryInstantiateTest(Type testType, LoggerProvider provider, TestLogNameGenerator generator)
+        {
+            string testName = testType.Name;
+            TextWriter logger = GetLoggerOrLogOnFail(testName, provider, generator);
+            Test? test = TryInstantiateTestTypeOrLogOnFail(testType, logger);
+
+            if (test is null)
+            {
+                // Failed to instantiate test, no need for the logger
+                logger.Dispose();
+            }
+
+            return test;
         }
 
         private class Output : IStageOutput<Test>
