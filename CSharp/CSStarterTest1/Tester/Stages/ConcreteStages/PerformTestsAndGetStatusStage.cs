@@ -16,8 +16,18 @@ namespace CSStarterTest1.Tester.Stages.ConcreteStages
         };
         public override IStageOutput<Nothing>[] Process(Test[] input)
         {
-            var results = input
-                .Select(t => new Output(t.Name, TestPerformer.Perform(t)));
+            Output[] results;
+            try
+            {
+                results = input.Select(t => new Output(t.Name, TestPerformer.Perform(t))).ToArray();
+            }
+            finally
+            {
+                foreach (Test test in input)
+                {
+                    test.Dispose();
+                }
+            }
             return results.ToArray();
         }
 
