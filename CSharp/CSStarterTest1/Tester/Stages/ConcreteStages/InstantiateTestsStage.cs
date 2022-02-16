@@ -12,7 +12,7 @@ namespace CSStarterTest1.Tester.Stages.ConcreteStages
         {
             StageMessage.Starting => "Instantiating found test types",
             StageMessage.Results => "Test instantiation results",
-            _ => throw new ArgumentOutOfRangeException(nameof(messageKind)),
+            _ => base.GetMessage(messageKind),
         };
         public override IStageOutput<Test>[] Process(Type[] input)
         {

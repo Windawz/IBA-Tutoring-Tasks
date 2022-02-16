@@ -12,7 +12,7 @@ namespace CSStarterTest1.Tester.Stages.ConcreteStages
         {
             StageMessage.Starting => "Performing tests",
             StageMessage.Results => "Failed tests",
-            _ => throw new ArgumentOutOfRangeException(nameof(messageKind)),
+            _ => base.GetMessage(messageKind),
         };
         public override IStageOutput<Nothing>[] Process(Test[] input)
         {

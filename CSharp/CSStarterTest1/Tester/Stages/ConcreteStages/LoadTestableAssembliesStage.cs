@@ -11,7 +11,7 @@ namespace CSStarterTest1.Tester.Stages.ConcreteStages
         {
             StageMessage.Starting => "Loading",
             StageMessage.Results => "Loaded assemblies",
-            _ => throw new ArgumentOutOfRangeException(nameof(messageKind)),
+            _ => base.GetMessage(messageKind),
         };
         public override IStageOutput<Assembly>[] Process(AssemblyName[] input)
         {
