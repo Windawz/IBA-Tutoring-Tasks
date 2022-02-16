@@ -7,9 +7,10 @@ namespace CSStarterTest1.TestUtils
     {
         protected Test(TextWriter writer)
         {
-            Logger = new(writer, GetType().Name);
+            Logger = new(writer, Name);
         }
 
+        public string Name => GetType().Name;
         protected TestLogger Logger { get; }
 
         public abstract TestResult Perform();
