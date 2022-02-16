@@ -14,6 +14,9 @@ namespace CSStarterTest1.Tester
             ConsoleOutput.Error => Console.Error,
             _ => throw new ArgumentOutOfRangeException(nameof(consoleOutput)),
         };
+        /// <summary>
+        /// Sets the corresponding standard output stream of the console.
+        /// </summary>
         public static void SetWriter(this ConsoleOutput consoleOutput, TextWriter newWriter)
         {
             switch (consoleOutput)
