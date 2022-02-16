@@ -11,7 +11,7 @@ namespace CSStarterTest1.Tester.Stages.ConcreteStages
         public override string GetMessage(StageMessage messageKind) => messageKind switch
         {
             StageMessage.Starting => "Performing tests",
-            StageMessage.Results => "Failed tests",
+            StageMessage.Results => "Test results",
             _ => base.GetMessage(messageKind),
         };
         public override IStageOutput<Nothing>[] Process(Test[] input)
