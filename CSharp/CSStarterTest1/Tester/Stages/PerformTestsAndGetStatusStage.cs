@@ -6,7 +6,7 @@ using CSStarterTest1.TestUtils;
 
 namespace CSStarterTest1.Tester.Stages
 {
-    internal class PerformTestsAndGetStatusStage : Stage<NamedTest, Nothing>
+    internal class PerformTestsAndGetStatusStage : Stage<Test, Nothing>
     {
         public override string GetMessage(StageMessage messageKind) => messageKind switch
         {
@@ -14,18 +14,18 @@ namespace CSStarterTest1.Tester.Stages
             StageMessage.Results => "Failed tests",
             _ => throw new ArgumentOutOfRangeException(nameof(messageKind)),
         };
-        public override IStageOutput<Nothing>[] Process(NamedTest[] input)
+        public override IStageOutput<Nothing>[] Process(Test[] input)
         {
             var results = input
-                .Select(t => new Output(t, TestPerformer.Perform(t.Test)));
+                .Select(t => new Output(t.Name, TestPerformer.Perform(t)));
             return results.ToArray();
         }
 
         private class Output : IStageOutput<Nothing>
         {
-            public Output(NamedTest test, TestResult result)
+            public Output(string testName, TestResult result)
             {
-                _testName = test.Name;
+                _testName = testName;
                 _result = result;
             }
 
