@@ -31,10 +31,10 @@ namespace CSStarterTest1.Tester.Stages
 
             foreach (IStage stage in _stages)
             {
-                PrintStagePreProcessMessages(stage);
+                DisplayPreProcessMessages(stage);
                 var stageOutputs = stage.Process(stageInput);
-                PrintStagePostProcessMessages(stage);
-                PrintStageOutputs(stageOutputs);
+                DisplayPostProcessMessages(stage);
+                DisplayOutputs(stageOutputs);
 
                 stageInput = stageOutputs
                     .Where(stageData => stageData.Data is not null)
@@ -45,7 +45,7 @@ namespace CSStarterTest1.Tester.Stages
             return Array.ConvertAll(stageInput, o => (TOut)o);
         }
 
-        private void PrintStageOutputs(IEnumerable<IStageOutput> stageOutputs)
+        private void DisplayOutputs(IEnumerable<IStageOutput> stageOutputs)
         {
             _indenter.Increase();
             foreach (var displayInfo in stageOutputs.Select(o => o.GetDisplayInfo()))
@@ -61,12 +61,12 @@ namespace CSStarterTest1.Tester.Stages
             stages.First().In.Equals(typeof(TIn))
             && stages.Last().Out.Equals(typeof(TOut))
             ;
-        private static void PrintStagePreProcessMessages(IStage stage)
+        private static void DisplayPreProcessMessages(IStage stage)
         {
             Console.WriteLine($"{stage.GetMessage(StageMessage.Starting)}...");
         }
         
-        private static void PrintStagePostProcessMessages(IStage stage)
+        private static void DisplayPostProcessMessages(IStage stage)
         {
             Console.WriteLine($"{stage.GetMessage(StageMessage.Results)}:");
         }
