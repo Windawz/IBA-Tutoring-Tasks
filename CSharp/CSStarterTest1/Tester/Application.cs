@@ -16,7 +16,7 @@ namespace CSStarterTest1.Tester
         public Application(string[] testedAssemblies)
         {
             _errorWriter = new LoggerProvider().GetLogger(
-                new TestLogNameGenerator().GetLogName("Tester")
+                new LogFileNameProvider().GetName("Tester")
             );
             Console.SetError(_errorWriter);
 

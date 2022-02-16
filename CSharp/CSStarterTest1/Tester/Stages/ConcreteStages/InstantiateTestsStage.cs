@@ -18,7 +18,7 @@ namespace CSStarterTest1.Tester.Stages.ConcreteStages
         public override IStageOutput<Test>[] Process(Type[] input)
         {
             var provider = new LoggerProvider();
-            var generator = new TestLogNameGenerator();
+            var generator = new LogFileNameProvider();
 
             return input
                 .Select(type => (Name: type.Name, Test: TryInstantiateTest(type, provider, generator)))
@@ -26,13 +26,13 @@ namespace CSStarterTest1.Tester.Stages.ConcreteStages
                 .ToArray();
         }
 
-        private static TextWriter GetLoggerOrLogOnFail(string testName, LoggerProvider provider, TestLogNameGenerator generator)
+        private static TextWriter GetLoggerOrLogOnFail(string testName, LoggerProvider provider, LogFileNameProvider generator)
         {
             TextWriter logger;
             
             try
             {
-                logger = provider.GetLogger(generator.GetLogName(testName));
+                logger = provider.GetLogger(generator.GetName(testName));
             }
             catch (Exception ex)
             {
@@ -58,7 +58,7 @@ namespace CSStarterTest1.Tester.Stages.ConcreteStages
 
             return test;
         }
-        private static Test? TryInstantiateTest(Type testType, LoggerProvider provider, TestLogNameGenerator generator)
+        private static Test? TryInstantiateTest(Type testType, LoggerProvider provider, LogFileNameProvider generator)
         {
             string testName = testType.Name;
             TextWriter logger = GetLoggerOrLogOnFail(testName, provider, generator);
