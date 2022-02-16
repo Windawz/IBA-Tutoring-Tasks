@@ -16,7 +16,7 @@ namespace CSStarterTest1.Tester
         private bool _disposeIndenter;
         private bool _disposed;
 
-        public static SimpleConsoleIndenter GetIndenter(ConsoleOutputKind outputKind) => 
+        public static SimpleConsoleIndenter GetIndenter(ConsoleOutput outputKind) => 
             new SimpleConsoleIndenter(new ConsoleIndenter(outputKind));
         public ConsoleIndenter InnerIndenter { get; }
         public int IndentStep { get; set; } = DefaultIndentStep;

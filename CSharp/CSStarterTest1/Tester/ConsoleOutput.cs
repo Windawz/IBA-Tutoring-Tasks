@@ -1,7 +1,7 @@
 ﻿
 namespace CSStarterTest1.Tester
 {
-    internal enum ConsoleOutputKind
+    internal enum ConsoleOutput
     {
         Out,
         Error,

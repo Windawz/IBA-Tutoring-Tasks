@@ -6,7 +6,7 @@ namespace CSStarterTest1.Tester
 {
     internal class ConsoleIndenter : IDisposable
     {
-        public ConsoleIndenter(ConsoleOutputKind outputKind)
+        public ConsoleIndenter(ConsoleOutput outputKind)
         {
             if (!Enum.IsDefined(outputKind))
             {
@@ -21,7 +21,7 @@ namespace CSStarterTest1.Tester
             SetConsoleOutput(_outputKind, _indented);
         }
 
-        private ConsoleOutputKind _outputKind;
+        private ConsoleOutput _outputKind;
         private TextWriter _old;
         private IndentedTextWriter _indented;
         private bool _disposed;
@@ -47,20 +47,20 @@ namespace CSStarterTest1.Tester
             }
         }
 
-        private static TextWriter GetConsoleOutput(ConsoleOutputKind outputKind) => outputKind switch
+        private static TextWriter GetConsoleOutput(ConsoleOutput outputKind) => outputKind switch
         {
-            ConsoleOutputKind.Out => Console.Out,
-            ConsoleOutputKind.Error => Console.Error,
+            ConsoleOutput.Out => Console.Out,
+            ConsoleOutput.Error => Console.Error,
             _ => throw new InvalidOperationException($"Invalid {nameof(_outputKind)} value"),
         };
-        private static void SetConsoleOutput(ConsoleOutputKind outputKind, TextWriter writer)
+        private static void SetConsoleOutput(ConsoleOutput outputKind, TextWriter writer)
         {
             switch (outputKind)
             {
-                case ConsoleOutputKind.Out:
+                case ConsoleOutput.Out:
                     Console.SetOut(writer);
                     break;
-                case ConsoleOutputKind.Error:
+                case ConsoleOutput.Error:
                     Console.SetError(writer);
                     break;
             }
