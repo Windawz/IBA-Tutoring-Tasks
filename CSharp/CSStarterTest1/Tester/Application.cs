@@ -15,7 +15,9 @@ namespace CSStarterTest1.Tester
     {
         public Application(string[] testedAssemblies)
         {
-            _errorWriter = new StreamWriter(File.OpenWrite("TesterLog.log"), Encoding.UTF8, leaveOpen: false);
+            _errorWriter = new LoggerProvider().GetLogger(
+                new TestLogNameGenerator().GetLogName("Tester")
+            );
             Console.SetError(_errorWriter);
 
             _testedAssemblies = testedAssemblies
@@ -30,7 +32,7 @@ namespace CSStarterTest1.Tester
 
         public int ExitCode { get; private set; }
 
-        private StreamWriter _errorWriter;
+        private TextWriter _errorWriter;
         private AssemblyName[] _testedAssemblies;
         private SimpleConsoleIndenter _indenter;
         private bool _disposed;
