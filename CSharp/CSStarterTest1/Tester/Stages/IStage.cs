@@ -9,6 +9,6 @@ namespace CSStarterTest1.Tester.Stages
         Type Out { get; }
 
         string GetMessage(StageMessage messageKind);
-        IEnumerable<object> Process(IEnumerable<object> input);
+        IStageOutput[] Process(object[] input);
     }
 }

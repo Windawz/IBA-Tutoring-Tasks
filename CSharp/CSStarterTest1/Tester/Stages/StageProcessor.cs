@@ -27,17 +27,36 @@ namespace CSStarterTest1.Tester.Stages
 
         public IEnumerable<TOut> Process(IEnumerable<TIn> input)
         {
-            var data = (IEnumerable<object>)input;
+            object[] stageInput = ((IEnumerable<object>)input).ToArray();
+
             foreach (IStage stage in _stages)
             {
                 PrintStagePreProcessMessages(stage);
-                data = stage.Process(data);
+                var stageOutputs = stage.Process(stageInput);
                 PrintStagePostProcessMessages(stage);
-                PrintData(data, _indenter);
+                PrintStageOutputs(stageOutputs);
+
+                stageInput = stageOutputs
+                    .Where(stageData => stageData.Data is not null)
+                    .Select(stageData => stageData.Data!)
+                    .ToArray();
             }
-            return (IEnumerable<TOut>)data;
+
+            return Array.ConvertAll(stageInput, o => (TOut)o);
         }
 
+        private void PrintStageOutputs(IEnumerable<IStageOutput> stageOutputs)
+        {
+            _indenter.Increase();
+            foreach (var displayInfo in stageOutputs.Select(o => o.GetDisplayInfo()))
+            {
+                var oldColor = Console.ForegroundColor;
+                Console.ForegroundColor = displayInfo.Color;
+                Console.WriteLine(displayInfo.Text);
+                Console.ForegroundColor = oldColor;
+            }
+            _indenter.Decrease();
+        }
         private static bool ValidateStages(IStage[] stages) =>
             stages.First().In.Equals(typeof(TIn))
             && stages.Last().Out.Equals(typeof(TOut))
@@ -46,25 +65,10 @@ namespace CSStarterTest1.Tester.Stages
         {
             Console.WriteLine($"{stage.GetMessage(StageMessage.Starting)}...");
         }
+        
         private static void PrintStagePostProcessMessages(IStage stage)
         {
             Console.WriteLine($"{stage.GetMessage(StageMessage.Results)}:");
-        }
-        private static void PrintData(IEnumerable<object> data, SimpleConsoleIndenter indenter)
-        {
-            indenter.Increase();
-            if (!data.Any())
-            {
-                Console.WriteLine("None");
-            }
-            else
-            {
-                foreach (object d in data)
-                {
-                    Console.WriteLine(d);
-                }
-            }
-            indenter.Decrease();
         }
     }
 }

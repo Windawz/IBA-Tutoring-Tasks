@@ -13,13 +13,31 @@ namespace CSStarterTest1.Tester.Stages
             StageMessage.Results => "Loaded assemblies",
             _ => throw new ArgumentOutOfRangeException(nameof(messageKind)),
         };
-        public override IEnumerable<Assembly> Process(IEnumerable<AssemblyName> input)
+        public override IStageOutput<Assembly>[] Process(AssemblyName[] input)
         {
             AssemblyLoadInfo[] infos = input.Select(name => AssemblyLoader.Load(name)).ToArray();
             return infos
-                .Where(i => i.LoadedAssembly is not null)
-                .Select(i => i.LoadedAssembly!)
+                .Select(info => new Output(info))
                 .ToArray();
+        }
+
+        private class Output : IStageOutput<Assembly>
+        {
+            public Output(AssemblyLoadInfo info)
+            {
+                _assemblyName = info.Name.Name!;
+                Data = info.LoadedAssembly;
+            }
+
+            private string _assemblyName;
+
+            public Assembly? Data { get; }
+
+            public StageOutputDisplayInfo GetDisplayInfo() => new()
+            {
+                Text = _assemblyName,
+                Color = Data is null ? ConsoleColor.Red : ConsoleColor.Green,
+            };
         }
     }
 }

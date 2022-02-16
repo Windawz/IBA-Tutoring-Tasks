@@ -41,10 +41,10 @@ namespace CSStarterTest1.Tester
                 new LoadTestableAssembliesStage(),
                 new GetTestTypesStage(),
                 new InstantiateTestsStage(),
-                new PerformAndGetFailedTests(),
+                new PerformTestsAndGetStatusStage(),
             };
 
-            var processor = new StageProcessor<AssemblyName, Test>(_indenter, stages);
+            var processor = new StageProcessor<AssemblyName, Nothing>(_indenter, stages);
             _ = processor.Process(_testedAssemblies);
 
             ExitCode = 0;

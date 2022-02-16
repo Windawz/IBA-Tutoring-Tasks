@@ -4,14 +4,12 @@ using System.Collections.Generic;
 
 namespace CSStarterTest1.Tester.Stages
 {
-    internal abstract class Stage<TIn, TOut> : IStage<TIn, TOut>, IStage
+    internal abstract class Stage<TIn, TOut> : IStage<TIn, TOut>
     {
-        public Type In => typeof(TIn);
-        public Type Out => typeof(TOut);
-
         public virtual string GetMessage(StageMessage messageKind) => "";
-        public abstract IEnumerable<TOut> Process(IEnumerable<TIn> input);
-        public IEnumerable<object> Process(IEnumerable<object> input) =>
-            (IEnumerable<object>)Process((IEnumerable<TIn>)input);
+        public abstract IStageOutput<TOut>[] Process(TIn[] input);
+
+        IStageOutput[] IStage.Process(object[] input) =>
+            Process(Array.ConvertAll(input, o => (TIn)o));
     }
 }

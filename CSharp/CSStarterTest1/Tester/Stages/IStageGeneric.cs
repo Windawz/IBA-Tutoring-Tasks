@@ -1,9 +1,13 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 
 namespace CSStarterTest1.Tester.Stages
 {
     internal interface IStage<in TIn, out TOut> : IStage
     {
-        IEnumerable<TOut> Process(IEnumerable<TIn> input);
+        Type IStage.In => typeof(TIn);
+        Type IStage.Out => typeof(TOut);
+
+        IStageOutput<TOut>[] Process(TIn[] input);
     }
 }
