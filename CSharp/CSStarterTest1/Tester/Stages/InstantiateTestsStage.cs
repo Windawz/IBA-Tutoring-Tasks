@@ -44,13 +44,13 @@ namespace CSStarterTest1.Tester.Stages
                 {
                     // Failed to instantiate test, no need for the logger
                     logger.Dispose();
-                    tests.Add(new Output(new TestInstantiationInfo(null, testName)));
+                    tests.Add(new Output(null, testName));
 
                     Console.Error.WriteLine($"Failed to instantiate test \"{testName}\"; disposing logger; exception: \"{ex}\"");
                     
                     continue;
                 }
-                tests.Add(new Output(new TestInstantiationInfo(test, testName)));
+                tests.Add(new Output(test, testName));
             }
 
             return tests.ToArray();
@@ -58,10 +58,10 @@ namespace CSStarterTest1.Tester.Stages
 
         private class Output : IStageOutput<Test>
         {
-            public Output(TestInstantiationInfo info)
+            public Output(Test? test, string testName)
             {
-                _testName = info.Name;
-                Data = info.Test;
+                _testName = testName;
+                Data = test;
             }
 
             private string _testName;
