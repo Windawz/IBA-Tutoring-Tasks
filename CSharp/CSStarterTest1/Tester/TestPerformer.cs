@@ -21,15 +21,5 @@ namespace CSStarterTest1.Tester
             }
             return result;
         }
-
-        public static Dictionary<Test, TestResult> Perform(IEnumerable<Test> tests)
-        {
-            var dict = new Dictionary<Test, TestResult>();
-            foreach (Test test in tests)
-            {
-                dict[test] = Perform(test);
-            }
-            return dict;
-        }
     }
 }
