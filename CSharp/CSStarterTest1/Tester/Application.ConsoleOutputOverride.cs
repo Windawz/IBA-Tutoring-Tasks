@@ -9,14 +9,14 @@ namespace CSStarterTest1.Tester
         {
             public ConsoleOutputOverride()
             {
-                _errorSaver = ConsoleOutput.Error.SetWriter(GetErrorLogger());
+                _oldError = ConsoleOutput.Error.SetWriter(GetErrorLogger());
             }
 
             private static readonly LogFileNameProvider _nameProvider = new();
             private static readonly LoggerProvider _loggerProvider = new();
-            private readonly SavedConsoleOutput _errorSaver;
+            private readonly SavedConsoleOutput _oldError;
 
-            public void Dispose() => _errorSaver.Dispose();
+            public void Dispose() => _oldError.Dispose();
 
             private static TextWriter GetErrorLogger()
             {
