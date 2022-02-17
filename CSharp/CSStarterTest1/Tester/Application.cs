@@ -11,14 +11,11 @@ using CSStarterTest1.TestUtils;
 
 namespace CSStarterTest1.Tester
 {
-    internal class Application : IDisposable
+    internal partial class Application : IDisposable
     {
         public Application(string[] testedAssemblies)
         {
-            _errorWriter = new LoggerProvider().GetLogger(
-                new LogFileNameProvider().GetName("Tester")
-            );
-            Console.SetError(_errorWriter);
+            _override = new ConsoleOutputOverride();
 
             _testedAssemblies = testedAssemblies
                 .Select(s => new AssemblyName(s.Trim()))
@@ -32,7 +29,7 @@ namespace CSStarterTest1.Tester
 
         public int ExitCode { get; private set; }
 
-        private TextWriter _errorWriter;
+        private ConsoleOutputOverride _override;
         private AssemblyName[] _testedAssemblies;
         private SimpleConsoleIndenter _indenter;
         private bool _disposed;
@@ -58,6 +55,15 @@ namespace CSStarterTest1.Tester
             Dispose(disposing: true);
             GC.SuppressFinalize(this);
         }
+
+        // Left in case Application has to handle unmanaged resources
+        //
+        // // Override finalizer only if 'Dispose(bool disposing)' has code to free unmanaged resources
+        // ~Application()
+        // {
+        //     Dispose(disposing: false);
+        // }
+
         protected virtual void Dispose(bool disposing)
         {
             if (!_disposed)
@@ -65,7 +71,7 @@ namespace CSStarterTest1.Tester
                 if (disposing)
                 {
                     // Dispose managed state (managed objects)
-                    _errorWriter.Dispose();
+                    _override.Dispose();
                     _indenter.Dispose();
 
                     try
@@ -82,13 +88,5 @@ namespace CSStarterTest1.Tester
                 _disposed = true;
             }
         }
-
-        // Left in case Application has to handle unmanaged resources
-        //
-        // // Override finalizer only if 'Dispose(bool disposing)' has code to free unmanaged resources
-        // ~Application()
-        // {
-        //     Dispose(disposing: false);
-        // }
     }
 }
