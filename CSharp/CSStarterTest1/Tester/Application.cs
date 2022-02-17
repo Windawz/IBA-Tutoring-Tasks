@@ -1,4 +1,5 @@
 ﻿using System;
+using System.CodeDom.Compiler;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -15,22 +16,22 @@ namespace CSStarterTest1.Tester
     {
         public Application(string[] testedAssemblies)
         {
-            _override = new ConsoleOutputOverride();
-
             _testedAssemblies = testedAssemblies
                 .Select(s => new AssemblyName(s.Trim()))
                 .ToArray();
-
-            _indenter = new ConsoleIndenter(ConsoleOutput.Out);
-
+        
+            var writer = GetIndentedTextWriter();
+            _override = new ConsoleOutputOverride(GetIndentedTextWriter());
+            _indentControl = new IndentControl(writer);
+            
             Console.ForegroundColor = ConsoleColor.White;
         }
 
         public int ExitCode { get; private set; }
 
-        private ConsoleOutputOverride _override;
         private AssemblyName[] _testedAssemblies;
-        private ConsoleIndenter _indenter;
+        private ConsoleOutputOverride _override;
+        private IndentControl _indentControl;
         private bool _disposed;
 
         public void Run()
@@ -43,7 +44,7 @@ namespace CSStarterTest1.Tester
                 new PerformTestsAndGetStatusStage(),
             };
 
-            var processor = new StageProcessor<AssemblyName, Nothing>(_indenter, stages);
+            var processor = new StageProcessor<AssemblyName, Nothing>(_indentControl, stages);
             _ = processor.Process(_testedAssemblies);
 
             ExitCode = 0;
@@ -71,7 +72,6 @@ namespace CSStarterTest1.Tester
                 {
                     // Dispose managed state (managed objects)
                     _override.Dispose();
-                    _indenter.Dispose();
 
                     try
                     {
@@ -86,6 +86,11 @@ namespace CSStarterTest1.Tester
                 // Set large fields to null
                 _disposed = true;
             }
+        }
+
+        private static IndentedTextWriter GetIndentedTextWriter()
+        {
+            return new IndentedTextWriter(ConsoleOutput.Out.GetWriter(), " ");
         }
     }
 }

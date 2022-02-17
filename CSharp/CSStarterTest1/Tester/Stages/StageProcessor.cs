@@ -6,7 +6,7 @@ namespace CSStarterTest1.Tester.Stages
 {
     internal class StageProcessor<TIn, TOut>
     {
-        public StageProcessor(ConsoleIndenter indenter, IStage[] stages)
+        public StageProcessor(IndentControl indenter, IStage[] stages)
         {
             if (!ValidateStages(stages))
             {
@@ -22,7 +22,7 @@ namespace CSStarterTest1.Tester.Stages
             _stages = stages;
         }
 
-        ConsoleIndenter _indenter;
+        IndentControl _indenter;
         IStage[] _stages;
 
         public IEnumerable<TOut> Process(IEnumerable<TIn> input)
