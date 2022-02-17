@@ -16,7 +16,7 @@ namespace CSStarterTest1.Tester
 
             private static readonly LogFileNameProvider _nameProvider = new();
             private static readonly LoggerProvider _loggerProvider = new();
-            private readonly ConsoleOutputSaver _errorSaver;
+            private readonly SavedConsoleOutput _errorSaver;
 
             public void Dispose() => _errorSaver.Dispose();
 

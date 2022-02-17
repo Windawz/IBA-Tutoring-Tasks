@@ -7,10 +7,10 @@ namespace CSStarterTest1.Tester
     /// Takes the specified console output, copies the writer and keeps it.
     /// When disposed, assigns the writer back.
     /// </summary>
-    internal class ConsoleOutputSaver : IDisposable
+    internal class SavedConsoleOutput : IDisposable
     {
         /// <param name="output">Console output to save.</param>
-        public ConsoleOutputSaver(ConsoleOutput output)
+        public SavedConsoleOutput(ConsoleOutput output)
         {
             _output = output;
             _old = output.GetWriter();
