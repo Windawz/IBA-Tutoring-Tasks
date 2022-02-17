@@ -17,7 +17,14 @@ namespace CSStarterTest1.Tester
         /// <summary>
         /// Sets the corresponding standard output stream of the console.
         /// </summary>
-        public static void SetWriter(this ConsoleOutput consoleOutput, TextWriter newWriter)
+        public static ConsoleOutputSaver SetWriter(this ConsoleOutput consoleOutput, TextWriter newWriter)
+        {
+            var saver = new ConsoleOutputSaver(consoleOutput);
+            SetWriterImpl(consoleOutput, newWriter);
+            return saver;
+        }
+
+        private static void SetWriterImpl(ConsoleOutput consoleOutput, TextWriter newWriter)
         {
             switch (consoleOutput)
             {
