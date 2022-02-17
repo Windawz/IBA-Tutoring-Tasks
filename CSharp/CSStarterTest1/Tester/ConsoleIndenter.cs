@@ -13,62 +13,27 @@ namespace CSStarterTest1.Tester
                 throw new ArgumentOutOfRangeException(nameof(consoleOutput));
             }
 
-            _consoleOutput = consoleOutput;
-
-            _old = GetConsoleOutput(_consoleOutput);
-            _indented = new IndentedTextWriter(_old, " ");
-
-            SetConsoleOutput(_consoleOutput, _indented);
+            _writer = new IndentedTextWriter(consoleOutput.GetWriter(), " ");
+            _savedOutput = consoleOutput.SetWriter(_writer);
         }
 
-        private ConsoleOutput _consoleOutput;
-        private TextWriter _old;
-        private IndentedTextWriter _indented;
+        private SavedConsoleOutput _savedOutput;
+        private IndentedTextWriter _writer;
         private bool _disposed;
 
         public int Indent
         {
-            get => _indented.Indent;
-            set => _indented.Indent = value;
+            get => _writer.Indent;
+            set => _writer.Indent = value;
         }
 
         public void Dispose()
         {
-            Dispose(disposing: true);
-            GC.SuppressFinalize(this);
-        }
-
-        protected virtual void Dispose(bool disposing)
-        {
             if (!_disposed)
             {
-                SetConsoleOutput(_consoleOutput, _old);
-                _disposed = true;
+                _savedOutput.Dispose();
             }
-        }
-
-        private static TextWriter GetConsoleOutput(ConsoleOutput consoleOutput) => consoleOutput switch
-        {
-            ConsoleOutput.Out => Console.Out,
-            ConsoleOutput.Error => Console.Error,
-            _ => throw new InvalidOperationException($"Invalid {nameof(_consoleOutput)} value"),
-        };
-        private static void SetConsoleOutput(ConsoleOutput consoleOutput, TextWriter writer)
-        {
-            switch (consoleOutput)
-            {
-                case ConsoleOutput.Out:
-                    Console.SetOut(writer);
-                    break;
-                case ConsoleOutput.Error:
-                    Console.SetError(writer);
-                    break;
-            }
-        }
-
-        ~ConsoleIndenter()
-        {
-            Dispose(disposing: false);
+            _disposed = true;
         }
     }
 }
