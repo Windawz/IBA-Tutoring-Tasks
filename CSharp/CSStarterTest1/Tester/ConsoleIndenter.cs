@@ -6,22 +6,22 @@ namespace CSStarterTest1.Tester
 {
     internal class ConsoleIndenter : IDisposable
     {
-        public ConsoleIndenter(ConsoleOutput outputKind)
+        public ConsoleIndenter(ConsoleOutput consoleOutput)
         {
-            if (!Enum.IsDefined(outputKind))
+            if (!Enum.IsDefined(consoleOutput))
             {
-                throw new ArgumentOutOfRangeException(nameof(outputKind));
+                throw new ArgumentOutOfRangeException(nameof(consoleOutput));
             }
 
-            _outputKind = outputKind;
+            _consoleOutput = consoleOutput;
 
-            _old = GetConsoleOutput(_outputKind);
+            _old = GetConsoleOutput(_consoleOutput);
             _indented = new IndentedTextWriter(_old, " ");
 
-            SetConsoleOutput(_outputKind, _indented);
+            SetConsoleOutput(_consoleOutput, _indented);
         }
 
-        private ConsoleOutput _outputKind;
+        private ConsoleOutput _consoleOutput;
         private TextWriter _old;
         private IndentedTextWriter _indented;
         private bool _disposed;
@@ -42,20 +42,20 @@ namespace CSStarterTest1.Tester
         {
             if (!_disposed)
             {
-                SetConsoleOutput(_outputKind, _old);
+                SetConsoleOutput(_consoleOutput, _old);
                 _disposed = true;
             }
         }
 
-        private static TextWriter GetConsoleOutput(ConsoleOutput outputKind) => outputKind switch
+        private static TextWriter GetConsoleOutput(ConsoleOutput consoleOutput) => consoleOutput switch
         {
             ConsoleOutput.Out => Console.Out,
             ConsoleOutput.Error => Console.Error,
-            _ => throw new InvalidOperationException($"Invalid {nameof(_outputKind)} value"),
+            _ => throw new InvalidOperationException($"Invalid {nameof(_consoleOutput)} value"),
         };
-        private static void SetConsoleOutput(ConsoleOutput outputKind, TextWriter writer)
+        private static void SetConsoleOutput(ConsoleOutput consoleOutput, TextWriter writer)
         {
-            switch (outputKind)
+            switch (consoleOutput)
             {
                 case ConsoleOutput.Out:
                     Console.SetOut(writer);
