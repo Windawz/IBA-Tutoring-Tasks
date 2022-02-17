@@ -7,8 +7,6 @@ namespace CSStarterTest1.Tester
     {
         private class ConsoleOutputOverride : IDisposable
         {
-            private static readonly int ConsoleOutputCount = Enum.GetValues<ConsoleOutput>().Length;
-
             public ConsoleOutputOverride()
             {
                 _errorSaver = ConsoleOutput.Error.SetWriter(GetErrorLogger());
