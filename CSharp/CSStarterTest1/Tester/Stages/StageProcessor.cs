@@ -6,7 +6,7 @@ namespace CSStarterTest1.Tester.Stages
 {
     internal class StageProcessor<TIn, TOut>
     {
-        public StageProcessor(SimpleConsoleIndenter indenter, IStage[] stages)
+        public StageProcessor(ConsoleIndenter indenter, IStage[] stages)
         {
             if (!ValidateStages(stages))
             {
@@ -22,7 +22,7 @@ namespace CSStarterTest1.Tester.Stages
             _stages = stages;
         }
 
-        SimpleConsoleIndenter _indenter;
+        ConsoleIndenter _indenter;
         IStage[] _stages;
 
         public IEnumerable<TOut> Process(IEnumerable<TIn> input)
@@ -47,7 +47,7 @@ namespace CSStarterTest1.Tester.Stages
 
         private void DisplayOutputs(IEnumerable<IStageOutput> stageOutputs)
         {
-            _indenter.Increase();
+            _indenter.IncreaseLevel();
             foreach (var displayInfo in stageOutputs.Select(o => o.GetDisplayInfo()))
             {
                 var oldColor = Console.ForegroundColor;
@@ -55,7 +55,7 @@ namespace CSStarterTest1.Tester.Stages
                 Console.WriteLine(displayInfo.Text);
                 Console.ForegroundColor = oldColor;
             }
-            _indenter.Decrease();
+            _indenter.DecreaseLevel();
         }
         private static bool ValidateStages(IStage[] stages) =>
             stages.First().In.Equals(typeof(TIn))

@@ -6,6 +6,8 @@ namespace CSStarterTest1.Tester
 {
     internal class ConsoleIndenter : IDisposable
     {
+        public const int DefaultLevelStep = 4;
+
         public ConsoleIndenter(ConsoleOutput consoleOutput)
         {
             if (!Enum.IsDefined(consoleOutput))
@@ -26,7 +28,10 @@ namespace CSStarterTest1.Tester
             get => _writer.Indent;
             set => _writer.Indent = value;
         }
+        public int LevelStep { get; set; } = DefaultLevelStep;
 
+        public void IncreaseLevel(int steps = 1) => Indent += LevelStep * steps;
+        public void DecreaseLevel(int steps = 1) => Indent -= LevelStep * steps;
         public void Dispose()
         {
             if (!_disposed)

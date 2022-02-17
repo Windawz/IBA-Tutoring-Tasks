@@ -21,8 +21,7 @@ namespace CSStarterTest1.Tester
                 .Select(s => new AssemblyName(s.Trim()))
                 .ToArray();
 
-            _indenter = SimpleConsoleIndenter.GetIndenter(ConsoleOutput.Out);
-            _indenter.IndentStep = 4;
+            _indenter = new ConsoleIndenter(ConsoleOutput.Out);
 
             Console.ForegroundColor = ConsoleColor.White;
         }
@@ -31,7 +30,7 @@ namespace CSStarterTest1.Tester
 
         private ConsoleOutputOverride _override;
         private AssemblyName[] _testedAssemblies;
-        private SimpleConsoleIndenter _indenter;
+        private ConsoleIndenter _indenter;
         private bool _disposed;
 
         public void Run()
