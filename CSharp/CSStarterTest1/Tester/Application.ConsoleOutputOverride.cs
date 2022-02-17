@@ -18,12 +18,12 @@ namespace CSStarterTest1.Tester
 
             public void Dispose() => _errorSaver.Dispose();
 
-            private static TextWriter GetLogger(string name)
+            private static TextWriter GetErrorLogger()
             {
                 TextWriter logger;
                 try
                 {
-                    string fileName = _nameProvider.GetName(name);
+                    string fileName = _nameProvider.GetName("Tester");
                     logger = _loggerProvider.GetLogger(fileName);
                 }
                 catch (Exception ex)
@@ -32,10 +32,6 @@ namespace CSStarterTest1.Tester
                     return TextWriter.Null;
                 }
                 return logger;
-            }
-            private TextWriter GetErrorLogger()
-            {
-                return GetLogger("Tester");
             }
         }
     }
