@@ -21,7 +21,7 @@ namespace CSStarterTest1.Tester
                 .ToArray();
         
             var writer = GetIndentedTextWriter();
-            _override = new ConsoleOutputOverride(GetIndentedTextWriter());
+            _override = new ConsoleOutputOverride(writer);
             _indentControl = new IndentControl(writer);
             
             Console.ForegroundColor = ConsoleColor.White;
