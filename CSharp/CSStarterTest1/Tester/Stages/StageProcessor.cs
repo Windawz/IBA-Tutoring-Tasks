@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 
 namespace CSStarterTest1.Tester.Stages
@@ -54,6 +55,12 @@ namespace CSStarterTest1.Tester.Stages
                 Console.ForegroundColor = displayInfo.Color;
                 Console.WriteLine(displayInfo.Text);
                 Console.ForegroundColor = oldColor;
+                if (displayInfo.Sound is not null)
+                {
+                    #pragma warning disable CA1416
+                    Console.Beep(displayInfo.Sound.Frequency, displayInfo.Sound.Duration);
+                    #pragma warning restore
+                }
             }
             _indenter.DecreaseLevel();
         }
