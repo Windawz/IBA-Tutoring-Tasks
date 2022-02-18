@@ -7,7 +7,7 @@ using CSStarterTest1.TestUtils;
 
 namespace CSStarterTest1.Tester.Stages.ConcreteStages
 {
-    internal class InstantiateTestsStage : Stage<Type, Test>
+    internal class InstantiateTestsStage : Stage<TestType, Test>
     {
         public override string GetMessage(StageMessage messageKind) => messageKind switch
         {
@@ -15,13 +15,13 @@ namespace CSStarterTest1.Tester.Stages.ConcreteStages
             StageMessage.Results => "Test instantiation results",
             _ => base.GetMessage(messageKind),
         };
-        public override IStageOutput<Test>[] Process(Type[] input)
+        public override IStageOutput<Test>[] Process(TestType[] input)
         {
             var provider = new LoggerProvider();
             var generator = new LogFileNameProvider();
 
             return input
-                .Select(type => (Name: type.Name, Test: TryInstantiateTest(type, provider, generator)))
+                .Select(type => (Name: type.Type.Name, Test: TryInstantiateTest(type, provider, generator)))
                 .Select(pair => new Output(pair.Test, pair.Name))
                 .ToArray();
         }
@@ -42,25 +42,25 @@ namespace CSStarterTest1.Tester.Stages.ConcreteStages
 
             return logger;
         }
-        private static Test? TryInstantiateTestTypeOrLogOnFail(Type testType, TextWriter logger)
+        private static Test? TryInstantiateTestTypeOrLogOnFail(TestType testType, TextWriter logger)
         {
             Test? test;
 
             try
             {
-                test = TestInstantiator.Instantiate(testType, logger);
+                test = testType.Instantiate(logger);
             }
             catch (Exception ex)
             {
-                Console.Error.WriteLine($"Failed to instantiate test \"{testType.Name}\"; disposing logger; exception: \"{ex}\"");
+                Console.Error.WriteLine($"Failed to instantiate test \"{testType.Type.Name}\"; disposing logger; exception: \"{ex}\"");
                 test = null;
             }
 
             return test;
         }
-        private static Test? TryInstantiateTest(Type testType, LoggerProvider provider, LogFileNameProvider generator)
+        private static Test? TryInstantiateTest(TestType testType, LoggerProvider provider, LogFileNameProvider generator)
         {
-            string testName = testType.Name;
+            string testName = testType.Type.Name;
             TextWriter logger = GetLoggerOrLogOnFail(testName, provider, generator);
             Test? test = TryInstantiateTestTypeOrLogOnFail(testType, logger);
 

@@ -5,7 +5,7 @@ using System.Reflection;
 
 namespace CSStarterTest1.Tester.Stages.ConcreteStages
 {
-    internal class GetTestTypesStage : Stage<Assembly, Type>
+    internal class GetTestTypesStage : Stage<Assembly, TestType>
     {
         public override string GetMessage(StageMessage messageKind) => messageKind switch
         {
@@ -13,23 +13,25 @@ namespace CSStarterTest1.Tester.Stages.ConcreteStages
             StageMessage.Results => "Found test types",
             _ => base.GetMessage(messageKind),
         };
-        public override IStageOutput<Type>[] Process(Assembly[] input)
+        public override IStageOutput<TestType>[] Process(Assembly[] input)
         {
             return input
                 .SelectMany(a => TestFinder.LoadTestTypes(a))
+                .Where(t => TestType.IsValid(t))
+                .Select(t => new TestType(t))
                 .Select(t => new Output(t))
                 .ToArray();
         }
 
-        private class Output : IStageOutput<Type>
+        private class Output : IStageOutput<TestType>
         {
-            public Output(Type type) => Data = type;
+            public Output(TestType testType) => Data = testType;
 
-            public Type? Data { get; }
+            public TestType? Data { get; }
 
             public StageOutputDisplayInfo GetDisplayInfo() => new()
             {
-                Text = Data!.Name,
+                Text = Data!.Type.Name,
                 Color = ConsoleColor.Green,
             };
         }
