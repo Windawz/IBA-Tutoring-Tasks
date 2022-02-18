@@ -19,7 +19,7 @@ namespace CSStarterTest1.Tester.Stages.ConcreteStages
             Output[] results;
             try
             {
-                results = input.Select(t => new Output(t.Name, TestPerformer.Perform(t))).ToArray();
+                results = input.Select(t => new Output(t.Name, t.Perform())).ToArray();
             }
             finally
             {

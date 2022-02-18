@@ -13,7 +13,7 @@ namespace DatabaseInterface.Tests
     {
         public ApplicationDbContextTest(TextWriter writer) : base(writer) { }
 
-        public override TestResult Perform()
+        protected override TestResult PerformImpl()
         {
             var testResult = new TestResult(TestStatus.Success);
 

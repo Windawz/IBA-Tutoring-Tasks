@@ -9,7 +9,7 @@ namespace CSStarterTest1.DataOps.Tests
     {
         public XlsxExporterTest(TextWriter writer) : base(writer) { }
 
-        public override TestResult Perform()
+        protected override TestResult PerformImpl()
         {
             var data = new Data(1, DateTime.Now, "FirstName", "LastName", "SurName", "City", "Country");
             new XlsxExporter().Export(data, $"{Environment.GetFolderPath(Environment.SpecialFolder.Desktop)}{Path.DirectorySeparatorChar}testExcelFile");
