@@ -47,10 +47,10 @@ namespace CSStarterTest1.Tester.Stages.ConcreteStages
             public StageOutputDisplayInfo GetDisplayInfo() => new()
             {
                 Text = _testName,
-                Color = _result switch
+                Color = _result.Status switch
                 {
-                    TestResult.Success => ConsoleColor.Green,
-                    TestResult.Failure => ConsoleColor.Red,
+                    TestStatus.Success => ConsoleColor.Green,
+                    TestStatus.Failure => ConsoleColor.Red,
                     _ => throw new InvalidOperationException($"{nameof(TestResult)} value out of range"),
                 },
             };

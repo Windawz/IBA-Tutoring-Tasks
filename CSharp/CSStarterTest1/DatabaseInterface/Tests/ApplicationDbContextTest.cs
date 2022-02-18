@@ -15,7 +15,7 @@ namespace DatabaseInterface.Tests
 
         public override TestResult Perform()
         {
-            var testResult = TestResult.Success;
+            var testResult = new TestResult(TestStatus.Success);
 
             // Connect to automatic instance
             var csb = new SqlConnectionStringBuilder
@@ -43,7 +43,7 @@ namespace DatabaseInterface.Tests
             Data? readData = context.Datas.FirstOrDefault();
             if (readData is null)
             {
-                testResult = TestResult.Failure;
+                testResult = new TestResult(TestStatus.Failure, $"{nameof(readData)} is null");
             }
             else
             {
@@ -58,8 +58,7 @@ namespace DatabaseInterface.Tests
             {
                 if (!context.Database.EnsureDeleted())
                 {
-                    Logger.WriteLine("Failed to ensure database deletion.");
-                    testResult = TestResult.Failure;
+                    testResult = new TestResult(TestStatus.Failure, "Failed to ensure database deletion");
                 }
             }
 

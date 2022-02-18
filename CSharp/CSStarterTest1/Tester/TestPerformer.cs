@@ -15,9 +15,9 @@ namespace CSStarterTest1.Tester
             {
                 result = test.Perform();
             }
-            catch (Exception)
+            catch (Exception ex)
             {
-                result = TestResult.Failure;
+                result = new TestResult(TestStatus.Failure, ex);
             }
             return result;
         }

@@ -15,7 +15,7 @@ namespace CSStarterTest1.DataOps.Tests
             new XlsxExporter().Export(data, $"{Environment.GetFolderPath(Environment.SpecialFolder.Desktop)}{Path.DirectorySeparatorChar}testExcelFile");
 
 
-            return TestResult.Success;
+            return new TestResult(TestStatus.Success);
         }
     }
 }
