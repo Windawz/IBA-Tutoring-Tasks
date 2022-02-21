@@ -8,14 +8,24 @@ namespace CSStarterTest1.Tester.Stages
     {
         public StageProcessor(IndentControl indenter, IStage[] stages)
         {
-            if (!ValidateStages(stages))
+            if (stages.Length == 0)
+            {
+                throw new ArgumentException("Stage array is empty", nameof(stages));
+            }
+            if (!DoInputOutputTypesMatchProcessor(stages[0], stages[stages.Length - 1]))
             {
                 throw new ArgumentException(
                     "The input type of the first stage or the output " +
                     "type of the last stage don't match that of " +
                     $"{nameof(StageProcessor<TIn, TOut>)}",
-                    nameof(stages)
-                );
+                    nameof(stages));
+            }
+            if (!DoInputOutputTypesMatchBetween(stages))
+            {
+                throw new ArgumentException(
+                    "Not all stages have matching " +
+                    "input or output types between each other",
+                    nameof(stages));
             }
 
             _indenter = indenter;
@@ -57,15 +67,35 @@ namespace CSStarterTest1.Tester.Stages
             }
             _indenter.DecreaseLevel();
         }
-        private static bool ValidateStages(IStage[] stages) =>
-            stages.First().In.Equals(typeof(TIn))
-            && stages.Last().Out.Equals(typeof(TOut))
+        // TODO: Move validation of stages into a separate class, like with TestType
+        private static bool DoInputOutputTypesMatchProcessor(IStage first, IStage last) =>
+            first.In.Equals(typeof(TIn))
+            && last.Out.Equals(typeof(TOut))
             ;
+        private static bool DoInputOutputTypesMatchBetween(IStage[] stages)
+        {
+            Type? prev = null;
+            for (int i = 0; i < stages.Length; i++)
+            {
+                if (prev is null)
+                {
+                    continue;
+                }
+
+                var stage = stages[i];
+                if (!stage.In.Equals(prev))
+                {
+                    return false;
+                }
+
+                prev = stage.Out;
+            }
+            return true;
+        }
         private static void DisplayPreProcessMessages(IStage stage)
         {
             Console.WriteLine($"{stage.GetMessage(StageMessage.Starting)}...");
         }
-        
         private static void DisplayPostProcessMessages(IStage stage)
         {
             Console.WriteLine($"{stage.GetMessage(StageMessage.Results)}:");
